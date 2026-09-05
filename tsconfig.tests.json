@@ -6,7 +6,13 @@
     "noEmit": false,
     "outDir": "dist/test-types"
   },
-  "include": ["tests/**/*.ts", "apps/desktop/tests/**/*.ts", "apps/desktop/forge.config.ts"],
+  "include": [
+    "tests/**/*.ts",
+    "apps/desktop/tests/**/*.ts",
+    "apps/desktop/forge.config.ts",
+    "packages/**/*.test.ts",
+    "packages/infrastructure/sqlite/**/*.ts"
+  ],
   "references": [
     { "path": "./packages/contracts" },
     { "path": "./packages/core" },
