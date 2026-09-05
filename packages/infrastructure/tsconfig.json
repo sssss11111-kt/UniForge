@@ -12,6 +12,7 @@
     "files/**/*.ts",
     "credentials/**/*.ts",
     "logging/**/*.ts",
+    "backup/**/*.ts",
     "processes/**/*.ts"
   ],
   "references": [
