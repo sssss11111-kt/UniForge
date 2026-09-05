@@ -33,4 +33,3 @@ jobs:
           name: uniforge-windows-preview
           path: out/make
           if-no-files-found: warn
-
