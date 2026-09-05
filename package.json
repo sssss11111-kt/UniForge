@@ -4,7 +4,10 @@
   "type": "module",
   "version": "0.0.0",
   "packageManager": "npm@11.16.0",
-  "workspaces": ["apps/*", "packages/*"],
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
   "scripts": {
     "typecheck": "tsc -p tsconfig.json",
     "build:desktop": "node scripts/build-desktop.mjs",

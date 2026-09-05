@@ -1,5 +1,10 @@
 {
   "extends": "../../tsconfig.base.json",
-  "compilerOptions": { "noEmit": false, "outDir": "dist", "module": "NodeNext", "moduleResolution": "NodeNext" },
+  "compilerOptions": {
+    "noEmit": false,
+    "outDir": "dist",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext"
+  },
   "include": ["src/main/index.ts", "src/preload/index.ts"]
 }

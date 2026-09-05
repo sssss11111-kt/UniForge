@@ -5,8 +5,14 @@ test('blank technical window launches with secure web preferences', async () => 
   try {
     const page = await app.firstWindow();
     await expect(page.getByRole('heading', { name: 'UniForge' })).toBeVisible();
-    const prefs = await app.evaluate(({ BrowserWindow }) => BrowserWindow.getAllWindows()[0]?.webContents.getURL());
+    const prefs = await app.evaluate(({ BrowserWindow }) =>
+      BrowserWindow.getAllWindows()[0]?.webContents.getURL(),
+    );
     expect(prefs).toContain('file:');
-    expect(await page.evaluate(() => typeof (window as unknown as { uniforge?: unknown }).uniforge)).toBe('object');
-  } finally { await app.close(); }
+    expect(
+      await page.evaluate(() => typeof (window as unknown as { uniforge?: unknown }).uniforge),
+    ).toBe('object');
+  } finally {
+    await app.close();
+  }
 });
