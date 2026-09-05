@@ -1,6 +1,6 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": { "composite": true, "declaration": true, "noEmit": false, "outDir": "dist" },
-  "include": ["index.ts"],
+  "include": ["index.ts", "markdown/**/*.ts", "obsidian/**/*.ts", "search/**/*.ts", "memory/**/*.ts"],
   "references": [{ "path": "../contracts" }]
 }
