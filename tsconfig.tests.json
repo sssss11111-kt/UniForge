@@ -1,7 +1,12 @@
 {
   "extends": "./tsconfig.base.json",
-  "compilerOptions": { "noEmit": false },
-  "files": [],
+  "compilerOptions": {
+    "composite": true,
+    "declaration": true,
+    "noEmit": false,
+    "outDir": "dist/test-types"
+  },
+  "include": ["tests/**/*.ts", "apps/desktop/tests/**/*.ts", "apps/desktop/forge.config.ts"],
   "references": [
     { "path": "./packages/contracts" },
     { "path": "./packages/core" },
@@ -10,9 +15,6 @@
     { "path": "./packages/platform-knowledge" },
     { "path": "./packages/platform-model" },
     { "path": "./packages/platform-sidecar" },
-    { "path": "./packages/platform-tool" },
-    { "path": "./apps/desktop/tsconfig.build.json" },
-    { "path": "./apps/desktop/tsconfig.preload.json" },
-    { "path": "./tsconfig.tests.json" }
+    { "path": "./packages/platform-tool" }
   ]
 }

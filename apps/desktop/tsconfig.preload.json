@@ -6,9 +6,10 @@
     "declaration": true,
     "outDir": "dist",
     "rootDir": "src",
-    "tsBuildInfoFile": "dist/main.tsbuildinfo",
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext"
+    "tsBuildInfoFile": "dist/preload.tsbuildinfo",
+    "module": "CommonJS",
+    "moduleResolution": "Node",
+    "verbatimModuleSyntax": false
   },
-  "include": ["src/main/index.ts"]
+  "include": ["src/preload/index.ts"]
 }

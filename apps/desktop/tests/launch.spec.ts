@@ -9,15 +9,34 @@ test('blank technical window launches with secure web preferences', async () => 
   try {
     const page = await app.firstWindow();
     await expect(page.getByRole('heading', { name: 'UniForge' })).toBeVisible();
-    const prefs = await page.evaluate(
-      () =>
-        (window as unknown as { uniforge?: { testPreferences?: unknown } }).uniforge
-          ?.testPreferences,
-    );
-    expect(prefs).toEqual({ nodeIntegration: false, contextIsolation: true, sandbox: true });
-    expect(
-      await page.evaluate(() => typeof (window as unknown as { uniforge?: unknown }).uniforge),
-    ).toBe('object');
+    const bridge = await page.evaluate(() => {
+      const exposed = (
+        window as unknown as {
+          uniforge?: { version?: unknown; testPreferences?: unknown };
+          require?: unknown;
+          process?: unknown;
+          electron?: unknown;
+        }
+      ).uniforge;
+      return {
+        keys: Object.keys(exposed ?? {}).sort(),
+        preferences: exposed?.testPreferences,
+        version: exposed?.version,
+        requireType: typeof (window as unknown as { require?: unknown }).require,
+        processType: typeof (window as unknown as { process?: unknown }).process,
+        electronType: typeof (window as unknown as { electron?: unknown }).electron,
+      };
+    });
+    expect(bridge.keys).toEqual(['testPreferences', 'version']);
+    expect(bridge.preferences).toEqual({
+      nodeIntegration: false,
+      contextIsolation: true,
+      sandbox: true,
+    });
+    expect(bridge.version).toBe('0.0.0');
+    expect(bridge.requireType).toBe('undefined');
+    expect(bridge.processType).toBe('undefined');
+    expect(bridge.electronType).toBe('undefined');
   } finally {
     await app.close();
   }

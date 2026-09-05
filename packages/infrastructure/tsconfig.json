@@ -1,1 +1,6 @@
-{ "extends": "../../tsconfig.base.json", "include": ["index.ts"] }
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": { "composite": true, "declaration": true, "noEmit": false, "outDir": "dist" },
+  "include": ["index.ts"],
+  "references": [{ "path": "../contracts" }, { "path": "../core" }]
+}
