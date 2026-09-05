@@ -16,6 +16,7 @@
     "agent/**/*.ts",
     "settings/**/*.ts",
     "dashboard/**/*.ts",
-    "course/**/*.ts"
+    "course/**/*.ts",
+    "voice/**/*.ts"
   ]
 }

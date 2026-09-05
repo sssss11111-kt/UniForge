@@ -28,6 +28,7 @@ import type {
 import type { ReviewPlanSnapshotDto, CreateReviewPlanInput } from '../course/exam-review.js';
 import type { AgentCenterSnapshotDto, CreateAgentRunInput } from '../agent/center.js';
 import type { Id } from '../domain/primitives.js';
+import type { VoiceRequest, VoiceSnapshotDto } from '../voice/index.js';
 export interface UniforgeApi {
   readonly health: () => Promise<HealthDto>;
   readonly appShell: () => Promise<AppShellResponseDto>;
@@ -106,5 +107,10 @@ export interface UniforgeApi {
       runId: Id<'agent-run'>;
       reason?: string;
     }) => Promise<AgentCenterSnapshotDto>;
+  };
+  readonly voice: {
+    readonly getSnapshot: () => Promise<VoiceSnapshotDto>;
+    readonly execute: (input: Omit<VoiceRequest, 'context'>) => Promise<VoiceSnapshotDto>;
+    readonly cancel: (requestId: string) => Promise<VoiceSnapshotDto>;
   };
 }

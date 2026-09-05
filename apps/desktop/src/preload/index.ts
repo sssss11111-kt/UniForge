@@ -37,6 +37,9 @@ const agentCenterStartChannel = 'uniforge:agent-center-start';
 const agentCenterApprovalResolveChannel = 'uniforge:agent-center-approval-resolve';
 const agentCenterApprovalRejectChannel = 'uniforge:agent-center-approval-reject';
 const agentCenterCancelChannel = 'uniforge:agent-center-cancel';
+const voiceSnapshotChannel = 'uniforge:voice-snapshot';
+const voiceExecuteChannel = 'uniforge:voice-execute';
+const voiceCancelChannel = 'uniforge:voice-cancel';
 
 const testPreferences =
   process.env.UF_TEST_MODE === '1'
@@ -124,6 +127,11 @@ contextBridge.exposeInMainWorld(
         ipcRenderer.invoke(agentCenterApprovalRejectChannel, input),
       cancel: (input: { runId: string; reason?: string }) =>
         ipcRenderer.invoke(agentCenterCancelChannel, input),
+    }),
+    voice: Object.freeze({
+      getSnapshot: () => ipcRenderer.invoke(voiceSnapshotChannel),
+      execute: (input: unknown) => ipcRenderer.invoke(voiceExecuteChannel, input),
+      cancel: (requestId: string) => ipcRenderer.invoke(voiceCancelChannel, { requestId }),
     }),
     ...(testPreferences ? { testPreferences } : {}),
   }),

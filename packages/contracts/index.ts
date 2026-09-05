@@ -15,3 +15,4 @@ export * from './app-shell/navigation.js';
 export * from './settings/index.js';
 export * from './dashboard/index.js';
 export * from './course/index.js';
+export * from './voice/index.js';

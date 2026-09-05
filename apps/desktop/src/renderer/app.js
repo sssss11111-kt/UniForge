@@ -31,6 +31,19 @@
   const courseReviewPlanState = document.getElementById('course-review-plan-state');
   const agentCenterState = document.getElementById('agent-center-state');
   const agentCenterRuns = document.getElementById('agent-center-runs');
+  const voiceState = document.getElementById('voice-state');
+  const voiceStart = document.getElementById('voice-start');
+  const voiceCancel = document.getElementById('voice-cancel');
+  let activeVoiceRequest;
+  const renderVoice = (snapshot) => {
+    const latest = snapshot.sessions.at(-1);
+    voiceState.textContent = latest
+      ? `语音：${latest.status}${latest.error ? ` · ${latest.error}` : ''}${latest.text ? ` · ${latest.text}` : ''}`
+      : snapshot.sidecar.status === 'unavailable'
+        ? `语音不可用：${snapshot.sidecar.reason ?? '未配置语音运行时'}`
+        : '语音尚未运行。';
+    voiceCancel.disabled = !latest || ['COMPLETED', 'FAILED', 'CANCELLED', 'UNAVAILABLE'].includes(latest.status);
+  };
   const renderAgentCenter = (snapshot) => {
     agentCenterRuns.replaceChildren();
     if (!snapshot.runs.length) {
@@ -214,6 +227,20 @@
       renderMastery(await window.uniforge.course.mastery.getSnapshot());
       renderReviewPlan(await window.uniforge.course.reviewPlan.getSnapshot());
       renderAgentCenter(await window.uniforge.agentCenter.getSnapshot());
+      renderVoice(await window.uniforge.voice.getSnapshot());
+      voiceStart.addEventListener('click', async () => {
+        activeVoiceRequest = `voice-${Date.now()}`;
+        renderVoice({ sessions: [{ requestId: activeVoiceRequest, status: 'STARTING' }], sidecar: { status: 'ready' } });
+        try {
+          renderVoice(await window.uniforge.voice.execute({ requestId: activeVoiceRequest, operation: 'STT', mode: 'GLOBAL', audio: { format: 'wav', base64: '' }, incognito: true, continuous: false, wakeWordEnabled: false }));
+        } catch (error) {
+          voiceState.textContent = `语音请求失败：${error?.message ?? 'UNKNOWN'}`;
+        }
+      });
+      voiceCancel.addEventListener('click', async () => {
+        if (!activeVoiceRequest) return;
+        try { renderVoice(await window.uniforge.voice.cancel(activeVoiceRequest)); } catch { voiceState.textContent = '语音取消失败，请检查应用诊断。'; }
+      });
       executionForm.addEventListener('submit', async (event) => {
         event.preventDefault();
         executionState.textContent = '代码执行等待审批或正在运行…';

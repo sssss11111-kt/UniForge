@@ -7,6 +7,7 @@ import type {
   AssignmentSnapshotDto,
 } from '../course/index.js';
 import type { AgentCenterSnapshotDto } from '../agent/center.js';
+import type { VoiceSnapshotDto } from '../voice/index.js';
 
 export const IPC_CHANNELS = Object.freeze({
   health: 'uniforge:health',
@@ -41,6 +42,9 @@ export const IPC_CHANNELS = Object.freeze({
   agentCenterApprovalResolve: 'uniforge:agent-center-approval-resolve',
   agentCenterApprovalReject: 'uniforge:agent-center-approval-reject',
   agentCenterCancel: 'uniforge:agent-center-cancel',
+  voiceSnapshot: 'uniforge:voice-snapshot',
+  voiceExecute: 'uniforge:voice-execute',
+  voiceCancel: 'uniforge:voice-cancel',
 } as const);
 export type IpcChannel = (typeof IPC_CHANNELS)[keyof typeof IPC_CHANNELS];
 export interface HealthDto {
@@ -58,3 +62,4 @@ export type CourseNotesResponseDto = import('../course/notes.js').CourseNotesSna
 export type CourseMasteryResponseDto = import('../course/mastery.js').MasterySnapshotDto;
 export type CourseExamReviewResponseDto = import('../course/exam-review.js').ReviewPlanSnapshotDto;
 export type AgentCenterResponseDto = AgentCenterSnapshotDto;
+export type VoiceResponseDto = VoiceSnapshotDto;

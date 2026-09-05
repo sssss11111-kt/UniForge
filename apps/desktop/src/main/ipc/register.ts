@@ -21,6 +21,8 @@ import type { CourseExecutionRequest } from '@uniforge/contracts/course/executio
 import type { CreateAgentRunInput } from '@uniforge/contracts/agent/center.js';
 import type { Id } from '@uniforge/contracts/domain/primitives.js';
 import { AgentCenterService } from '@uniforge/platform-agent';
+import { VoiceService, type SpeechPort } from '@uniforge/core/application/voice-service.js';
+import type { VoiceRequest } from '@uniforge/contracts/voice/index.js';
 export const registerIpcHandlers = (
   version: string,
   settings = new SettingsCenter(),
@@ -50,6 +52,7 @@ export const registerIpcHandlers = (
     request: async () => ({ status: 'PENDING' as const, approvalId: 'approval-review-plan' }),
   }),
   agentCenter = new AgentCenterService(),
+  voice = new VoiceService(unavailableSpeech()),
 ): void => {
   ipcMain.handle(IPC_CHANNELS.health, (event: IpcMainInvokeEvent, payload: unknown): HealthDto => {
     if (!event.sender || event.sender.isDestroyed()) throw new Error('INVALID_SENDER');
@@ -498,7 +501,34 @@ export const registerIpcHandlers = (
     if (!result.ok) throw new Error(result.error.code);
     return agentSnapshot();
   });
+  ipcMain.handle(IPC_CHANNELS.voiceSnapshot, async (event, payload: unknown) => {
+    if (!event.sender || event.sender.isDestroyed()) throw new Error('INVALID_SENDER');
+    if (payload !== undefined) throw new Error('INVALID_PAYLOAD');
+    return voice.getSnapshot();
+  });
+  ipcMain.handle(IPC_CHANNELS.voiceExecute, async (event, payload: unknown) => {
+    if (!event.sender || event.sender.isDestroyed()) throw new Error('INVALID_SENDER');
+    if (!payload || typeof payload !== 'object') throw new Error('INVALID_PAYLOAD');
+    const input = payload as Record<string, unknown>;
+    if (typeof input.requestId !== 'string' || (input.operation !== 'STT' && input.operation !== 'TTS') || (input.mode !== 'GLOBAL' && input.mode !== 'AGENT_INPUT')) throw new Error('INVALID_PAYLOAD');
+    const result = await voice.execute({ ...input, context: { actor: 'user', permissions: ['voice:use'] } } as unknown as VoiceRequest);
+    return result.value;
+  });
+  ipcMain.handle(IPC_CHANNELS.voiceCancel, async (event, payload: unknown) => {
+    if (!event.sender || event.sender.isDestroyed()) throw new Error('INVALID_SENDER');
+    if (!payload || typeof payload !== 'object' || typeof (payload as { requestId?: unknown }).requestId !== 'string') throw new Error('INVALID_PAYLOAD');
+    return (await voice.cancel((payload as { requestId: string }).requestId)).value;
+  });
 };
+
+function unavailableSpeech(): SpeechPort {
+  return {
+    health: async () => ({ status: 'unavailable', reason: 'Speech runtime not provisioned' }),
+    transcribe: async () => { throw new Error('Speech runtime not provisioned'); },
+    synthesize: async () => { throw new Error('Speech runtime not provisioned'); },
+    cancel: async () => undefined,
+  };
+}
 
 function unavailableModel(): ModelGateway {
   const failed = async () => ({
