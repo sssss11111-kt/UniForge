@@ -1,41 +1,52 @@
-import { parseEntityId, parseIsoUtc, type EntityId, type IsoUtc } from './primitives.js';
-import type { Workspace } from './entities.js';
-import type { Result, DomainValidationError } from './primitives.js';
-export interface CreateTaskCommand {
-  kind: 'task.create';
-  taskId: EntityId;
-  workspaceId: EntityId;
+import type { Id, Instant, RequestContext, Result } from './primitives.js';
+import type { OwnerRef } from './entities.js';
+export type DomainCommand =
+  | { type: 'workspace.create'; commandId: Id<'command'>; name: string; rootHandle: string }
+  | {
+      type: 'task.create';
+      commandId: Id<'command'>;
+      title: string;
+      owner: { kind: 'workspace'; id: Id<'workspace'> };
+    }
+  | { type: 'task.complete'; commandId: Id<'command'>; taskId: Id<'task'>; expectedVersion: number }
+  | {
+      type: 'artifact.register';
+      commandId: Id<'command'>;
+      fileHandle: string;
+      sha256: string;
+      kind: string;
+    }
+  | {
+      type: 'approval.resolve';
+      commandId: Id<'command'>;
+      approvalId: Id<'approval'>;
+      decision: 'APPROVED' | 'DENIED';
+    };
+export interface CommandReceipt {
+  commandId: Id<'command'>;
+  entityId: Id<string>;
+  entityVersion: number;
+  eventIds: Id<'event'>[];
+  occurredAt: Instant;
+}
+export interface DomainCommandBus {
+  execute(command: DomainCommand, context: RequestContext): Promise<Result<CommandReceipt>>;
+}
+export interface CreateTaskInput {
+  commandId: Id<'command'>;
   title: string;
-  requestedAt: IsoUtc;
+  owner: { kind: 'workspace'; id: Id<'workspace'> };
 }
-export interface CompleteTaskCommand {
-  kind: 'task.complete';
-  taskId: EntityId;
-  expectedVersion: number;
-  requestedAt: IsoUtc;
+export function createTaskCommand(input: CreateTaskInput): Result<DomainCommand> {
+  return input.title.trim()
+    ? { ok: true, value: { type: 'task.create', ...input } }
+    : {
+        ok: false,
+        error: {
+          code: 'INVALID_INPUT',
+          message: 'Task title is required',
+          correlationId: 'contracts',
+        },
+      };
 }
-export interface CreateWorkspaceCommand {
-  kind: 'workspace.create';
-  workspaceId: EntityId;
-  name: string;
-  workspaceKind: Workspace['kind'];
-  requestedAt: IsoUtc;
-}
-export type DomainCommand = CreateTaskCommand | CompleteTaskCommand | CreateWorkspaceCommand;
-export function createTaskCommand(
-  input: Omit<CreateTaskCommand, 'kind'>,
-): Result<CreateTaskCommand, DomainValidationError> {
-  if (!parseEntityId(input.taskId).ok || !parseEntityId(input.workspaceId).ok)
-    return {
-      ok: false,
-      error: { code: 'INVALID_ID', message: 'Task and workspace IDs are invalid' },
-    };
-  if (!parseIsoUtc(input.requestedAt).ok)
-    return {
-      ok: false,
-      error: { code: 'INVALID_UTC', message: 'requestedAt must be canonical UTC' },
-    };
-  if (!input.title.trim())
-    return { ok: false, error: { code: 'INVALID_INPUT', message: 'Task title is required' } };
-  return { ok: true, value: { kind: 'task.create', ...input } };
-}
+export type { OwnerRef };

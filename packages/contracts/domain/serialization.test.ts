@@ -1,53 +1,49 @@
 import { describe, expect, it } from 'vitest';
 import {
-  parseIsoUtc,
-  parseEntityId,
+  parseInstant,
+  parseId,
   serializeDomainValue,
   deserializeDomainValue,
 } from './primitives.js';
 import { createTaskCommand } from './commands.js';
 import type { Task } from './entities.js';
-
+const id = <K extends string>(kind: K, value: string) => {
+  const result = parseId(kind, value);
+  if (!result.ok) throw new Error('fixture');
+  return result.value;
+};
 describe('domain contract serialization', () => {
-  it('accepts canonical IDs and UTC timestamps and rejects invalid values', () => {
-    expect(parseEntityId('task_123').ok).toBe(true);
-    expect(parseIsoUtc('2026-09-05T00:00:00.000Z').ok).toBe(true);
-    expect(parseEntityId('../task').ok).toBe(false);
-    expect(parseIsoUtc('2026-09-05T08:00:00+08:00').ok).toBe(false);
+  it('accepts canonical branded IDs and UTC timestamps and rejects invalid values', () => {
+    expect(parseId('task', 'task_123').ok).toBe(true);
+    expect(parseInstant('2026-09-05T00:00:00.000Z').ok).toBe(true);
+    expect(parseId('task', '../task').ok).toBe(false);
+    expect(parseInstant('2026-09-05T08:00:00+08:00').ok).toBe(false);
   });
-  it('round trips typed command payloads through JSON', () => {
+  it('round trips a typed command payload through JSON', () => {
     const command = createTaskCommand({
-      taskId: 'task_123',
-      workspaceId: 'workspace_main',
+      commandId: id('command', 'command_123'),
       title: 'Contract test',
-      requestedAt: '2026-09-05T00:00:00.000Z',
+      owner: { kind: 'workspace', id: id('workspace', 'workspace_main') },
     });
     expect(command.ok).toBe(true);
     if (!command.ok) return;
-    expect(deserializeDomainValue<unknown>(serializeDomainValue(command.value))).toEqual(
+    expect(deserializeDomainValue(serializeDomainValue(command.value as never))).toEqual(
       command.value,
     );
   });
-
-  it('rejects an unsafe task command at the contract boundary', () => {
-    const command = createTaskCommand({
-      taskId: '../escape',
-      workspaceId: 'workspace_main',
-      title: 'Rejected',
-      requestedAt: '2026-09-05T00:00:00.000Z',
-    });
-    expect(command).toMatchObject({ ok: false, error: { code: 'INVALID_ID' } });
-  });
   it('preserves entity values without runtime metadata', () => {
+    const createdAt = parseInstant('2026-09-05T00:00:00.000Z');
+    if (!createdAt.ok) throw new Error('fixture');
     const task: Task = {
-      id: 'task_123',
-      workspaceId: 'workspace_main',
+      id: id('task', 'task_123'),
+      workspaceId: id('workspace', 'workspace_main'),
       title: 'Read contract',
-      status: 'OPEN',
+      status: 'CREATED',
+      owner: { kind: 'workspace', id: id('workspace', 'workspace_main') },
       version: 1,
-      createdAt: '2026-09-05T00:00:00.000Z',
-      updatedAt: '2026-09-05T00:00:00.000Z',
+      createdAt: createdAt.value,
+      updatedAt: createdAt.value,
     };
-    expect(deserializeDomainValue<Task>(serializeDomainValue(task))).toEqual(task);
+    expect(deserializeDomainValue(serializeDomainValue(task as never))).toEqual(task);
   });
 });

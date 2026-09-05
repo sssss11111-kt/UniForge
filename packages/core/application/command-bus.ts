@@ -1,15 +1,27 @@
-import type { DomainCommand } from '@uniforge/contracts/domain/commands.js';
-import type { CommandHandler } from '../domain/ports.js';
-import type { Result } from '../errors/result.js';
-export class CommandBus {
-  private readonly handlers = new Map<DomainCommand['kind'], CommandHandler>();
-  register(kind: DomainCommand['kind'], handler: CommandHandler): void {
-    this.handlers.set(kind, handler);
-  }
-  async dispatch(command: DomainCommand): Promise<Result<unknown>> {
-    const handler = this.handlers.get(command.kind);
-    if (!handler)
-      return { ok: false, error: { code: 'NOT_FOUND', message: `No handler for ${command.kind}` } };
-    return { ok: true, value: await handler.handle(command) };
+import type {
+  DomainCommand,
+  CommandReceipt,
+  DomainCommandBus,
+} from '@uniforge/contracts/domain/commands.js';
+import type { RequestContext, Result } from '@uniforge/contracts/domain/primitives.js';
+export class CommandBus implements DomainCommandBus {
+  async execute(command: DomainCommand, context: RequestContext): Promise<Result<CommandReceipt>> {
+    if (!context.correlationId)
+      return {
+        ok: false,
+        error: {
+          code: 'INVALID_INPUT',
+          message: 'Correlation ID is required',
+          correlationId: 'command-bus',
+        },
+      };
+    return {
+      ok: false,
+      error: {
+        code: 'UNAVAILABLE',
+        message: `No handler for ${command.type}`,
+        correlationId: context.correlationId,
+      },
+    };
   }
 }
