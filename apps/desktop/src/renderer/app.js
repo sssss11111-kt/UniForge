@@ -9,6 +9,14 @@
   const courseState = document.getElementById('course-state');
   const courseForm = document.getElementById('course-form');
   const courseError = document.getElementById('course-error');
+  const courseMaterialState = document.getElementById('course-material-state');
+  const courseMaterialImport = document.getElementById('course-material-import');
+  const courseMaterialError = document.getElementById('course-material-error');
+  const renderMaterials = (snapshot) => {
+    courseMaterialState.textContent = snapshot.materials.length
+      ? `已导入 ${snapshot.materials.length} 份课程资料：${snapshot.materials.map((material) => material.originalFileName).join('、')}`
+      : '课程资料尚未导入。';
+  };
   const renderCourse = (snapshot) => {
     const course = snapshot.course;
     courseState.textContent = course.name
@@ -93,6 +101,15 @@
           );
         } catch {
           courseError.textContent = '课程创建失败，请检查输入或应用诊断。';
+        }
+      });
+      courseMaterialImport.addEventListener('click', async () => {
+        courseMaterialError.textContent = '';
+        try {
+          renderMaterials(await window.uniforge.course.materials.chooseAndImport());
+        } catch (error) {
+          courseMaterialError.textContent =
+            error?.message === 'CANCELLED' ? '' : '课程资料导入失败，请检查应用诊断。';
         }
       });
     } catch {

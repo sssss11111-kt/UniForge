@@ -1,15 +1,21 @@
-import { ipcMain, type IpcMainInvokeEvent } from 'electron';
+import { app, dialog, ipcMain, type IpcMainInvokeEvent } from 'electron';
+import path from 'node:path';
 import { DEFAULT_APP_SHELL, type AppShellDto } from '@uniforge/contracts/app-shell/navigation.js';
 import { IPC_CHANNELS, type HealthDto } from '@uniforge/contracts/ipc/dto.js';
 import type { UpdateModelSettingsInput } from '@uniforge/contracts/settings/index.js';
 import { SettingsCenter } from '@uniforge/core/application/settings-center.js';
 import { createDefaultDashboardService } from '@uniforge/core/application/dashboard-service.js';
 import { CourseService } from '@uniforge/core/application/course-service.js';
+import { CourseMaterialService } from '@uniforge/core/application/course-material-service.js';
+import { createCourseMaterialCopy } from '@uniforge/infrastructure';
 export const registerIpcHandlers = (
   version: string,
   settings = new SettingsCenter(),
   dashboard = createDefaultDashboardService(),
   course = new CourseService(),
+  materials = new CourseMaterialService(
+    createCourseMaterialCopy(path.join(app.getPath('userData'), 'workspace')),
+  ),
 ): void => {
   ipcMain.handle(IPC_CHANNELS.health, (event: IpcMainInvokeEvent, payload: unknown): HealthDto => {
     if (!event.sender || event.sender.isDestroyed()) throw new Error('INVALID_SENDER');
@@ -74,6 +80,20 @@ export const registerIpcHandlers = (
       name: input.name,
       termName: input.termName,
       type: input.type as never,
+      context: { actor: 'user', permissions: ['course:write'] },
+    });
+  });
+  ipcMain.handle(IPC_CHANNELS.courseMaterialImport, async (event, payload: unknown) => {
+    if (!event.sender || event.sender.isDestroyed()) throw new Error('INVALID_SENDER');
+    if (payload !== undefined) throw new Error('INVALID_PAYLOAD');
+    const selected = await dialog.showOpenDialog({ properties: ['openFile'] });
+    if (selected.canceled || selected.filePaths.length !== 1) throw new Error('CANCELLED');
+    const snapshot = await course.getSnapshot();
+    if (!snapshot.course.name) throw new Error('COURSE_REQUIRED');
+    return materials.importMaterial({
+      commandId: `command-material-${Date.now()}` as never,
+      courseId: snapshot.course.id,
+      sourcePath: selected.filePaths[0]!,
       context: { actor: 'user', permissions: ['course:write'] },
     });
   });

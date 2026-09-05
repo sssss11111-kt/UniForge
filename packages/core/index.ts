@@ -7,3 +7,4 @@ export * from './events/projection.js';
 export * from './domain/recycle-bin/service.js';
 export * from './application/settings-center.js';
 export * from './application/course-service.js';
+export * from './application/course-material-service.js';

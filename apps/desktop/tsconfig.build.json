@@ -10,5 +10,6 @@
     "module": "NodeNext",
     "moduleResolution": "NodeNext"
   },
-  "include": ["src/main/**/*.ts"]
+  "include": ["src/main/**/*.ts"],
+  "references": [{ "path": "../../packages/infrastructure" }]
 }

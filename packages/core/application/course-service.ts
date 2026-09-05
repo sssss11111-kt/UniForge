@@ -23,6 +23,7 @@ export class CourseService {
       term: { id: `term-${input.commandId}` as Course['term']['id'], name: input.termName.trim() },
       modules: [],
       assessments: [],
+      materials: [],
     };
     return { ok: true, value: this.snapshot() };
   }
@@ -40,6 +41,7 @@ export class CourseService {
         term: { id: 'term-empty' as Course['term']['id'], name: '' },
         modules: [],
         assessments: [],
+        materials: [],
       },
       generatedAt: new Date().toISOString() as CourseSnapshotDto['generatedAt'],
     };

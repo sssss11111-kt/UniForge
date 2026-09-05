@@ -44,12 +44,15 @@
           <p class="eyebrow">课内学习</p>
           <h2 id="course-title">课程入口</h2>
           <p id="course-state">正在加载课程状态…</p>
+          <p id="course-material-state">课程资料尚未导入。</p>
           <form id="course-form">
             <input id="course-name" required placeholder="课程名称" aria-label="课程名称" />
             <input id="course-term" required placeholder="学期" aria-label="学期" />
             <button type="submit">创建课程</button>
           </form>
           <p id="course-error" role="alert"></p>
+          <button id="course-material-import" type="button">导入课程资料</button>
+          <p id="course-material-error" role="alert"></p>
         </section>
       </main>
     </div>

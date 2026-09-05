@@ -10,6 +10,7 @@ const settingsUpdateModelChannel = 'uniforge:settings-update-model';
 const dashboardSnapshotChannel = 'uniforge:dashboard-snapshot';
 const courseSnapshotChannel = 'uniforge:course-snapshot';
 const courseCreateChannel = 'uniforge:course-create';
+const courseMaterialImportChannel = 'uniforge:course-material-import';
 
 const testPreferences =
   process.env.UF_TEST_MODE === '1'
@@ -32,6 +33,9 @@ contextBridge.exposeInMainWorld(
     course: Object.freeze({
       getSnapshot: () => ipcRenderer.invoke(courseSnapshotChannel),
       create: (input: unknown) => ipcRenderer.invoke(courseCreateChannel, input),
+      materials: Object.freeze({
+        chooseAndImport: () => ipcRenderer.invoke(courseMaterialImportChannel),
+      }),
     }),
     ...(testPreferences ? { testPreferences } : {}),
   }),

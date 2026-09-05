@@ -8,6 +8,7 @@ export {
   type CredentialStore,
 } from './credentials/windows-credential-store.js';
 export { redactSecrets } from './logging/redact.js';
+export { createCourseMaterialCopy } from './files/course-material-copy.js';
 export { StructuredLogger, type LogEntry, type LogLevel } from './logging/structured.js';
 export {
   createBackup,
