@@ -4,12 +4,27 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'" />
-    <title>UniForge</title>
+    <title>UniForge · 总览</title>
+    <link rel="stylesheet" href="./app.css" />
   </head>
   <body>
-    <main>
-      <h1>UniForge</h1>
-      <p>Stage 0 technical baseline</p>
-    </main>
+    <div id="app-shell" class="app-shell">
+      <aside class="sidebar" aria-label="主导航">
+        <div class="brand"><span class="brand-mark">U</span><span>UniForge</span></div>
+        <nav id="primary-navigation" class="primary-navigation" aria-label="主导航"></nav>
+      </aside>
+      <main class="main-content" aria-live="polite">
+        <header class="topbar">
+          <span class="eyebrow">工作台</span
+          ><span id="connection-state" class="status">本地运行</span>
+        </header>
+        <section class="content-card">
+          <p class="eyebrow">当前模块</p>
+          <h1>UniForge</h1>
+          <p id="module-description">正在加载工作台…</p>
+        </section>
+      </main>
+    </div>
+    <script src="./app.js"></script>
   </body>
 </html>

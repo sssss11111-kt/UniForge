@@ -1,6 +1,6 @@
 import path from 'node:path';
 import { test, expect, _electron as electron } from '@playwright/test';
-test('blank technical window launches with secure web preferences', async () => {
+test('app shell exposes primary navigation and roadmap states', async () => {
   const app = await electron.launch({
     cwd: path.resolve('apps/desktop'),
     args: ['.'],
@@ -9,6 +9,15 @@ test('blank technical window launches with secure web preferences', async () => 
   try {
     const page = await app.firstWindow();
     await expect(page.getByRole('heading', { name: 'UniForge' })).toBeVisible();
+    await expect(page.getByRole('navigation', { name: '主导航' })).toBeVisible();
+    await expect(page.getByRole('button', { name: '00 总览' })).toHaveAttribute(
+      'aria-current',
+      'page',
+    );
+    await expect(page.getByRole('button', { name: '01 Agent 执行中心' })).toBeEnabled();
+    await expect(page.getByRole('button', { name: '02 课内学习' })).toBeEnabled();
+    await expect(page.getByRole('button', { name: /03 英语备考/ })).toBeDisabled();
+    await expect(page.getByText('路线图').first()).toBeVisible();
     const bridge = await page.evaluate(() => {
       const exposed = (
         window as unknown as {
@@ -27,7 +36,7 @@ test('blank technical window launches with secure web preferences', async () => 
         electronType: typeof (window as unknown as { electron?: unknown }).electron,
       };
     });
-    expect(bridge.keys).toEqual(['health', 'testPreferences', 'version']);
+    expect(bridge.keys).toEqual(['appShell', 'health', 'testPreferences', 'version']);
     expect(bridge.preferences).toEqual({
       nodeIntegration: false,
       contextIsolation: true,

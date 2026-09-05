@@ -36,3 +36,11 @@ await cp(
   path.join(desktopRoot, 'src', 'renderer', 'index.html'),
   path.join(outputRoot, 'renderer', 'index.html'),
 );
+await cp(
+  path.join(desktopRoot, 'src', 'renderer', 'app.js'),
+  path.join(outputRoot, 'renderer', 'app.js'),
+);
+await cp(
+  path.join(desktopRoot, 'src', 'renderer', 'app.css'),
+  path.join(outputRoot, 'renderer', 'app.css'),
+);

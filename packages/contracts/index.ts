@@ -10,3 +10,4 @@ export * from './model/gateway.js';
 export * from './tool/gateway.js';
 export * from './agent/definition.js';
 export * from './agent/runtime.js';
+export * from './app-shell/navigation.js';

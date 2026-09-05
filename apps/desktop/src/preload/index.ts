@@ -4,6 +4,7 @@ import { contextBridge, ipcRenderer } from 'electron';
 // package. This literal is kept in sync with IPC_CHANNELS.health until the
 // preload bundling step is introduced.
 const healthChannel = 'uniforge:health';
+const appShellChannel = 'uniforge:app-shell';
 
 const testPreferences =
   process.env.UF_TEST_MODE === '1'
@@ -15,6 +16,7 @@ contextBridge.exposeInMainWorld(
   Object.freeze({
     version: '0.0.0',
     health: () => ipcRenderer.invoke(healthChannel),
+    appShell: () => ipcRenderer.invoke(appShellChannel),
     ...(testPreferences ? { testPreferences } : {}),
   }),
 );
