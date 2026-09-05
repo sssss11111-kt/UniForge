@@ -13,6 +13,7 @@
     "ipc/**/*.ts",
     "model/**/*.ts",
     "tool/**/*.ts",
-    "agent/**/*.ts"
+    "agent/**/*.ts",
+    "settings/**/*.ts"
   ]
 }

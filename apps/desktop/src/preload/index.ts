@@ -5,6 +5,8 @@ import { contextBridge, ipcRenderer } from 'electron';
 // preload bundling step is introduced.
 const healthChannel = 'uniforge:health';
 const appShellChannel = 'uniforge:app-shell';
+const settingsSnapshotChannel = 'uniforge:settings-snapshot';
+const settingsUpdateModelChannel = 'uniforge:settings-update-model';
 
 const testPreferences =
   process.env.UF_TEST_MODE === '1'
@@ -17,6 +19,10 @@ contextBridge.exposeInMainWorld(
     version: '0.0.0',
     health: () => ipcRenderer.invoke(healthChannel),
     appShell: () => ipcRenderer.invoke(appShellChannel),
+    settings: Object.freeze({
+      getSnapshot: () => ipcRenderer.invoke(settingsSnapshotChannel),
+      updateModel: (input: unknown) => ipcRenderer.invoke(settingsUpdateModelChannel, input),
+    }),
     ...(testPreferences ? { testPreferences } : {}),
   }),
 );

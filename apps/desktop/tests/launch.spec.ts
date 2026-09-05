@@ -36,7 +36,7 @@ test('app shell exposes primary navigation and roadmap states', async () => {
         electronType: typeof (window as unknown as { electron?: unknown }).electron,
       };
     });
-    expect(bridge.keys).toEqual(['appShell', 'health', 'testPreferences', 'version']);
+    expect(bridge.keys).toEqual(['appShell', 'health', 'settings', 'testPreferences', 'version']);
     expect(bridge.preferences).toEqual({
       nodeIntegration: false,
       contextIsolation: true,
@@ -46,6 +46,8 @@ test('app shell exposes primary navigation and roadmap states', async () => {
     expect(bridge.requireType).toBe('undefined');
     expect(bridge.processType).toBe('undefined');
     expect(bridge.electronType).toBe('undefined');
+    await expect(page.getByRole('heading', { name: '运行状态' })).toBeVisible();
+    await expect(page.getByText(/默认工作区/)).toBeVisible();
   } finally {
     await app.close();
   }

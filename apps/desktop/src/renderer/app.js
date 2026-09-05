@@ -3,6 +3,7 @@
   const navigation = document.getElementById('primary-navigation');
   const description = document.getElementById('module-description');
   const availableDescription = '从这里开始管理你的学习、Agent 任务和工作空间。';
+  const settingsSummary = document.getElementById('settings-summary');
   const render = (shell) => {
     navigation.replaceChildren();
     shell.modules.forEach((module) => {
@@ -34,8 +35,12 @@
   const start = async () => {
     try {
       render(await window.uniforge.appShell());
+      const snapshot = await window.uniforge.settings.getSnapshot();
+      const model = snapshot.models[0];
+      settingsSummary.textContent = `${snapshot.workspace.name} · ${snapshot.workspace.status} · 模型 ${model?.model ?? '未配置'} · 外网 ${snapshot.permissions.externalNetwork}`;
     } catch {
       description.textContent = '工作台加载失败，请检查应用诊断。';
+      settingsSummary.textContent = '设置加载失败，请检查应用诊断。';
     }
   };
   void start();

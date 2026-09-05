@@ -5,3 +5,4 @@ export * from './domain/ports.js';
 export * from './application/command-bus.js';
 export * from './events/projection.js';
 export * from './domain/recycle-bin/service.js';
+export * from './application/settings-center.js';
