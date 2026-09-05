@@ -72,11 +72,44 @@ describe('CourseMasteryService', () => {
     });
     const corrected = await service.correctWrongProblem({
       problemId: 'wrong-2' as never,
+      courseId,
       classification: 'CARELESS',
       context,
     });
     expect(corrected.status).toBe('CORRECTED');
     expect(corrected.classification).toBe('CARELESS');
     expect(corrected.correction?.actor).toBe('USER');
+  });
+
+  it('rejects invalid provenance and scopes correction to the course', async () => {
+    const service = new CourseMasteryService();
+    await expect(
+      service.recordEvidence({
+        evidenceId: 'evidence-invalid' as never,
+        courseId,
+        conceptRef: 'loops',
+        kind: 'ACCURACY',
+        value: 0.5,
+        provenance: { ...provenance, recordedAt: 'yesterday' as never },
+        context,
+      }),
+    ).rejects.toThrow('INVALID_INPUT');
+    await service.recordWrongProblem({
+      problemId: 'wrong-3' as never,
+      courseId,
+      problemRef: 'problem://3',
+      classification: 'UNKNOWN',
+      classificationSource: 'USER',
+      provenance,
+      context,
+    });
+    await expect(
+      service.correctWrongProblem({
+        problemId: 'wrong-3' as never,
+        courseId: 'course-2' as never,
+        classification: 'CARELESS',
+        context,
+      }),
+    ).rejects.toThrow('NOT_FOUND');
   });
 });

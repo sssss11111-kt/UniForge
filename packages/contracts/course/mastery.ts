@@ -75,6 +75,7 @@ export interface RecordWrongProblemInput {
 }
 export interface CorrectWrongProblemInput {
   readonly problemId: Id<'wrong-problem'>;
+  readonly courseId: Id<'course'>;
   readonly classification: WrongProblemClassification;
   readonly context: { readonly actor: 'user' | 'agent'; readonly permissions: readonly string[] };
 }

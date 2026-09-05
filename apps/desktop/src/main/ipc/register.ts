@@ -364,6 +364,7 @@ export const registerIpcHandlers = (
     const snapshot = await course.getSnapshot();
     await mastery.correctWrongProblem({
       problemId: (payload as { problemId: string }).problemId as never,
+      courseId: snapshot.course.id,
       classification: (payload as { classification: string }).classification as never,
       context: { actor: 'user', permissions: ['course:mastery:write'] },
     });

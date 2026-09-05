@@ -80,7 +80,7 @@ export interface UniforgeApi {
         input: Omit<RecordWrongProblemInput, 'courseId' | 'context'>,
       ) => Promise<MasterySnapshotDto>;
       readonly correctWrongProblem: (
-        input: Omit<CorrectWrongProblemInput, 'context'>,
+        input: Omit<CorrectWrongProblemInput, 'courseId' | 'context'>,
       ) => Promise<MasterySnapshotDto>;
     };
   };
