@@ -1,10 +1,20 @@
 import { DatabaseSync } from 'node:sqlite';
 import { createHash } from 'node:crypto';
 const db = new DatabaseSync(':memory:');
-db.exec('CREATE VIRTUAL TABLE source_fts USING fts5(source_id UNINDEXED, locator UNINDEXED, content, hash UNINDEXED, scope UNINDEXED)');
+db.exec(
+  'CREATE VIRTUAL TABLE source_fts USING fts5(source_id UNINDEXED, locator UNINDEXED, content, hash UNINDEXED, scope UNINDEXED)',
+);
 const text = '# Knowledge PoC\nFTS5 citation evidence';
 const digest = createHash('sha256').update(text).digest('hex');
-db.prepare('INSERT INTO source_fts VALUES (?,?,?,?,?)').run('source-fixture', 'fixtures/content/vault/example-note.md', text, digest, 'WORKSPACE');
-const rows = db.prepare('SELECT source_id, locator, hash FROM source_fts WHERE source_fts MATCH ?').all('citation');
+db.prepare('INSERT INTO source_fts VALUES (?,?,?,?,?)').run(
+  'source-fixture',
+  'fixtures/content/vault/example-note.md',
+  text,
+  digest,
+  'WORKSPACE',
+);
+const rows = db
+  .prepare('SELECT source_id, locator, hash FROM source_fts WHERE source_fts MATCH ?')
+  .all('citation');
 console.log(JSON.stringify({ fts5: true, results: rows, semanticRetrieval: 'disabled' }));
 db.close();
