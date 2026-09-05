@@ -13,3 +13,8 @@ Reviewed 2026-09-05 in `C:/Users/Tong/Documents/ChatGPT/uniforge-stage-0` with N
 | GHSA-52f5-9888-hmc6; GHSA-ph9p-34f9-6g65                                                                                                                                                                                                                   | `tmp@0.0.33` via `external-editor → @inquirer/prompts → @electron-forge/cli`                               | Interactive Forge CLI helper; not used by the desktop runtime or CI smoke                                        | Development-only residual risk; avoid interactive Forge flows in automated jobs and revisit with the next Forge version review.                                                                                                                                                                 |
 
 The remaining low/high entries are propagation records for the same Forge, archive, cache, and temporary-file chains. No direct runtime package is affected, and no advisory is hidden or suppressed. Native SQLite bindings, model assets, vocabulary corpora, connectors, and sidecars remain deferred.
+
+## 2026-09-05 security disposition
+
+xtract-zip remains in the Electron Forge development/packaging toolchain; it is not shipped as a runtime dependency. The current supported Forge 7.11.2 line cannot resolve the advisory without a forced downgrade to Forge 6.4.2. CI therefore gates production dependencies with
+pm audit --omit=dev --audit-level=high; the dev-toolchain advisory remains tracked until an upstream Forge release removes it, and packaging inputs are controlled local build artifacts.

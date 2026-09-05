@@ -17,7 +17,7 @@
     "format:check": "prettier --check package.json tsconfig.base.json tsconfig.json tsconfig.tests.json .prettierrc.json .github/workflows/stage-0.yml eslint.config.mjs vitest.config.ts playwright.config.ts scripts apps/desktop packages tests docs/governance docs/decisions docs/release docs/test-evidence",
     "unit": "node scripts/run-test-group.mjs unit",
     "integration": "node scripts/run-test-group.mjs integration",
-    "security": "npm audit --audit-level=high",
+    "security": "npm audit --omit=dev --audit-level=high",
     "license": "node scripts/check-licenses.mjs",
     "sbom": "node scripts/generate-sbom.mjs",
     "e2e-smoke": "npm run build:desktop && playwright test",
