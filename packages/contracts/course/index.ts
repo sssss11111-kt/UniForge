@@ -4,6 +4,7 @@ export * from './ai.js';
 export * from './assignment.js';
 export * from './execution.js';
 export * from './notes.js';
+export * from './mastery.js';
 
 export type CourseType =
   | 'THEORY_COMPUTATION'

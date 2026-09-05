@@ -27,6 +27,18 @@
   const courseNoteForm = document.getElementById('course-note-form');
   const courseNotesState = document.getElementById('course-notes-state');
   const courseNotesError = document.getElementById('course-notes-error');
+  const courseMasteryState = document.getElementById('course-mastery-state');
+  const renderMastery = (snapshot) => {
+    if (snapshot.state === 'EMPTY') {
+      courseMasteryState.textContent = '掌握度与错题尚无记录。';
+      return;
+    }
+    if (snapshot.state === 'FAILED') {
+      courseMasteryState.textContent = `掌握度加载失败：${snapshot.error ?? 'UNKNOWN'}`;
+      return;
+    }
+    courseMasteryState.textContent = `已记录 ${snapshot.mastery.length} 个知识点掌握度、${snapshot.wrongProblems.length} 道错题；每项均保留来源证据。`;
+  };
   const renderNotes = (snapshot) => {
     const latest = snapshot.notes.at(-1);
     if (!latest) {
@@ -166,6 +178,7 @@
       };
       renderExecution(await window.uniforge.course.execution.getSnapshot());
       renderNotes(await window.uniforge.course.notes.getSnapshot());
+      renderMastery(await window.uniforge.course.mastery.getSnapshot());
       executionForm.addEventListener('submit', async (event) => {
         event.preventDefault();
         executionState.textContent = '代码执行等待审批或正在运行…';

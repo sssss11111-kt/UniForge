@@ -19,6 +19,12 @@ import type {
   CourseAiSnapshotDto,
   AskCourseAiInput,
 } from '../course/index.js';
+import type {
+  MasterySnapshotDto,
+  RecordMasteryEvidenceInput,
+  RecordWrongProblemInput,
+  CorrectWrongProblemInput,
+} from '../course/mastery.js';
 export interface UniforgeApi {
   readonly health: () => Promise<HealthDto>;
   readonly appShell: () => Promise<AppShellResponseDto>;
@@ -64,6 +70,18 @@ export interface UniforgeApi {
       readonly publishDraft: (
         input: Omit<PublishCourseNoteInput, 'context'>,
       ) => Promise<CourseNotesSnapshotDto>;
+    };
+    readonly mastery: {
+      readonly getSnapshot: () => Promise<MasterySnapshotDto>;
+      readonly recordEvidence: (
+        input: Omit<RecordMasteryEvidenceInput, 'courseId' | 'context'>,
+      ) => Promise<MasterySnapshotDto>;
+      readonly recordWrongProblem: (
+        input: Omit<RecordWrongProblemInput, 'courseId' | 'context'>,
+      ) => Promise<MasterySnapshotDto>;
+      readonly correctWrongProblem: (
+        input: Omit<CorrectWrongProblemInput, 'context'>,
+      ) => Promise<MasterySnapshotDto>;
     };
   };
 }

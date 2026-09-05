@@ -1,4 +1,6 @@
 import { contextBridge, ipcRenderer } from 'electron';
+import type { UniforgeApi } from '@uniforge/contracts/ipc/api.js';
+import type { MasterySnapshotDto } from '@uniforge/contracts/course/mastery.js';
 
 // The sandboxed CommonJS preload cannot synchronously load the ESM contracts
 // package. This literal is kept in sync with IPC_CHANNELS.health until the
@@ -23,6 +25,10 @@ const courseNotesSnapshotChannel = 'uniforge:course-notes-snapshot';
 const courseNotePersonalCreateChannel = 'uniforge:course-note-personal-create';
 const courseNoteAiDraftCreateChannel = 'uniforge:course-note-ai-draft-create';
 const courseNoteDraftPublishChannel = 'uniforge:course-note-draft-publish';
+const courseMasterySnapshotChannel = 'uniforge:course-mastery-snapshot';
+const courseMasteryEvidenceRecordChannel = 'uniforge:course-mastery-evidence-record';
+const courseWrongProblemRecordChannel = 'uniforge:course-wrong-problem-record';
+const courseWrongProblemCorrectChannel = 'uniforge:course-wrong-problem-correct';
 
 const testPreferences =
   process.env.UF_TEST_MODE === '1'
@@ -72,6 +78,28 @@ contextBridge.exposeInMainWorld(
         createAiDraft: (input: unknown) =>
           ipcRenderer.invoke(courseNoteAiDraftCreateChannel, input),
         publishDraft: (input: unknown) => ipcRenderer.invoke(courseNoteDraftPublishChannel, input),
+      }),
+      mastery: Object.freeze({
+        getSnapshot: () =>
+          ipcRenderer.invoke(courseMasterySnapshotChannel) as Promise<MasterySnapshotDto>,
+        recordEvidence: (
+          input: Parameters<UniforgeApi['course']['mastery']['recordEvidence']>[0],
+        ) =>
+          ipcRenderer.invoke(
+            courseMasteryEvidenceRecordChannel,
+            input,
+          ) as Promise<MasterySnapshotDto>,
+        recordWrongProblem: (
+          input: Parameters<UniforgeApi['course']['mastery']['recordWrongProblem']>[0],
+        ) =>
+          ipcRenderer.invoke(courseWrongProblemRecordChannel, input) as Promise<MasterySnapshotDto>,
+        correctWrongProblem: (
+          input: Parameters<UniforgeApi['course']['mastery']['correctWrongProblem']>[0],
+        ) =>
+          ipcRenderer.invoke(
+            courseWrongProblemCorrectChannel,
+            input,
+          ) as Promise<MasterySnapshotDto>,
       }),
     }),
     ...(testPreferences ? { testPreferences } : {}),

@@ -15,6 +15,7 @@ import { createCourseMaterialCopy } from '@uniforge/infrastructure';
 import { ControlledCourseRunner } from '@uniforge/infrastructure';
 import { CourseExecutionService } from '@uniforge/core/application/course-execution-service.js';
 import { CourseNotesService } from '@uniforge/core/application/course-notes-service.js';
+import { CourseMasteryService } from '@uniforge/core/application/course-mastery-service.js';
 import type { CourseExecutionRequest } from '@uniforge/contracts/course/execution.js';
 export const registerIpcHandlers = (
   version: string,
@@ -40,6 +41,7 @@ export const registerIpcHandlers = (
   notes = new CourseNotesService({
     request: async () => ({ status: 'PENDING' as const, approvalId: 'approval-course-note' }),
   }),
+  mastery = new CourseMasteryService(),
 ): void => {
   ipcMain.handle(IPC_CHANNELS.health, (event: IpcMainInvokeEvent, payload: unknown): HealthDto => {
     if (!event.sender || event.sender.isDestroyed()) throw new Error('INVALID_SENDER');
@@ -292,6 +294,80 @@ export const registerIpcHandlers = (
       context: { actor: 'user', permissions: ['course:notes:write'] },
     });
     return notes.getSnapshot(snapshot.course.id);
+  });
+  ipcMain.handle(IPC_CHANNELS.courseMasterySnapshot, async (event, payload: unknown) => {
+    if (!event.sender || event.sender.isDestroyed()) throw new Error('INVALID_SENDER');
+    if (payload !== undefined) throw new Error('INVALID_PAYLOAD');
+    const snapshot = await course.getSnapshot();
+    return mastery.getSnapshot(snapshot.course.id);
+  });
+  ipcMain.handle(IPC_CHANNELS.courseMasteryEvidenceRecord, async (event, payload: unknown) => {
+    if (!event.sender || event.sender.isDestroyed()) throw new Error('INVALID_SENDER');
+    if (!payload || typeof payload !== 'object') throw new Error('INVALID_PAYLOAD');
+    const input = payload as Record<string, unknown>;
+    if (
+      typeof input.evidenceId !== 'string' ||
+      typeof input.conceptRef !== 'string' ||
+      typeof input.kind !== 'string' ||
+      typeof input.value !== 'number' ||
+      !input.provenance ||
+      typeof input.provenance !== 'object'
+    )
+      throw new Error('INVALID_PAYLOAD');
+    const snapshot = await course.getSnapshot();
+    await mastery.recordEvidence({
+      evidenceId: input.evidenceId as never,
+      courseId: snapshot.course.id,
+      conceptRef: input.conceptRef,
+      kind: input.kind as never,
+      value: input.value,
+      provenance: input.provenance as never,
+      context: { actor: 'user', permissions: ['course:mastery:write'] },
+    });
+    return mastery.getSnapshot(snapshot.course.id);
+  });
+  ipcMain.handle(IPC_CHANNELS.courseWrongProblemRecord, async (event, payload: unknown) => {
+    if (!event.sender || event.sender.isDestroyed()) throw new Error('INVALID_SENDER');
+    if (!payload || typeof payload !== 'object') throw new Error('INVALID_PAYLOAD');
+    const input = payload as Record<string, unknown>;
+    if (
+      typeof input.problemId !== 'string' ||
+      typeof input.problemRef !== 'string' ||
+      typeof input.classification !== 'string' ||
+      typeof input.classificationSource !== 'string' ||
+      !input.provenance ||
+      typeof input.provenance !== 'object'
+    )
+      throw new Error('INVALID_PAYLOAD');
+    const snapshot = await course.getSnapshot();
+    await mastery.recordWrongProblem({
+      problemId: input.problemId as never,
+      courseId: snapshot.course.id,
+      problemRef: input.problemRef,
+      classification: input.classification as never,
+      classificationSource: input.classificationSource as never,
+      provenance: input.provenance as never,
+      ...(typeof input.note === 'string' ? { note: input.note } : {}),
+      context: { actor: 'user', permissions: ['course:mastery:write'] },
+    });
+    return mastery.getSnapshot(snapshot.course.id);
+  });
+  ipcMain.handle(IPC_CHANNELS.courseWrongProblemCorrect, async (event, payload: unknown) => {
+    if (!event.sender || event.sender.isDestroyed()) throw new Error('INVALID_SENDER');
+    if (
+      !payload ||
+      typeof payload !== 'object' ||
+      typeof (payload as { problemId?: unknown }).problemId !== 'string' ||
+      typeof (payload as { classification?: unknown }).classification !== 'string'
+    )
+      throw new Error('INVALID_PAYLOAD');
+    const snapshot = await course.getSnapshot();
+    await mastery.correctWrongProblem({
+      problemId: (payload as { problemId: string }).problemId as never,
+      classification: (payload as { classification: string }).classification as never,
+      context: { actor: 'user', permissions: ['course:mastery:write'] },
+    });
+    return mastery.getSnapshot(snapshot.course.id);
   });
 };
 
