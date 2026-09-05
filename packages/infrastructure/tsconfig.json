@@ -6,7 +6,13 @@
     "noEmit": false,
     "outDir": "dist"
   },
-  "include": ["index.ts", "sqlite/**/*.ts", "files/**/*.ts", "credentials/**/*.ts", "logging/**/*.ts"],
+  "include": [
+    "index.ts",
+    "sqlite/**/*.ts",
+    "files/**/*.ts",
+    "credentials/**/*.ts",
+    "logging/**/*.ts"
+  ],
   "references": [
     {
       "path": "../contracts"
