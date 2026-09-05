@@ -13,6 +13,25 @@
   const courseMaterialImport = document.getElementById('course-material-import');
   const courseMaterialError = document.getElementById('course-material-error');
   const courseRecognitionState = document.getElementById('course-recognition-state');
+  const courseAiForm = document.getElementById('course-ai-form');
+  const courseAiQuestion = document.getElementById('course-ai-question');
+  const courseAiState = document.getElementById('course-ai-state');
+  const courseAiError = document.getElementById('course-ai-error');
+  const renderCourseAi = (snapshot) => {
+    const latest = snapshot.proposals.at(-1);
+    if (!latest) {
+      courseAiState.textContent = 'Course AI 尚未运行。';
+      return;
+    }
+    courseAiState.textContent =
+      latest.status === 'COMPLETED'
+        ? `${latest.answer} 来源：${latest.sourceCategories.join('、')}`
+        : latest.status === 'WAITING_APPROVAL'
+          ? '等待审批后调用模型。'
+          : latest.status === 'FAILED'
+            ? `Course AI 失败：${latest.error}`
+            : 'Course AI 正在运行…';
+  };
   const renderRecognition = (snapshot) => {
     const pending = snapshot.proposals.filter(
       (proposal) => proposal.status === 'PENDING_CONFIRMATION',
@@ -97,6 +116,7 @@
       renderDashboard(await window.uniforge.dashboard.getSnapshot());
       renderCourse(await window.uniforge.course.getSnapshot());
       renderRecognition(await window.uniforge.course.recognition.getSnapshot());
+      renderCourseAi(await window.uniforge.course.ai.getSnapshot());
       courseForm.addEventListener('submit', async (event) => {
         event.preventDefault();
         courseError.textContent = '';
@@ -120,6 +140,21 @@
         } catch (error) {
           courseMaterialError.textContent =
             error?.message === 'CANCELLED' ? '' : '课程资料导入失败，请检查应用诊断。';
+        }
+      });
+      courseAiForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        courseAiError.textContent = '';
+        courseAiState.textContent = 'Course AI 正在运行…';
+        try {
+          renderCourseAi(
+            await window.uniforge.course.ai.ask({
+              proposalId: `course-ai-${Date.now()}`,
+              question: courseAiQuestion.value,
+            }),
+          );
+        } catch {
+          courseAiError.textContent = 'Course AI 请求失败，请检查应用诊断。';
         }
       });
     } catch {

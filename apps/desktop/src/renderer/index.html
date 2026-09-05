@@ -56,6 +56,20 @@
           <p id="course-recognition-state">
             尚未产生识别提案。导入资料后，识别结果将在用户确认前显示证据。
           </p>
+          <div id="course-ai" aria-labelledby="course-ai-title">
+            <h3 id="course-ai-title">Course AI</h3>
+            <form id="course-ai-form">
+              <input
+                id="course-ai-question"
+                required
+                placeholder="向课程 AI 提问"
+                aria-label="向课程 AI 提问"
+              />
+              <button type="submit">提问</button>
+            </form>
+            <p id="course-ai-state">Course AI 尚未运行。</p>
+            <p id="course-ai-error" role="alert"></p>
+          </div>
         </section>
       </main>
     </div>

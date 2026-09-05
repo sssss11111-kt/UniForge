@@ -6,7 +6,11 @@ import type {
   CourseSnapshotDto,
   CreateCourseInput,
 } from '../course/index.js';
-import type { CourseRecognitionSnapshotDto } from '../course/index.js';
+import type {
+  CourseRecognitionSnapshotDto,
+  CourseAiSnapshotDto,
+  AskCourseAiInput,
+} from '../course/index.js';
 export interface UniforgeApi {
   readonly health: () => Promise<HealthDto>;
   readonly appShell: () => Promise<AppShellResponseDto>;
@@ -24,6 +28,10 @@ export interface UniforgeApi {
     readonly recognition: {
       readonly getSnapshot: () => Promise<CourseRecognitionSnapshotDto>;
       readonly confirm: (proposalId: string) => Promise<CourseRecognitionSnapshotDto>;
+    };
+    readonly ai: {
+      readonly getSnapshot: () => Promise<CourseAiSnapshotDto>;
+      readonly ask: (input: Omit<AskCourseAiInput, 'context'>) => Promise<CourseAiSnapshotDto>;
     };
   };
 }

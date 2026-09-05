@@ -8,6 +8,8 @@ import { createDefaultDashboardService } from '@uniforge/core/application/dashbo
 import { CourseService } from '@uniforge/core/application/course-service.js';
 import { CourseMaterialService } from '@uniforge/core/application/course-material-service.js';
 import { CourseRecognitionService } from '@uniforge/core/application/course-recognition-service.js';
+import { CourseAiService } from '@uniforge/core/application/course-ai-service.js';
+import type { ModelGateway } from '@uniforge/contracts';
 import { createCourseMaterialCopy } from '@uniforge/infrastructure';
 export const registerIpcHandlers = (
   version: string,
@@ -18,6 +20,11 @@ export const registerIpcHandlers = (
     createCourseMaterialCopy(path.join(app.getPath('userData'), 'workspace')),
   ),
   recognition = new CourseRecognitionService((proposal) => course.applyRecognition(proposal)),
+  courseAi = new CourseAiService(
+    unavailableModel(),
+    { collect: async () => [] },
+    { request: async () => ({ status: 'PENDING' as const, approvalId: 'approval-course-ai' }) },
+  ),
 ): void => {
   ipcMain.handle(IPC_CHANNELS.health, (event: IpcMainInvokeEvent, payload: unknown): HealthDto => {
     if (!event.sender || event.sender.isDestroyed()) throw new Error('INVALID_SENDER');
@@ -115,4 +122,55 @@ export const registerIpcHandlers = (
     });
     return recognition.getSnapshot(snapshot.course.id);
   });
+  ipcMain.handle(IPC_CHANNELS.courseAiSnapshot, async (event, payload: unknown) => {
+    if (!event.sender || event.sender.isDestroyed()) throw new Error('INVALID_SENDER');
+    if (payload !== undefined) throw new Error('INVALID_PAYLOAD');
+    const snapshot = await course.getSnapshot();
+    return courseAi.getSnapshot(snapshot.course.id);
+  });
+  ipcMain.handle(IPC_CHANNELS.courseAiAsk, async (event, payload: unknown) => {
+    if (!event.sender || event.sender.isDestroyed()) throw new Error('INVALID_SENDER');
+    if (!payload || typeof payload !== 'object') throw new Error('INVALID_PAYLOAD');
+    const input = payload as Record<string, unknown>;
+    if (typeof input.proposalId !== 'string' || typeof input.question !== 'string')
+      throw new Error('INVALID_PAYLOAD');
+    const snapshot = await course.getSnapshot();
+    await courseAi.ask({
+      proposalId: input.proposalId as never,
+      courseId: snapshot.course.id,
+      question: input.question,
+      context: { actor: 'user', permissions: ['course:read', 'model:use'] },
+    });
+    return courseAi.getSnapshot(snapshot.course.id);
+  });
 };
+
+function unavailableModel(): ModelGateway {
+  const failed = async () => ({
+    ok: false as const,
+    error: {
+      code: 'UNAVAILABLE' as const,
+      message: 'No model provider is configured',
+      correlationId: 'course-ai',
+    },
+  });
+  return {
+    generate: failed,
+    stream: async function* () {
+      yield { type: 'error', error: { message: 'No model provider is configured' } } as const;
+    },
+    embed: failed,
+    probeCapabilities: async () => ({
+      ok: false as const,
+      error: {
+        code: 'UNAVAILABLE' as const,
+        message: 'No model provider is configured',
+        correlationId: 'course-ai',
+      },
+    }),
+    estimateUsage: () => ({
+      ok: true as const,
+      value: { inputTokens: null, maxOutputTokens: 1200, estimatedCost: null },
+    }),
+  } as ModelGateway;
+}

@@ -1,6 +1,10 @@
 import type { AppShellDto } from '../app-shell/navigation.js';
 import type { DashboardSnapshotDto } from '../dashboard/index.js';
-import type { CourseMaterialSnapshotDto, CourseSnapshotDto } from '../course/index.js';
+import type {
+  CourseAiSnapshotDto,
+  CourseMaterialSnapshotDto,
+  CourseSnapshotDto,
+} from '../course/index.js';
 
 export const IPC_CHANNELS = Object.freeze({
   health: 'uniforge:health',
@@ -13,6 +17,8 @@ export const IPC_CHANNELS = Object.freeze({
   courseMaterialImport: 'uniforge:course-material-import',
   courseRecognitionSnapshot: 'uniforge:course-recognition-snapshot',
   courseRecognitionConfirm: 'uniforge:course-recognition-confirm',
+  courseAiSnapshot: 'uniforge:course-ai-snapshot',
+  courseAiAsk: 'uniforge:course-ai-ask',
 } as const);
 export type IpcChannel = (typeof IPC_CHANNELS)[keyof typeof IPC_CHANNELS];
 export interface HealthDto {
@@ -24,3 +30,4 @@ export type AppShellResponseDto = AppShellDto;
 export type DashboardResponseDto = DashboardSnapshotDto;
 export type CourseResponseDto = CourseSnapshotDto;
 export type CourseMaterialResponseDto = CourseMaterialSnapshotDto;
+export type CourseAiResponseDto = CourseAiSnapshotDto;
