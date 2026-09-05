@@ -1,1 +1,8 @@
 export type Brand<T, B extends string> = T & { readonly __brand: B };
+export type CoreBoundary = 'domain' | 'application';
+export * from './domain/primitives.js';
+export * from './domain/entities.js';
+export * from './domain/commands.js';
+export * from './domain/events.js';
+export * from './domain/permission.js';
+export * from './domain/memory.js';
