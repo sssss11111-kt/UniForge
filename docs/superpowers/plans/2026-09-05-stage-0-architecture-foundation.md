@@ -1,6 +1,6 @@
 # Stage 0 — Architecture Foundation Implementation Plan
 
-> **For agentic workers:** 执行时使用 superpowers:executing-plans 按任务推进；只有获得明确委派授权时才使用 superpowers:subagent-driven-development。使用 checkbox 追踪，编码前建立独立 branch/worktree。当前只准备计划，禁止执行实现步骤。
+> **For agentic workers:** 执行时使用 superpowers:executing-plans 按任务推进；只有获得明确委派授权时才使用 superpowers:subagent-driven-development。使用 checkbox 追踪，编码前建立独立 branch/worktree。Stage 0 已获执行授权，按任务测试、审查、提交；不得跳至后续阶段。
 
 **Goal:** 在 Windows 上证明自主领域内核、权限、存储、网关和可替换运行时能安全工作，提供真实 PoC 与恢复证据，不实现产品业务。
 
@@ -12,7 +12,7 @@
 
 **Master:** `docs/superpowers/plans/2026-09-05-uniforge-v2.1-complete-development-plan-with-ui.md` §10.2～10.19。
 
-**Status:** 2026-09-05 待用户审阅；没有编码授权、测试通过证据或架构批准。冲突见 `docs/architecture/2026-09-05-source-review.md` C1～C8/G1～G5。本文所有新增 Schema、签名和默认策略都是待批准的 Stage 0 技术提案，不能覆盖上位规格。
+**Status:** 2026-09-05 用户已授权 Stage 0 开发并同意审阅报告建议；Git identity 已提供。实现、测试与阶段验收仍必须逐项提供证据。冲突见 `docs/architecture/2026-09-05-source-review.md` C1～C8/G1～G5。本文 Schema、签名和默认策略作为获准执行的 Stage 0 技术基线，不能覆盖上位规格；实际验证结果、版本差异与必要调整记录 ADR。
 
 ## Global Constraints
 
@@ -25,7 +25,7 @@
 - Windows 优先；原规格未给版本下限/性能数值，本计划不冒充已有 SLA。
 - 严格 Stage 0 → Stage 0.5 → Stage 1 → Stage 2 → Stage 3 → Stage 4 → Stage 5。
 - 无 07 开发区、无 Stage 6、无应用内自我开发；保护源码、安装目录、更新器、Migration 实现、权限内核、构建签名逻辑。
-- 当前不写业务代码、不安装未经确认的生产依赖；执行必须等“确认，开始开发 Stage 0”。
+- 用户已明确“确认，开始开发 Stage 0”；可实现本阶段基础代码。计划内依赖先核验登记，不安装未核验或超出计划的生产依赖。
 - 不生成未来业务页面；Stage 0 只允许无产品设计含义的技术验证窗口和合成 fixture。
 - Core/Domain 不导入 Electron、SQL binding、Provider SDK、LangGraph 或 MCP 类型。
 - Secret 仅进 OS 安全凭据系统；日志、fixture、普通备份、Git 不保存密钥/Cookie/登录/Git 凭据。
@@ -664,3 +664,8 @@ expect(recordsAfterRestart).toEqual(recordsBeforeShutdown);
 下一步是用户审阅问题清单及本计划；只有明确“确认，开始开发 Stage 0”后才进入已批准范围的实现。确认开始不意味着自动通过Stage0、自动进入0.5或Stage1。
 
 
+
+
+## K. 2026-09-05 执行授权记录
+
+用户确认开始 Stage 0、同意审阅报告修改建议，并授权 new/gpt-5.6-terra 子代理。旧文中的‘当前未运行/待确认’描述为计划编写时状态，后续实际状态以 docs/test-evidence/stage-0 和 Git checkpoint 为准；不得把授权误标为验收完成。工作区 C:/Users/Tong/Documents/ChatGPT/uniforge-stage-0，分支 codex/stage-0-foundation。

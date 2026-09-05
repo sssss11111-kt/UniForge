@@ -111,7 +111,7 @@ Follow these ownership rules:
 - Personal long-term memory → Personal Core.
 - Agent run history → UniForge Agent Event Store.
 - API keys and secrets → operating-system secure credential storage.
-- Search indexes, vector indexes, caches, projections, and runtime checkpoints → rebuildable derived state.
+- Search indexes, vector indexes, caches, and projections → rebuildable derived state. Runtime checkpoints are non-domain execution state but may contain non-reconstructible cursors; do not purge them as ordinary cache. Missing or incompatible checkpoints must fail safely.
 
 Do not create multiple independent canonical copies of the same content.
 

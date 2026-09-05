@@ -115,7 +115,7 @@ LangGraph、MCP、OCR、语音、文档解析和其他第三方项目只作为�
 
 # 一级模块
 
-UniForge 当前规划六个一级工作区：
+UniForge 当前规划总览 + 六个工作模块，共七个一级入口：
 
 ```text
 00 总览
@@ -886,7 +886,7 @@ Outcome
 | Personal Memory | Personal Core |
 | API Key | OS Secure Credential Store |
 
-搜索索引、Vector Index、Cache、Projection 和 Runtime Checkpoint 都属于：
+搜索索引、Vector Index、Cache 和 Projection 都属于：
 
 > 可重建派生状态。
 
@@ -1625,3 +1625,6 @@ UniForge 最重要的一句话：
 以及：
 
 > **第三方框架可以替换，UniForge 的业务数据、产品能力和用户工作成果必须继续存在。**
+
+
+Runtime Checkpoint 非业务真源，但不能当普通缓存清理；缺失或版本不兼容须安全暂停。2026-09-05 审阅修订与 Stage 0 开发已获用户确认，尚未完成 Stage 0 验收。

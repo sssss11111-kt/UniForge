@@ -1,6 +1,6 @@
 # UniForge 产品与架构设计规格 V2.1
 
-- 文档状态：架构重构版完整方案草案
+- 文档状态：V2.1 基线；2026-09-05 用户批准审阅报告修订，Stage 0 开发已授权，后续阶段仍须验收
 - 初始设计日期：2026-08-30
 - 本次重构日期：2026-09-05
 - 项目目录：`uniforge`
@@ -362,7 +362,7 @@ AI 建议
 
 UniForge 不在产品内部提供修改 UniForge 本体源码、数据库迁移代码、权限内核、更新机制或安装包构建逻辑的“自我开发”能力。
 
-应用内 Agent 的最高开发权限仅作用于用户明确授权的课程代码或项目工作区。
+持久源码修改、Git、IDE 和软件开发仅作用于 `04 项目实践 → 软件项目` 中明确授权的工作副本。课程只允许授权后的临时沙箱编译、运行、测试及输出；不得扩展为持久源码开发入口。
 
 明确禁止：
 
@@ -602,7 +602,7 @@ LangGraph.js 作为首选复杂 Agent Runtime 候选。
 
 采用级别：
 
-> A/B：Agent Runtime Adapter。
+> B：可替换 Agent Runtime Adapter。SDK 包在第三方登记中单列版本/许可证，不能因此提升为 Domain Core 依赖。
 
 但必须保证：
 
@@ -806,7 +806,7 @@ Personal Core 不进入：
 
 # 9. 02 课内学习
 
-保留原有完整功能。
+本章列出的功能为当前范围；未列细节由 Stage 1 规格确认，不依赖未提供的旧方案。
 
 ## 9.1 二级入口
 
@@ -1254,7 +1254,7 @@ Memory        Relations
 
 # 13. 06 AI 新闻
 
-保持原设计。
+本章为 AI 新闻当前设计范围；未列细节由 Stage 4 规格确认。
 
 ## 13.1 二级入口
 
@@ -1754,7 +1754,7 @@ Forget 需要同时处理：
 - 删除；
 - 外发信息；
 - 修改用户项目源码（仅当前项目明确授权范围）；
-- 修改数据库；
+- 正常 typed Domain Command 之外的破坏性数据库维护；Agent 仍不得直写领域表，可信维护流程不作为 Agent 工具；
 - Git push；
 - 发送邮件；
 - 花费明显增加；
@@ -1774,7 +1774,7 @@ Forget 需要同时处理：
 
 # 23. 语音
 
-保持原方案：
+本章明确的语音范围如下，未列细节由所属阶段规格确认：
 
 - 全局语音；
 - 输入框语音；
@@ -1792,7 +1792,7 @@ Forget 需要同时处理：
 
 # 24. 分阶段交付 V2.1
 
-整体路线调整为阶段 0～5；取消原阶段 6 Developer Runtime。应用内不再承担 UniForge 自我开发。
+整体路线严格为 Stage 0 → Stage 0.5 → Stage 1 → Stage 2 → Stage 3 → Stage 4 → Stage 5；取消原阶段 6 Developer Runtime。应用内不再承担 UniForge 自我开发。
 
 ## 阶段 0：Architecture Foundation
 
@@ -1857,6 +1857,10 @@ LangGraph Adapter
 退出标准：
 
 > 不依赖任何一个 Agent Framework 才能运行基础 UniForge。
+
+## 阶段 0.5：UI / UX Design & Design System
+
+Stage 0 验收后才进入设计阶段。冻结 Design System V1、信息架构、页面/状态规范、交互与无障碍基线，并由用户批准核心可点击原型；此前不得进入 Stage 1。可设计未来模块，不提前实现其业务逻辑。
 
 ## 阶段 1：桌面基础 + 课内学习
 
@@ -2256,9 +2260,7 @@ Architecture Foundation
 15 Test Pipeline
 ```
 
-阶段 0 验收后，才能正式进入：
-
-> 阶段 1：桌面基础与课内学习闭环。
+阶段 0 验收后仅可申请进入 Stage 0.5；Design System V1 与核心原型获用户批准后，才能进入 Stage 1。
 
 ---
 
@@ -2285,3 +2287,15 @@ Architecture Foundation
 17. **应用内 Agent 不得修改 UniForge 本体源码、安装目录、更新器或核心迁移逻辑。**
 18. **软件项目开发能力只作用于用户明确授权的项目工作区。**
 19. **任何框架都可以被替换，而 UniForge 的数据和产品能力必须继续存在。**
+
+## 35. 2026-09-05 审阅决议：真源与安全实施约束
+
+用户已批准审阅报告 C1～C8、G1～G5 建议。业务风险按语义动作分级，不因正常 Command 底层写 SQL 自动升为 HIGH。所有受保护路径依旧硬拒绝。
+
+AgentEvent 是执行历史真源；agent_runs 为同事务维护、可重建快照。Personal Core 使用隔离私有存储，Stage 0 只验证合成数据的 PoC Schema，最终产品 Schema 仍在相应阶段冻结。
+
+Runtime checkpoint 不属于业务真源，但可能包含无法仅凭日志重建的执行游标，不能当普通 cache 清理；缺失/不兼容必须安全暂停或从已验证幂等边界重启。无法确认的外部副作用不得自动重试。
+
+普通备份采用字段/实体 allowlist，包含授权 Managed Copy 文件及哈希；排除密钥、Cookie、登录状态、Git 凭据、原始音频、原始聊天及 Personal Core。Personal Core 只允许显式私有备份；Forget 必须失效相关索引、缓存和私有备份数据，并用不含 Claim 正文的 tombstone 防止恢复旧备份使记忆复活。
+
+文件权限须绑定可信身份、操作、范围、工具版本、payload、有效期；执行前重验。cwd 不是沙箱，任意不可信 CLI/MCP/Sidecar 无有效 OS 隔离不得启动。Stage 0 仅固定受控 fixture 和已登记能力，不提供任意终端或解除本体保护的审批。
