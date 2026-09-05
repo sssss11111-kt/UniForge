@@ -1,6 +1,18 @@
 {
   "extends": "../../tsconfig.base.json",
-  "compilerOptions": { "composite": true, "declaration": true, "noEmit": false, "outDir": "dist" },
-  "include": ["index.ts", "sqlite/**/*.ts"],
-  "references": [{ "path": "../contracts" }, { "path": "../core" }]
+  "compilerOptions": {
+    "composite": true,
+    "declaration": true,
+    "noEmit": false,
+    "outDir": "dist"
+  },
+  "include": ["index.ts", "sqlite/**/*.ts", "files/**/*.ts"],
+  "references": [
+    {
+      "path": "../contracts"
+    },
+    {
+      "path": "../core"
+    }
+  ]
 }

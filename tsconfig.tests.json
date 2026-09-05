@@ -11,16 +11,33 @@
     "apps/desktop/tests/**/*.ts",
     "apps/desktop/forge.config.ts",
     "packages/**/*.test.ts",
-    "packages/infrastructure/sqlite/**/*.ts"
+    "packages/infrastructure/sqlite/**/*.ts",
+    "packages/infrastructure/files/**/*.ts"
   ],
   "references": [
-    { "path": "./packages/contracts" },
-    { "path": "./packages/core" },
-    { "path": "./packages/infrastructure" },
-    { "path": "./packages/platform-agent" },
-    { "path": "./packages/platform-knowledge" },
-    { "path": "./packages/platform-model" },
-    { "path": "./packages/platform-sidecar" },
-    { "path": "./packages/platform-tool" }
+    {
+      "path": "./packages/contracts"
+    },
+    {
+      "path": "./packages/core"
+    },
+    {
+      "path": "./packages/infrastructure"
+    },
+    {
+      "path": "./packages/platform-agent"
+    },
+    {
+      "path": "./packages/platform-knowledge"
+    },
+    {
+      "path": "./packages/platform-model"
+    },
+    {
+      "path": "./packages/platform-sidecar"
+    },
+    {
+      "path": "./packages/platform-tool"
+    }
   ]
 }
