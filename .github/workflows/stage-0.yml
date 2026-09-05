@@ -1,7 +1,7 @@
 name: stage-0
 on:
   push:
-    branches: [master, 'codex/**']
+    branches: [main, master, 'codex/**']
   pull_request:
 jobs:
   baseline:
