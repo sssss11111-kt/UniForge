@@ -16,6 +16,7 @@ import { ControlledCourseRunner } from '@uniforge/infrastructure';
 import { CourseExecutionService } from '@uniforge/core/application/course-execution-service.js';
 import { CourseNotesService } from '@uniforge/core/application/course-notes-service.js';
 import { CourseMasteryService } from '@uniforge/core/application/course-mastery-service.js';
+import { CourseExamReviewService } from '@uniforge/core/application/course-exam-review-service.js';
 import type { CourseExecutionRequest } from '@uniforge/contracts/course/execution.js';
 export const registerIpcHandlers = (
   version: string,
@@ -42,6 +43,9 @@ export const registerIpcHandlers = (
     request: async () => ({ status: 'PENDING' as const, approvalId: 'approval-course-note' }),
   }),
   mastery = new CourseMasteryService(),
+  reviewPlan = new CourseExamReviewService({
+    request: async () => ({ status: 'PENDING' as const, approvalId: 'approval-review-plan' }),
+  }),
 ): void => {
   ipcMain.handle(IPC_CHANNELS.health, (event: IpcMainInvokeEvent, payload: unknown): HealthDto => {
     if (!event.sender || event.sender.isDestroyed()) throw new Error('INVALID_SENDER');
@@ -369,6 +373,43 @@ export const registerIpcHandlers = (
       context: { actor: 'user', permissions: ['course:mastery:write'] },
     });
     return mastery.getSnapshot(snapshot.course.id);
+  });
+  ipcMain.handle(IPC_CHANNELS.courseReviewPlanSnapshot, async (event, payload: unknown) => {
+    if (!event.sender || event.sender.isDestroyed()) throw new Error('INVALID_SENDER');
+    if (payload !== undefined) throw new Error('INVALID_PAYLOAD');
+    const snapshot = await course.getSnapshot();
+    return reviewPlan.getSnapshot(snapshot.course.id);
+  });
+  ipcMain.handle(IPC_CHANNELS.courseReviewPlanCreate, async (event, payload: unknown) => {
+    if (!event.sender || event.sender.isDestroyed()) throw new Error('INVALID_SENDER');
+    if (!payload || typeof payload !== 'object') throw new Error('INVALID_PAYLOAD');
+    const input = payload as Record<string, unknown>;
+    if (
+      typeof input.planId !== 'string' ||
+      typeof input.examId !== 'string' ||
+      typeof input.examDate !== 'string' ||
+      !Array.isArray(input.scope) ||
+      !Array.isArray(input.mastery) ||
+      typeof input.availableMinutesPerDay !== 'number' ||
+      typeof input.goal !== 'string' ||
+      !input.provenance ||
+      typeof input.provenance !== 'object'
+    )
+      throw new Error('INVALID_PAYLOAD');
+    const snapshot = await course.getSnapshot();
+    await reviewPlan.createPlan({
+      planId: input.planId as never,
+      examId: input.examId as never,
+      courseId: snapshot.course.id,
+      examDate: input.examDate as never,
+      scope: input.scope as string[],
+      mastery: input.mastery as never,
+      availableMinutesPerDay: input.availableMinutesPerDay,
+      goal: input.goal,
+      provenance: input.provenance as never,
+      context: { actor: 'user', permissions: ['course:review-plan:write'] },
+    });
+    return reviewPlan.getSnapshot(snapshot.course.id);
   });
 };
 

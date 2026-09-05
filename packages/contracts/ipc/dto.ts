@@ -32,6 +32,8 @@ export const IPC_CHANNELS = Object.freeze({
   courseMasteryEvidenceRecord: 'uniforge:course-mastery-evidence-record',
   courseWrongProblemRecord: 'uniforge:course-wrong-problem-record',
   courseWrongProblemCorrect: 'uniforge:course-wrong-problem-correct',
+  courseReviewPlanSnapshot: 'uniforge:course-review-plan-snapshot',
+  courseReviewPlanCreate: 'uniforge:course-review-plan-create',
 } as const);
 export type IpcChannel = (typeof IPC_CHANNELS)[keyof typeof IPC_CHANNELS];
 export interface HealthDto {
@@ -47,3 +49,4 @@ export type CourseAiResponseDto = CourseAiSnapshotDto;
 export type AssignmentResponseDto = AssignmentSnapshotDto;
 export type CourseNotesResponseDto = import('../course/notes.js').CourseNotesSnapshotDto;
 export type CourseMasteryResponseDto = import('../course/mastery.js').MasterySnapshotDto;
+export type CourseExamReviewResponseDto = import('../course/exam-review.js').ReviewPlanSnapshotDto;

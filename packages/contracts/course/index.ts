@@ -5,6 +5,7 @@ export * from './assignment.js';
 export * from './execution.js';
 export * from './notes.js';
 export * from './mastery.js';
+export * from './exam-review.js';
 
 export type CourseType =
   | 'THEORY_COMPUTATION'
@@ -87,3 +88,4 @@ export interface CreateCourseInput {
   readonly termName: string;
   readonly context: { readonly actor: 'user' | 'agent'; readonly permissions: readonly string[] };
 }
+export * from './exam-review.js';

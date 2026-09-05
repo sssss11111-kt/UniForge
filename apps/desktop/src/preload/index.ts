@@ -29,6 +29,8 @@ const courseMasterySnapshotChannel = 'uniforge:course-mastery-snapshot';
 const courseMasteryEvidenceRecordChannel = 'uniforge:course-mastery-evidence-record';
 const courseWrongProblemRecordChannel = 'uniforge:course-wrong-problem-record';
 const courseWrongProblemCorrectChannel = 'uniforge:course-wrong-problem-correct';
+const courseReviewPlanSnapshotChannel = 'uniforge:course-review-plan-snapshot';
+const courseReviewPlanCreateChannel = 'uniforge:course-review-plan-create';
 
 const testPreferences =
   process.env.UF_TEST_MODE === '1'
@@ -100,6 +102,10 @@ contextBridge.exposeInMainWorld(
             courseWrongProblemCorrectChannel,
             input,
           ) as Promise<MasterySnapshotDto>,
+      }),
+      reviewPlan: Object.freeze({
+        getSnapshot: () => ipcRenderer.invoke(courseReviewPlanSnapshotChannel),
+        create: (input: unknown) => ipcRenderer.invoke(courseReviewPlanCreateChannel, input),
       }),
     }),
     ...(testPreferences ? { testPreferences } : {}),

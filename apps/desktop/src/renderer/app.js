@@ -28,6 +28,19 @@
   const courseNotesState = document.getElementById('course-notes-state');
   const courseNotesError = document.getElementById('course-notes-error');
   const courseMasteryState = document.getElementById('course-mastery-state');
+  const courseReviewPlanState = document.getElementById('course-review-plan-state');
+  const renderReviewPlan = (snapshot) => {
+    if (snapshot.state === 'EMPTY') {
+      courseReviewPlanState.textContent = '尚未创建考试或复习计划。';
+    } else if (snapshot.state === 'WAITING_APPROVAL') {
+      courseReviewPlanState.textContent = '复习计划已生成提案，等待审批；尚未安排复习时段。';
+    } else if (snapshot.state === 'FAILED') {
+      courseReviewPlanState.textContent = `复习计划失败：${snapshot.error ?? 'UNKNOWN'}`;
+    } else {
+      const latest = snapshot.plans.at(-1);
+      courseReviewPlanState.textContent = `复习计划已准备：${latest?.sessions.length ?? 0} 个复习时段，依据掌握度与考试范围。`;
+    }
+  };
   const renderMastery = (snapshot) => {
     if (snapshot.state === 'EMPTY') {
       courseMasteryState.textContent = '掌握度与错题尚无记录。';
@@ -179,6 +192,7 @@
       renderExecution(await window.uniforge.course.execution.getSnapshot());
       renderNotes(await window.uniforge.course.notes.getSnapshot());
       renderMastery(await window.uniforge.course.mastery.getSnapshot());
+      renderReviewPlan(await window.uniforge.course.reviewPlan.getSnapshot());
       executionForm.addEventListener('submit', async (event) => {
         event.preventDefault();
         executionState.textContent = '代码执行等待审批或正在运行…';

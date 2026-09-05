@@ -25,6 +25,7 @@ import type {
   RecordWrongProblemInput,
   CorrectWrongProblemInput,
 } from '../course/mastery.js';
+import type { ReviewPlanSnapshotDto, CreateReviewPlanInput } from '../course/exam-review.js';
 export interface UniforgeApi {
   readonly health: () => Promise<HealthDto>;
   readonly appShell: () => Promise<AppShellResponseDto>;
@@ -82,6 +83,12 @@ export interface UniforgeApi {
       readonly correctWrongProblem: (
         input: Omit<CorrectWrongProblemInput, 'courseId' | 'context'>,
       ) => Promise<MasterySnapshotDto>;
+    };
+    readonly reviewPlan: {
+      readonly getSnapshot: () => Promise<ReviewPlanSnapshotDto>;
+      readonly create: (
+        input: Omit<CreateReviewPlanInput, 'courseId' | 'context'>,
+      ) => Promise<ReviewPlanSnapshotDto>;
     };
   };
 }
