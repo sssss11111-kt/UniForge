@@ -7,6 +7,7 @@ import { SettingsCenter } from '@uniforge/core/application/settings-center.js';
 import { createDefaultDashboardService } from '@uniforge/core/application/dashboard-service.js';
 import { CourseService } from '@uniforge/core/application/course-service.js';
 import { CourseMaterialService } from '@uniforge/core/application/course-material-service.js';
+import { CourseRecognitionService } from '@uniforge/core/application/course-recognition-service.js';
 import { createCourseMaterialCopy } from '@uniforge/infrastructure';
 export const registerIpcHandlers = (
   version: string,
@@ -16,6 +17,7 @@ export const registerIpcHandlers = (
   materials = new CourseMaterialService(
     createCourseMaterialCopy(path.join(app.getPath('userData'), 'workspace')),
   ),
+  recognition = new CourseRecognitionService((proposal) => course.applyRecognition(proposal)),
 ): void => {
   ipcMain.handle(IPC_CHANNELS.health, (event: IpcMainInvokeEvent, payload: unknown): HealthDto => {
     if (!event.sender || event.sender.isDestroyed()) throw new Error('INVALID_SENDER');
@@ -96,5 +98,21 @@ export const registerIpcHandlers = (
       sourcePath: selected.filePaths[0]!,
       context: { actor: 'user', permissions: ['course:write'] },
     });
+  });
+  ipcMain.handle(IPC_CHANNELS.courseRecognitionSnapshot, async (event, payload: unknown) => {
+    if (!event.sender || event.sender.isDestroyed()) throw new Error('INVALID_SENDER');
+    if (payload !== undefined) throw new Error('INVALID_PAYLOAD');
+    const snapshot = await course.getSnapshot();
+    return recognition.getSnapshot(snapshot.course.id);
+  });
+  ipcMain.handle(IPC_CHANNELS.courseRecognitionConfirm, async (event, payload: unknown) => {
+    if (!event.sender || event.sender.isDestroyed()) throw new Error('INVALID_SENDER');
+    if (typeof payload !== 'string' || !payload.trim()) throw new Error('INVALID_PAYLOAD');
+    const snapshot = await course.getSnapshot();
+    await recognition.confirm({
+      proposalId: payload as never,
+      context: { actor: 'user', permissions: ['course:write'] },
+    });
+    return recognition.getSnapshot(snapshot.course.id);
   });
 };

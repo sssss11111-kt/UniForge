@@ -3,6 +3,7 @@ import type {
   CourseSnapshotDto,
   CreateCourseInput,
 } from '@uniforge/contracts/course/index.js';
+import type { CourseRecognitionProposal } from '@uniforge/contracts/course/index.js';
 
 export type CourseResult =
   | { readonly ok: true; readonly value: CourseSnapshotDto }
@@ -30,6 +31,36 @@ export class CourseService {
 
   async getSnapshot(): Promise<CourseSnapshotDto> {
     return this.snapshot();
+  }
+
+  async applyRecognition(proposal: CourseRecognitionProposal): Promise<void> {
+    if (!this.course || this.course.id !== proposal.courseId) throw new Error('COURSE_REQUIRED');
+    const modules = [...this.course.modules];
+    const assessments = [...this.course.assessments];
+    proposal.candidates.forEach((candidate, index) => {
+      if (candidate.kind === 'CHAPTER') {
+        modules.push({
+          id: `module-${proposal.proposalId}-${index}` as never,
+          courseId: proposal.courseId,
+          title: candidate.title,
+          position: modules.length,
+        });
+      }
+      if (
+        candidate.kind === 'ASSIGNMENT' ||
+        candidate.kind === 'EXAM' ||
+        candidate.kind === 'DEADLINE'
+      ) {
+        assessments.push({
+          id: `assessment-${proposal.proposalId}-${index}` as never,
+          courseId: proposal.courseId,
+          title: candidate.title,
+          kind: candidate.kind === 'EXAM' ? 'EXAM' : 'ASSIGNMENT',
+          ...(candidate.dueAt ? { dueAt: candidate.dueAt } : {}),
+        });
+      }
+    });
+    this.course = { ...this.course, modules, assessments };
   }
 
   private snapshot(): CourseSnapshotDto {

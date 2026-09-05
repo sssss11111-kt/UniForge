@@ -1,4 +1,5 @@
 import type { Id, Instant } from '../domain/primitives.js';
+export * from './recognition.js';
 
 export type CourseType =
   | 'THEORY_COMPUTATION'

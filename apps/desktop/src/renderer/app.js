@@ -12,6 +12,15 @@
   const courseMaterialState = document.getElementById('course-material-state');
   const courseMaterialImport = document.getElementById('course-material-import');
   const courseMaterialError = document.getElementById('course-material-error');
+  const courseRecognitionState = document.getElementById('course-recognition-state');
+  const renderRecognition = (snapshot) => {
+    const pending = snapshot.proposals.filter(
+      (proposal) => proposal.status === 'PENDING_CONFIRMATION',
+    );
+    courseRecognitionState.textContent = pending.length
+      ? `有 ${pending.length} 个识别提案待确认（已保留来源与置信度）。`
+      : '尚未产生识别提案。导入资料后，识别结果将在用户确认前显示证据。';
+  };
   const renderMaterials = (snapshot) => {
     courseMaterialState.textContent = snapshot.materials.length
       ? `已导入 ${snapshot.materials.length} 份课程资料：${snapshot.materials.map((material) => material.originalFileName).join('、')}`
@@ -87,6 +96,7 @@
       settingsSummary.textContent = `${snapshot.workspace.name} · ${snapshot.workspace.status} · 模型 ${model?.model ?? '未配置'} · 外网 ${snapshot.permissions.externalNetwork}`;
       renderDashboard(await window.uniforge.dashboard.getSnapshot());
       renderCourse(await window.uniforge.course.getSnapshot());
+      renderRecognition(await window.uniforge.course.recognition.getSnapshot());
       courseForm.addEventListener('submit', async (event) => {
         event.preventDefault();
         courseError.textContent = '';
