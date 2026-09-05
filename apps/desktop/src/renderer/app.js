@@ -22,6 +22,8 @@
   const assignmentPrompt = document.getElementById('assignment-prompt');
   const assignmentState = document.getElementById('assignment-state');
   const assignmentError = document.getElementById('assignment-error');
+  const executionForm = document.getElementById('execution-form');
+  const executionState = document.getElementById('execution-state');
   const renderAssignments = (snapshot) => {
     const latest = snapshot.sessions.at(-1);
     if (!latest) {
@@ -138,6 +140,33 @@
       renderRecognition(await window.uniforge.course.recognition.getSnapshot());
       renderCourseAi(await window.uniforge.course.ai.getSnapshot());
       renderAssignments(await window.uniforge.course.assignments.getSnapshot());
+      const renderExecution = (snapshot) => {
+        const latest = snapshot.results.at(-1);
+        executionState.textContent = latest
+          ? `代码执行：${latest.status} · stdout: ${latest.stdout || '（空）'}${latest.stderr ? ` · stderr: ${latest.stderr}` : ''}`
+          : '代码执行尚未运行。';
+      };
+      renderExecution(await window.uniforge.course.execution.getSnapshot());
+      executionForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        executionState.textContent = '代码执行等待审批或正在运行…';
+        try {
+          renderExecution(
+            await window.uniforge.course.execution.start({
+              executionId: `execution-${Date.now()}`,
+              assignmentId: 'assessment-current',
+              workspaceRoot: document.getElementById('execution-workspace').value,
+              entrypoint: document.getElementById('execution-entrypoint').value,
+              operation: document.getElementById('execution-operation').value,
+              command: document.getElementById('execution-command').value.trim().split(/\s+/),
+              timeoutMs: 10000,
+              processLimit: 1,
+            }),
+          );
+        } catch {
+          executionState.textContent = '代码执行请求失败，请检查权限或应用诊断。';
+        }
+      });
       courseForm.addEventListener('submit', async (event) => {
         event.preventDefault();
         courseError.textContent = '';

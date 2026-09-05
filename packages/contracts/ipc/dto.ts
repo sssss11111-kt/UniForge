@@ -22,6 +22,8 @@ export const IPC_CHANNELS = Object.freeze({
   courseAiAsk: 'uniforge:course-ai-ask',
   assignmentSnapshot: 'uniforge:assignment-snapshot',
   assignmentStart: 'uniforge:assignment-start',
+  courseExecutionSnapshot: 'uniforge:course-execution-snapshot',
+  courseExecutionStart: 'uniforge:course-execution-start',
 } as const);
 export type IpcChannel = (typeof IPC_CHANNELS)[keyof typeof IPC_CHANNELS];
 export interface HealthDto {

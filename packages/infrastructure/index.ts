@@ -19,4 +19,5 @@ export {
   type ManagedBackupFile,
 } from './backup/service.js';
 export { ProcessSupervisor } from './processes/supervisor.js';
+export { ControlledCourseRunner } from './runner/course-runner.js';
 export { checkNativeSqliteBinding, type NativeSqliteCheck } from './sqlite/native-binding.js';

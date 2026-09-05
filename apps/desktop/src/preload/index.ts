@@ -17,6 +17,8 @@ const courseAiSnapshotChannel = 'uniforge:course-ai-snapshot';
 const courseAiAskChannel = 'uniforge:course-ai-ask';
 const assignmentSnapshotChannel = 'uniforge:assignment-snapshot';
 const assignmentStartChannel = 'uniforge:assignment-start';
+const courseExecutionSnapshotChannel = 'uniforge:course-execution-snapshot';
+const courseExecutionStartChannel = 'uniforge:course-execution-start';
 
 const testPreferences =
   process.env.UF_TEST_MODE === '1'
@@ -54,6 +56,10 @@ contextBridge.exposeInMainWorld(
       assignments: Object.freeze({
         getSnapshot: () => ipcRenderer.invoke(assignmentSnapshotChannel),
         start: (input: unknown) => ipcRenderer.invoke(assignmentStartChannel, input),
+      }),
+      execution: Object.freeze({
+        getSnapshot: () => ipcRenderer.invoke(courseExecutionSnapshotChannel),
+        start: (input: unknown) => ipcRenderer.invoke(courseExecutionStartChannel, input),
       }),
     }),
     ...(testPreferences ? { testPreferences } : {}),

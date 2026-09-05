@@ -84,6 +84,39 @@
             <p id="assignment-state">作业模式尚未启动。</p>
             <p id="assignment-error" role="alert"></p>
           </div>
+          <div id="course-execution" aria-labelledby="course-execution-title">
+            <h3 id="course-execution-title">课程代码执行</h3>
+            <form id="execution-form">
+              <input
+                id="execution-workspace"
+                required
+                placeholder="授权临时工作区"
+                aria-label="授权临时工作区"
+              />
+              <input
+                id="execution-entrypoint"
+                required
+                value="main.py"
+                placeholder="入口文件"
+                aria-label="入口文件"
+              />
+              <select id="execution-operation" aria-label="执行操作">
+                <option value="COMPILE">编译</option>
+                <option value="RUN">运行</option>
+                <option value="TEST">测试</option>
+                <option value="DEBUG">调试</option>
+              </select>
+              <input
+                id="execution-command"
+                required
+                value="python main.py"
+                placeholder="受控命令"
+                aria-label="受控命令"
+              />
+              <button type="submit">执行</button>
+            </form>
+            <p id="execution-state">代码执行尚未运行。</p>
+          </div>
         </section>
       </main>
     </div>

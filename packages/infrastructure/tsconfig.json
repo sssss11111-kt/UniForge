@@ -13,7 +13,8 @@
     "credentials/**/*.ts",
     "logging/**/*.ts",
     "backup/**/*.ts",
-    "processes/**/*.ts"
+    "processes/**/*.ts",
+    "runner/**/*.ts"
   ],
   "references": [
     {
