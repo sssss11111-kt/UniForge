@@ -3,6 +3,7 @@ export * from './recognition.js';
 export * from './ai.js';
 export * from './assignment.js';
 export * from './execution.js';
+export * from './notes.js';
 
 export type CourseType =
   | 'THEORY_COMPUTATION'

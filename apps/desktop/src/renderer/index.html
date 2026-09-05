@@ -117,6 +117,25 @@
             </form>
             <p id="execution-state">代码执行尚未运行。</p>
           </div>
+          <div id="course-notes" aria-labelledby="course-notes-title">
+            <h3 id="course-notes-title">课程笔记</h3>
+            <form id="course-note-form">
+              <input id="course-note-title" required placeholder="笔记标题" aria-label="笔记标题" />
+              <textarea
+                id="course-note-body"
+                required
+                placeholder="笔记内容"
+                aria-label="笔记内容"
+              ></textarea>
+              <select id="course-note-kind" aria-label="笔记类型">
+                <option value="PERSONAL_NOTE">Personal Note</option>
+                <option value="AI_DRAFT">AI Draft</option>
+              </select>
+              <button type="submit">保存笔记</button>
+            </form>
+            <p id="course-notes-state">课程笔记尚未创建。</p>
+            <p id="course-notes-error" role="alert"></p>
+          </div>
         </section>
       </main>
     </div>

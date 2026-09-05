@@ -24,6 +24,24 @@
   const assignmentError = document.getElementById('assignment-error');
   const executionForm = document.getElementById('execution-form');
   const executionState = document.getElementById('execution-state');
+  const courseNoteForm = document.getElementById('course-note-form');
+  const courseNotesState = document.getElementById('course-notes-state');
+  const courseNotesError = document.getElementById('course-notes-error');
+  const renderNotes = (snapshot) => {
+    const latest = snapshot.notes.at(-1);
+    if (!latest) {
+      courseNotesState.textContent = '课程笔记尚未创建。';
+      return;
+    }
+    courseNotesState.textContent =
+      latest.status === 'WAITING_APPROVAL'
+        ? 'AI Draft 等待审批，尚未成为正式课程笔记。'
+        : latest.status === 'FAILED'
+          ? `课程笔记失败：${latest.error}`
+          : latest.kind === 'OFFICIAL_COURSE_NOTE'
+            ? `Official Course Note 已发布，已展示 diff：${latest.diff ?? '（空）'}`
+            : `${latest.kind} 已保存，来源 ${latest.citations.length} 条。`;
+  };
   const renderAssignments = (snapshot) => {
     const latest = snapshot.sessions.at(-1);
     if (!latest) {
@@ -147,6 +165,7 @@
           : '代码执行尚未运行。';
       };
       renderExecution(await window.uniforge.course.execution.getSnapshot());
+      renderNotes(await window.uniforge.course.notes.getSnapshot());
       executionForm.addEventListener('submit', async (event) => {
         event.preventDefault();
         executionState.textContent = '代码执行等待审批或正在运行…';
@@ -220,6 +239,30 @@
           );
         } catch {
           assignmentError.textContent = '作业模式启动失败，请检查权限或应用诊断。';
+        }
+      });
+      courseNoteForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        courseNotesError.textContent = '';
+        try {
+          const payload = {
+            commandId: `course-note-${Date.now()}`,
+            contentEntityId: 'content-current',
+            title: document.getElementById('course-note-title').value,
+            body: document.getElementById('course-note-body').value,
+            citations: [],
+          };
+          const kind = document.getElementById('course-note-kind').value;
+          renderNotes(
+            kind === 'AI_DRAFT'
+              ? await window.uniforge.course.notes.createAiDraft(payload)
+              : await window.uniforge.course.notes.createPersonal(payload),
+          );
+        } catch (error) {
+          courseNotesError.textContent =
+            error?.message === 'PERMISSION_DENIED'
+              ? '没有课程笔记写入权限。'
+              : '课程笔记保存失败，请检查应用诊断。';
         }
       });
     } catch {

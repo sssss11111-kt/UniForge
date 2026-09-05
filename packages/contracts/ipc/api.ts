@@ -10,6 +10,11 @@ import type {
 } from '../course/index.js';
 import type { CourseExecutionRequest, CourseExecutionSnapshotDto } from '../course/execution.js';
 import type {
+  CourseNotesSnapshotDto,
+  CreateCourseNoteInput,
+  PublishCourseNoteInput,
+} from '../course/notes.js';
+import type {
   CourseRecognitionSnapshotDto,
   CourseAiSnapshotDto,
   AskCourseAiInput,
@@ -47,6 +52,18 @@ export interface UniforgeApi {
       readonly start: (
         input: Omit<CourseExecutionRequest, 'courseId' | 'context'>,
       ) => Promise<CourseExecutionSnapshotDto>;
+    };
+    readonly notes: {
+      readonly getSnapshot: () => Promise<CourseNotesSnapshotDto>;
+      readonly createPersonal: (
+        input: Omit<CreateCourseNoteInput, 'context'>,
+      ) => Promise<CourseNotesSnapshotDto>;
+      readonly createAiDraft: (
+        input: Omit<CreateCourseNoteInput, 'context'>,
+      ) => Promise<CourseNotesSnapshotDto>;
+      readonly publishDraft: (
+        input: Omit<PublishCourseNoteInput, 'context'>,
+      ) => Promise<CourseNotesSnapshotDto>;
     };
   };
 }

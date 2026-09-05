@@ -24,6 +24,10 @@ export const IPC_CHANNELS = Object.freeze({
   assignmentStart: 'uniforge:assignment-start',
   courseExecutionSnapshot: 'uniforge:course-execution-snapshot',
   courseExecutionStart: 'uniforge:course-execution-start',
+  courseNotesSnapshot: 'uniforge:course-notes-snapshot',
+  courseNotePersonalCreate: 'uniforge:course-note-personal-create',
+  courseNoteAiDraftCreate: 'uniforge:course-note-ai-draft-create',
+  courseNoteDraftPublish: 'uniforge:course-note-draft-publish',
 } as const);
 export type IpcChannel = (typeof IPC_CHANNELS)[keyof typeof IPC_CHANNELS];
 export interface HealthDto {
@@ -37,3 +41,4 @@ export type CourseResponseDto = CourseSnapshotDto;
 export type CourseMaterialResponseDto = CourseMaterialSnapshotDto;
 export type CourseAiResponseDto = CourseAiSnapshotDto;
 export type AssignmentResponseDto = AssignmentSnapshotDto;
+export type CourseNotesResponseDto = import('../course/notes.js').CourseNotesSnapshotDto;

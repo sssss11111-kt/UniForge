@@ -19,6 +19,10 @@ const assignmentSnapshotChannel = 'uniforge:assignment-snapshot';
 const assignmentStartChannel = 'uniforge:assignment-start';
 const courseExecutionSnapshotChannel = 'uniforge:course-execution-snapshot';
 const courseExecutionStartChannel = 'uniforge:course-execution-start';
+const courseNotesSnapshotChannel = 'uniforge:course-notes-snapshot';
+const courseNotePersonalCreateChannel = 'uniforge:course-note-personal-create';
+const courseNoteAiDraftCreateChannel = 'uniforge:course-note-ai-draft-create';
+const courseNoteDraftPublishChannel = 'uniforge:course-note-draft-publish';
 
 const testPreferences =
   process.env.UF_TEST_MODE === '1'
@@ -60,6 +64,14 @@ contextBridge.exposeInMainWorld(
       execution: Object.freeze({
         getSnapshot: () => ipcRenderer.invoke(courseExecutionSnapshotChannel),
         start: (input: unknown) => ipcRenderer.invoke(courseExecutionStartChannel, input),
+      }),
+      notes: Object.freeze({
+        getSnapshot: () => ipcRenderer.invoke(courseNotesSnapshotChannel),
+        createPersonal: (input: unknown) =>
+          ipcRenderer.invoke(courseNotePersonalCreateChannel, input),
+        createAiDraft: (input: unknown) =>
+          ipcRenderer.invoke(courseNoteAiDraftCreateChannel, input),
+        publishDraft: (input: unknown) => ipcRenderer.invoke(courseNoteDraftPublishChannel, input),
       }),
     }),
     ...(testPreferences ? { testPreferences } : {}),

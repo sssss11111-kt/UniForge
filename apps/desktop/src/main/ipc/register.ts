@@ -14,6 +14,7 @@ import type { ModelGateway } from '@uniforge/contracts';
 import { createCourseMaterialCopy } from '@uniforge/infrastructure';
 import { ControlledCourseRunner } from '@uniforge/infrastructure';
 import { CourseExecutionService } from '@uniforge/core/application/course-execution-service.js';
+import { CourseNotesService } from '@uniforge/core/application/course-notes-service.js';
 import type { CourseExecutionRequest } from '@uniforge/contracts/course/execution.js';
 export const registerIpcHandlers = (
   version: string,
@@ -35,6 +36,9 @@ export const registerIpcHandlers = (
   execution = new CourseExecutionService(new ControlledCourseRunner(), {
     check: () => 'REQUIRE_APPROVAL',
     verifyApproval: (input) => Boolean(input.context.approvalId),
+  }),
+  notes = new CourseNotesService({
+    request: async () => ({ status: 'PENDING' as const, approvalId: 'approval-course-note' }),
   }),
 ): void => {
   ipcMain.handle(IPC_CHANNELS.health, (event: IpcMainInvokeEvent, payload: unknown): HealthDto => {
@@ -221,6 +225,73 @@ export const registerIpcHandlers = (
       },
     });
     return execution.getSnapshot(snapshot.course.id);
+  });
+  ipcMain.handle(IPC_CHANNELS.courseNotesSnapshot, async (event, payload: unknown) => {
+    if (!event.sender || event.sender.isDestroyed()) throw new Error('INVALID_SENDER');
+    if (payload !== undefined) throw new Error('INVALID_PAYLOAD');
+    const snapshot = await course.getSnapshot();
+    return notes.getSnapshot(snapshot.course.id);
+  });
+  const noteInput = (payload: unknown): Record<string, unknown> => {
+    if (!payload || typeof payload !== 'object') throw new Error('INVALID_PAYLOAD');
+    const input = payload as Record<string, unknown>;
+    if (
+      typeof input.commandId !== 'string' ||
+      typeof input.contentEntityId !== 'string' ||
+      typeof input.title !== 'string' ||
+      typeof input.body !== 'string' ||
+      !Array.isArray(input.citations)
+    )
+      throw new Error('INVALID_PAYLOAD');
+    return input;
+  };
+  ipcMain.handle(IPC_CHANNELS.courseNotePersonalCreate, async (event, payload: unknown) => {
+    if (!event.sender || event.sender.isDestroyed()) throw new Error('INVALID_SENDER');
+    const input = noteInput(payload);
+    const snapshot = await course.getSnapshot();
+    await notes.createPersonalNote({
+      commandId: input.commandId as never,
+      courseId: snapshot.course.id,
+      contentEntityId: input.contentEntityId as never,
+      title: input.title as string,
+      body: input.body as string,
+      citations: input.citations as never,
+      context: { actor: 'user', permissions: ['course:notes:write'] },
+    });
+    return notes.getSnapshot(snapshot.course.id);
+  });
+  ipcMain.handle(IPC_CHANNELS.courseNoteAiDraftCreate, async (event, payload: unknown) => {
+    if (!event.sender || event.sender.isDestroyed()) throw new Error('INVALID_SENDER');
+    const input = noteInput(payload);
+    const snapshot = await course.getSnapshot();
+    await notes.createAiDraft({
+      commandId: input.commandId as never,
+      courseId: snapshot.course.id,
+      contentEntityId: input.contentEntityId as never,
+      title: input.title as string,
+      body: input.body as string,
+      citations: input.citations as never,
+      context: { actor: 'user', permissions: ['course:notes:write'] },
+    });
+    return notes.getSnapshot(snapshot.course.id);
+  });
+  ipcMain.handle(IPC_CHANNELS.courseNoteDraftPublish, async (event, payload: unknown) => {
+    if (!event.sender || event.sender.isDestroyed()) throw new Error('INVALID_SENDER');
+    if (
+      !payload ||
+      typeof payload !== 'object' ||
+      typeof (payload as { draftId?: unknown }).draftId !== 'string'
+    )
+      throw new Error('INVALID_PAYLOAD');
+    const snapshot = await course.getSnapshot();
+    await notes.publishDraft({
+      draftId: (payload as { draftId: string }).draftId as never,
+      ...(typeof (payload as { approvalId?: unknown }).approvalId === 'string'
+        ? { approvalId: (payload as { approvalId: string }).approvalId }
+        : {}),
+      context: { actor: 'user', permissions: ['course:notes:write'] },
+    });
+    return notes.getSnapshot(snapshot.course.id);
   });
 };
 
