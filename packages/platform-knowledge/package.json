@@ -1,1 +1,10 @@
-{"name":"@uniforge/platform-knowledge","version":"0.0.0","private":true,"type":"module","exports":"./index.ts","dependencies":{"@uniforge/contracts":"0.0.0"}}
+{
+  "name": "@uniforge/platform-knowledge",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": "./index.ts",
+  "dependencies": {
+    "@uniforge/contracts": "0.0.0"
+  }
+}

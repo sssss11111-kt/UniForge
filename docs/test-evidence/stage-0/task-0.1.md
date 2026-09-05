@@ -13,7 +13,7 @@
 | `npm run typecheck` | 0 | TypeScript strict project passed |
 | `npm run lint` | 0 | ESLint passed |
 | `npm run unit -- tests/engineering/baseline.test.ts tests/architecture/dependency-boundaries.test.ts` | 0 | 2 files / 2 tests passed; negative fixture detected forbidden import |
-| `npm run e2e-smoke -- apps/desktop/tests/launch.spec.ts` | blocked | Electron smoke requires a compiled desktop entry; no build script is included in Task 0.1 |
+| `npm run e2e-smoke -- apps/desktop/tests/launch.spec.ts` | blocked | Historical pre-fix attempt timed out before deterministic build; current post-fix run still times out after 30 seconds with no Electron stderr |
 
 Observed environment: Node `v24.18.0`, npm `11.16.0`. `npm run build:desktop` exits 0 and emits `apps/desktop/dist/main/index.js`, `preload/index.js`, and renderer HTML. The Electron smoke was started with `_electron.launch` and downloaded the Electron binary; the environment timed out before a completed test result, so it remains BLOCKED pending a fresh bounded run.
 

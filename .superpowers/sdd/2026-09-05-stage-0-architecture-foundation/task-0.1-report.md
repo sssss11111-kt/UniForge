@@ -1,6 +1,6 @@
 # Task 0.1 report
 
-- Follow-up commit: pending
+- Final follow-up commit: pending until this evidence cleanup commit is created
 - Scope: engineering baseline hardening only
 - `npm ci`: exit 0
 - `npm run typecheck`: exit 0
@@ -13,3 +13,4 @@
 - `npm run format:check`: exit 0 after formatting owned Task 0.1 paths
 - Electron smoke: exit 1 after 30-second timeout; compiled outputs exist but Electron emitted no stderr
 - `npm audit --omit=optional --json`: 24 advisories (3 low, 20 high, 1 critical), residual risk documented in task evidence
+- Full audit JSON was captured from the command output during review; no separate generated artifact is committed because it contains volatile registry metadata. Triage and disposition are summarized in `docs/test-evidence/stage-0/task-0.1.md`.
