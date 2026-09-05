@@ -8,3 +8,4 @@ export {
   type CredentialStore,
 } from './credentials/windows-credential-store.js';
 export { redactSecrets } from './logging/redact.js';
+export { ProcessSupervisor } from './processes/supervisor.js';

@@ -11,7 +11,8 @@
     "sqlite/**/*.ts",
     "files/**/*.ts",
     "credentials/**/*.ts",
-    "logging/**/*.ts"
+    "logging/**/*.ts",
+    "processes/**/*.ts"
   ],
   "references": [
     {
