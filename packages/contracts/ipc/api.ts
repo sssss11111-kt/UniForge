@@ -5,6 +5,8 @@ import type {
   CourseMaterialSnapshotDto,
   CourseSnapshotDto,
   CreateCourseInput,
+  AssignmentSnapshotDto,
+  StartAssignmentInput,
 } from '../course/index.js';
 import type {
   CourseRecognitionSnapshotDto,
@@ -32,6 +34,12 @@ export interface UniforgeApi {
     readonly ai: {
       readonly getSnapshot: () => Promise<CourseAiSnapshotDto>;
       readonly ask: (input: Omit<AskCourseAiInput, 'context'>) => Promise<CourseAiSnapshotDto>;
+    };
+    readonly assignments: {
+      readonly getSnapshot: () => Promise<AssignmentSnapshotDto>;
+      readonly start: (
+        input: Omit<StartAssignmentInput, 'context'>,
+      ) => Promise<AssignmentSnapshotDto>;
     };
   };
 }

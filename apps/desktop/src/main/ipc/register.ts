@@ -9,6 +9,7 @@ import { CourseService } from '@uniforge/core/application/course-service.js';
 import { CourseMaterialService } from '@uniforge/core/application/course-material-service.js';
 import { CourseRecognitionService } from '@uniforge/core/application/course-recognition-service.js';
 import { CourseAiService } from '@uniforge/core/application/course-ai-service.js';
+import { AssignmentService } from '@uniforge/core/application/assignment-service.js';
 import type { ModelGateway } from '@uniforge/contracts';
 import { createCourseMaterialCopy } from '@uniforge/infrastructure';
 export const registerIpcHandlers = (
@@ -25,6 +26,9 @@ export const registerIpcHandlers = (
     { collect: async () => [] },
     { request: async () => ({ status: 'PENDING' as const, approvalId: 'approval-course-ai' }) },
   ),
+  assignments = new AssignmentService({
+    request: async () => ({ status: 'PENDING' as const, approvalId: 'approval-assignment' }),
+  }),
 ): void => {
   ipcMain.handle(IPC_CHANNELS.health, (event: IpcMainInvokeEvent, payload: unknown): HealthDto => {
     if (!event.sender || event.sender.isDestroyed()) throw new Error('INVALID_SENDER');
@@ -142,6 +146,34 @@ export const registerIpcHandlers = (
       context: { actor: 'user', permissions: ['course:read', 'model:use'] },
     });
     return courseAi.getSnapshot(snapshot.course.id);
+  });
+  ipcMain.handle(IPC_CHANNELS.assignmentSnapshot, async (event, payload: unknown) => {
+    if (!event.sender || event.sender.isDestroyed()) throw new Error('INVALID_SENDER');
+    if (payload !== undefined) throw new Error('INVALID_PAYLOAD');
+    const snapshot = await course.getSnapshot();
+    return assignments.getSnapshot(snapshot.course.id);
+  });
+  ipcMain.handle(IPC_CHANNELS.assignmentStart, async (event, payload: unknown) => {
+    if (!event.sender || event.sender.isDestroyed()) throw new Error('INVALID_SENDER');
+    if (!payload || typeof payload !== 'object') throw new Error('INVALID_PAYLOAD');
+    const input = payload as Record<string, unknown>;
+    if (
+      typeof input.assignmentId !== 'string' ||
+      typeof input.mode !== 'string' ||
+      typeof input.prompt !== 'string'
+    )
+      throw new Error('INVALID_PAYLOAD');
+    const snapshot = await course.getSnapshot();
+    await assignments.start({
+      assignmentId: input.assignmentId as never,
+      courseId: snapshot.course.id,
+      mode: input.mode as never,
+      prompt: input.prompt,
+      ...(typeof input.sessionId === 'string' ? { sessionId: input.sessionId as never } : {}),
+      ...(typeof input.approvalId === 'string' ? { approvalId: input.approvalId } : {}),
+      context: { actor: 'user', permissions: ['course:read', 'assignment:execute'] },
+    });
+    return assignments.getSnapshot(snapshot.course.id);
   });
 };
 

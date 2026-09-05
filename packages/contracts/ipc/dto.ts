@@ -4,6 +4,7 @@ import type {
   CourseAiSnapshotDto,
   CourseMaterialSnapshotDto,
   CourseSnapshotDto,
+  AssignmentSnapshotDto,
 } from '../course/index.js';
 
 export const IPC_CHANNELS = Object.freeze({
@@ -19,6 +20,8 @@ export const IPC_CHANNELS = Object.freeze({
   courseRecognitionConfirm: 'uniforge:course-recognition-confirm',
   courseAiSnapshot: 'uniforge:course-ai-snapshot',
   courseAiAsk: 'uniforge:course-ai-ask',
+  assignmentSnapshot: 'uniforge:assignment-snapshot',
+  assignmentStart: 'uniforge:assignment-start',
 } as const);
 export type IpcChannel = (typeof IPC_CHANNELS)[keyof typeof IPC_CHANNELS];
 export interface HealthDto {
@@ -31,3 +34,4 @@ export type DashboardResponseDto = DashboardSnapshotDto;
 export type CourseResponseDto = CourseSnapshotDto;
 export type CourseMaterialResponseDto = CourseMaterialSnapshotDto;
 export type CourseAiResponseDto = CourseAiSnapshotDto;
+export type AssignmentResponseDto = AssignmentSnapshotDto;

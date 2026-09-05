@@ -17,6 +17,26 @@
   const courseAiQuestion = document.getElementById('course-ai-question');
   const courseAiState = document.getElementById('course-ai-state');
   const courseAiError = document.getElementById('course-ai-error');
+  const assignmentForm = document.getElementById('assignment-form');
+  const assignmentMode = document.getElementById('assignment-mode');
+  const assignmentPrompt = document.getElementById('assignment-prompt');
+  const assignmentState = document.getElementById('assignment-state');
+  const assignmentError = document.getElementById('assignment-error');
+  const renderAssignments = (snapshot) => {
+    const latest = snapshot.sessions.at(-1);
+    if (!latest) {
+      assignmentState.textContent = '作业模式尚未启动。';
+      return;
+    }
+    assignmentState.textContent =
+      latest.status === 'WAITING_APPROVAL'
+        ? '任务执行等待审批。不会自动提交作业。'
+        : latest.status === 'FAILED'
+          ? `作业模式失败：${latest.error}`
+          : latest.status === 'UNAVAILABLE'
+            ? '任务执行能力当前不可用。'
+            : `${latest.mode} 正在运行。代码执行、源码写入和提交权限彼此独立。`;
+  };
   const renderCourseAi = (snapshot) => {
     const latest = snapshot.proposals.at(-1);
     if (!latest) {
@@ -117,6 +137,7 @@
       renderCourse(await window.uniforge.course.getSnapshot());
       renderRecognition(await window.uniforge.course.recognition.getSnapshot());
       renderCourseAi(await window.uniforge.course.ai.getSnapshot());
+      renderAssignments(await window.uniforge.course.assignments.getSnapshot());
       courseForm.addEventListener('submit', async (event) => {
         event.preventDefault();
         courseError.textContent = '';
@@ -155,6 +176,21 @@
           );
         } catch {
           courseAiError.textContent = 'Course AI 请求失败，请检查应用诊断。';
+        }
+      });
+      assignmentForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        assignmentError.textContent = '';
+        try {
+          renderAssignments(
+            await window.uniforge.course.assignments.start({
+              assignmentId: 'assessment-current',
+              mode: assignmentMode.value,
+              prompt: assignmentPrompt.value,
+            }),
+          );
+        } catch {
+          assignmentError.textContent = '作业模式启动失败，请检查权限或应用诊断。';
         }
       });
     } catch {

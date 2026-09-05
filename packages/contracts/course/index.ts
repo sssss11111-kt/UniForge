@@ -1,6 +1,7 @@
 import type { Id, Instant } from '../domain/primitives.js';
 export * from './recognition.js';
 export * from './ai.js';
+export * from './assignment.js';
 
 export type CourseType =
   | 'THEORY_COMPUTATION'

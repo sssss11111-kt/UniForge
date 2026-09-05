@@ -70,6 +70,20 @@
             <p id="course-ai-state">Course AI 尚未运行。</p>
             <p id="course-ai-error" role="alert"></p>
           </div>
+          <div id="assignment-modes" aria-labelledby="assignment-modes-title">
+            <h3 id="assignment-modes-title">作业模式</h3>
+            <form id="assignment-form">
+              <select id="assignment-mode" aria-label="作业模式">
+                <option value="COLLABORATION">协作模式（默认）</option>
+                <option value="TUTORING">辅导模式</option>
+                <option value="TASK_EXECUTION">任务执行模式（需审批）</option>
+              </select>
+              <input id="assignment-prompt" required placeholder="作业目标" aria-label="作业目标" />
+              <button type="submit">开始作业</button>
+            </form>
+            <p id="assignment-state">作业模式尚未启动。</p>
+            <p id="assignment-error" role="alert"></p>
+          </div>
         </section>
       </main>
     </div>
