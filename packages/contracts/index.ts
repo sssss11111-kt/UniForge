@@ -8,3 +8,5 @@ export * from './domain/permission.js';
 export * from './domain/memory.js';
 export * from './model/gateway.js';
 export * from './tool/gateway.js';
+export * from './agent/definition.js';
+export * from './agent/runtime.js';
