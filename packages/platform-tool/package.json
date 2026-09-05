@@ -1,0 +1,1 @@
+{"name":"@uniforge/platform-tool","version":"0.0.0","private":true,"type":"module","exports":"./index.ts","dependencies":{"@uniforge/core":"0.0.0","@uniforge/contracts":"0.0.0"}}

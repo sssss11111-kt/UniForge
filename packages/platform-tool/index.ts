@@ -1,0 +1,1 @@
+export type ToolGatewayBoundary = 'typed';
