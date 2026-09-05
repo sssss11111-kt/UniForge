@@ -6,6 +6,7 @@ import type {
   CourseSnapshotDto,
   AssignmentSnapshotDto,
 } from '../course/index.js';
+import type { AgentCenterSnapshotDto } from '../agent/center.js';
 
 export const IPC_CHANNELS = Object.freeze({
   health: 'uniforge:health',
@@ -34,6 +35,12 @@ export const IPC_CHANNELS = Object.freeze({
   courseWrongProblemCorrect: 'uniforge:course-wrong-problem-correct',
   courseReviewPlanSnapshot: 'uniforge:course-review-plan-snapshot',
   courseReviewPlanCreate: 'uniforge:course-review-plan-create',
+  agentCenterSnapshot: 'uniforge:agent-center-snapshot',
+  agentCenterCreate: 'uniforge:agent-center-create',
+  agentCenterStart: 'uniforge:agent-center-start',
+  agentCenterApprovalResolve: 'uniforge:agent-center-approval-resolve',
+  agentCenterApprovalReject: 'uniforge:agent-center-approval-reject',
+  agentCenterCancel: 'uniforge:agent-center-cancel',
 } as const);
 export type IpcChannel = (typeof IPC_CHANNELS)[keyof typeof IPC_CHANNELS];
 export interface HealthDto {
@@ -50,3 +57,4 @@ export type AssignmentResponseDto = AssignmentSnapshotDto;
 export type CourseNotesResponseDto = import('../course/notes.js').CourseNotesSnapshotDto;
 export type CourseMasteryResponseDto = import('../course/mastery.js').MasterySnapshotDto;
 export type CourseExamReviewResponseDto = import('../course/exam-review.js').ReviewPlanSnapshotDto;
+export type AgentCenterResponseDto = AgentCenterSnapshotDto;

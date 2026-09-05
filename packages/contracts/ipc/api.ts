@@ -26,6 +26,8 @@ import type {
   CorrectWrongProblemInput,
 } from '../course/mastery.js';
 import type { ReviewPlanSnapshotDto, CreateReviewPlanInput } from '../course/exam-review.js';
+import type { AgentCenterSnapshotDto, CreateAgentRunInput } from '../agent/center.js';
+import type { Id } from '../domain/primitives.js';
 export interface UniforgeApi {
   readonly health: () => Promise<HealthDto>;
   readonly appShell: () => Promise<AppShellResponseDto>;
@@ -90,5 +92,19 @@ export interface UniforgeApi {
         input: Omit<CreateReviewPlanInput, 'courseId' | 'context'>,
       ) => Promise<ReviewPlanSnapshotDto>;
     };
+  };
+  readonly agentCenter: {
+    readonly getSnapshot: () => Promise<AgentCenterSnapshotDto>;
+    readonly create: (input: CreateAgentRunInput) => Promise<AgentCenterSnapshotDto>;
+    readonly start: (runId: Id<'agent-run'>) => Promise<AgentCenterSnapshotDto>;
+    readonly resolveApproval: (runId: Id<'agent-run'>) => Promise<AgentCenterSnapshotDto>;
+    readonly rejectApproval: (input: {
+      runId: Id<'agent-run'>;
+      reason: string;
+    }) => Promise<AgentCenterSnapshotDto>;
+    readonly cancel: (input: {
+      runId: Id<'agent-run'>;
+      reason?: string;
+    }) => Promise<AgentCenterSnapshotDto>;
   };
 }

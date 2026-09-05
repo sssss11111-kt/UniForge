@@ -29,6 +29,26 @@
   const courseNotesError = document.getElementById('course-notes-error');
   const courseMasteryState = document.getElementById('course-mastery-state');
   const courseReviewPlanState = document.getElementById('course-review-plan-state');
+  const agentCenterState = document.getElementById('agent-center-state');
+  const agentCenterRuns = document.getElementById('agent-center-runs');
+  const renderAgentCenter = (snapshot) => {
+    agentCenterRuns.replaceChildren();
+    if (!snapshot.runs.length) {
+      agentCenterState.textContent = '暂无 Agent 运行记录。创建任务后，运行、失败、取消和审批状态将在这里保留。';
+      return;
+    }
+    agentCenterState.textContent = `${snapshot.runs.length} 个运行记录，${snapshot.approvals.length} 个等待审批。`;
+    snapshot.runs.forEach((run) => {
+      const card = document.createElement('article');
+      card.className = `dashboard-item dashboard-item-${run.status.toLowerCase()}`;
+      const title = document.createElement('h3');
+      title.textContent = `${run.taskId} · ${run.status}`;
+      const details = document.createElement('p');
+      details.textContent = `${run.runtime} · ${run.eventCount} 条事件${run.error ? ` · 失败：${run.error}` : ''}`;
+      card.append(title, details);
+      agentCenterRuns.append(card);
+    });
+  };
   const renderReviewPlan = (snapshot) => {
     if (snapshot.state === 'EMPTY') {
       courseReviewPlanState.textContent = '尚未创建考试或复习计划。';
@@ -193,6 +213,7 @@
       renderNotes(await window.uniforge.course.notes.getSnapshot());
       renderMastery(await window.uniforge.course.mastery.getSnapshot());
       renderReviewPlan(await window.uniforge.course.reviewPlan.getSnapshot());
+      renderAgentCenter(await window.uniforge.agentCenter.getSnapshot());
       executionForm.addEventListener('submit', async (event) => {
         event.preventDefault();
         executionState.textContent = '代码执行等待审批或正在运行…';

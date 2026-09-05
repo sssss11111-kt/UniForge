@@ -31,6 +31,12 @@ const courseWrongProblemRecordChannel = 'uniforge:course-wrong-problem-record';
 const courseWrongProblemCorrectChannel = 'uniforge:course-wrong-problem-correct';
 const courseReviewPlanSnapshotChannel = 'uniforge:course-review-plan-snapshot';
 const courseReviewPlanCreateChannel = 'uniforge:course-review-plan-create';
+const agentCenterSnapshotChannel = 'uniforge:agent-center-snapshot';
+const agentCenterCreateChannel = 'uniforge:agent-center-create';
+const agentCenterStartChannel = 'uniforge:agent-center-start';
+const agentCenterApprovalResolveChannel = 'uniforge:agent-center-approval-resolve';
+const agentCenterApprovalRejectChannel = 'uniforge:agent-center-approval-reject';
+const agentCenterCancelChannel = 'uniforge:agent-center-cancel';
 
 const testPreferences =
   process.env.UF_TEST_MODE === '1'
@@ -107,6 +113,17 @@ contextBridge.exposeInMainWorld(
         getSnapshot: () => ipcRenderer.invoke(courseReviewPlanSnapshotChannel),
         create: (input: unknown) => ipcRenderer.invoke(courseReviewPlanCreateChannel, input),
       }),
+    }),
+    agentCenter: Object.freeze({
+      getSnapshot: () => ipcRenderer.invoke(agentCenterSnapshotChannel),
+      create: (input: unknown) => ipcRenderer.invoke(agentCenterCreateChannel, input),
+      start: (runId: string) => ipcRenderer.invoke(agentCenterStartChannel, { runId }),
+      resolveApproval: (runId: string) =>
+        ipcRenderer.invoke(agentCenterApprovalResolveChannel, { runId }),
+      rejectApproval: (input: { runId: string; reason: string }) =>
+        ipcRenderer.invoke(agentCenterApprovalRejectChannel, input),
+      cancel: (input: { runId: string; reason?: string }) =>
+        ipcRenderer.invoke(agentCenterCancelChannel, input),
     }),
     ...(testPreferences ? { testPreferences } : {}),
   }),

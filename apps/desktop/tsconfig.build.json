@@ -11,5 +11,8 @@
     "moduleResolution": "NodeNext"
   },
   "include": ["src/main/**/*.ts"],
-  "references": [{ "path": "../../packages/infrastructure" }]
+  "references": [
+    { "path": "../../packages/infrastructure" },
+    { "path": "../../packages/platform-agent" }
+  ]
 }

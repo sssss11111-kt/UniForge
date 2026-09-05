@@ -30,6 +30,7 @@ export interface AgentRun {
   definitionVersion: number;
   runtime: string;
   status: AgentRunStatus;
+  error?: string;
   version: number;
   lastSeq: number;
   createdAt: Instant;

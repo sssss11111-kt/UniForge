@@ -10,6 +10,7 @@ export * from './model/gateway.js';
 export * from './tool/gateway.js';
 export * from './agent/definition.js';
 export * from './agent/runtime.js';
+export * from './agent/center.js';
 export * from './app-shell/navigation.js';
 export * from './settings/index.js';
 export * from './dashboard/index.js';

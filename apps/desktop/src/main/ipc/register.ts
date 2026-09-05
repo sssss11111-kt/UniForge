@@ -18,6 +18,9 @@ import { CourseNotesService } from '@uniforge/core/application/course-notes-serv
 import { CourseMasteryService } from '@uniforge/core/application/course-mastery-service.js';
 import { CourseExamReviewService } from '@uniforge/core/application/course-exam-review-service.js';
 import type { CourseExecutionRequest } from '@uniforge/contracts/course/execution.js';
+import type { CreateAgentRunInput } from '@uniforge/contracts/agent/center.js';
+import type { Id } from '@uniforge/contracts/domain/primitives.js';
+import { AgentCenterService } from '@uniforge/platform-agent';
 export const registerIpcHandlers = (
   version: string,
   settings = new SettingsCenter(),
@@ -46,6 +49,7 @@ export const registerIpcHandlers = (
   reviewPlan = new CourseExamReviewService({
     request: async () => ({ status: 'PENDING' as const, approvalId: 'approval-review-plan' }),
   }),
+  agentCenter = new AgentCenterService(),
 ): void => {
   ipcMain.handle(IPC_CHANNELS.health, (event: IpcMainInvokeEvent, payload: unknown): HealthDto => {
     if (!event.sender || event.sender.isDestroyed()) throw new Error('INVALID_SENDER');
@@ -410,6 +414,89 @@ export const registerIpcHandlers = (
       context: { actor: 'user', permissions: ['course:review-plan:write'] },
     });
     return reviewPlan.getSnapshot(snapshot.course.id);
+  });
+  const agentContext = {
+    actorId: 'actor-user' as Id<'actor'>,
+    workspaceId: 'workspace-default' as Id<'workspace'>,
+    correlationId: `agent-center-${Date.now()}`,
+    permissions: [
+      'agent:run:create',
+      'agent:run:control',
+      'agent:approval:request',
+      'agent:approval:resolve',
+    ],
+  } as const;
+  const agentInput = (payload: unknown): CreateAgentRunInput => {
+    if (!payload || typeof payload !== 'object') throw new Error('INVALID_PAYLOAD');
+    const input = payload as Record<string, unknown>;
+    if (
+      typeof input.taskId !== 'string' ||
+      typeof input.runtime !== 'string' ||
+      !input.definition ||
+      typeof input.definition !== 'object'
+    )
+      throw new Error('INVALID_PAYLOAD');
+    return {
+      taskId: input.taskId as Id<'task'>,
+      runtime: input.runtime,
+      definition: input.definition as CreateAgentRunInput['definition'],
+    };
+  };
+  const agentSnapshot = async () => agentCenter.getSnapshot(agentContext);
+  ipcMain.handle(IPC_CHANNELS.agentCenterSnapshot, async (event, payload: unknown) => {
+    if (!event.sender || event.sender.isDestroyed()) throw new Error('INVALID_SENDER');
+    if (payload !== undefined) throw new Error('INVALID_PAYLOAD');
+    return agentSnapshot();
+  });
+  ipcMain.handle(IPC_CHANNELS.agentCenterCreate, async (event, payload: unknown) => {
+    if (!event.sender || event.sender.isDestroyed()) throw new Error('INVALID_SENDER');
+    const result = await agentCenter.createRun(agentContext, agentInput(payload));
+    if (!result.ok) throw new Error(result.error.code);
+    return agentSnapshot();
+  });
+  const agentRunId = (payload: unknown): Id<'agent-run'> => {
+    if (
+      !payload ||
+      typeof payload !== 'object' ||
+      typeof (payload as { runId?: unknown }).runId !== 'string'
+    )
+      throw new Error('INVALID_PAYLOAD');
+    return (payload as { runId: string }).runId as Id<'agent-run'>;
+  };
+  ipcMain.handle(IPC_CHANNELS.agentCenterStart, async (event, payload: unknown) => {
+    if (!event.sender || event.sender.isDestroyed()) throw new Error('INVALID_SENDER');
+    const result = await agentCenter.start(agentContext, agentRunId(payload));
+    if (!result.ok) throw new Error(result.error.code);
+    return agentSnapshot();
+  });
+  ipcMain.handle(IPC_CHANNELS.agentCenterApprovalResolve, async (event, payload: unknown) => {
+    if (!event.sender || event.sender.isDestroyed()) throw new Error('INVALID_SENDER');
+    const result = await agentCenter.resolveApproval(agentContext, agentRunId(payload));
+    if (!result.ok) throw new Error(result.error.code);
+    return agentSnapshot();
+  });
+  ipcMain.handle(IPC_CHANNELS.agentCenterApprovalReject, async (event, payload: unknown) => {
+    if (!event.sender || event.sender.isDestroyed()) throw new Error('INVALID_SENDER');
+    if (
+      !payload ||
+      typeof payload !== 'object' ||
+      typeof (payload as { reason?: unknown }).reason !== 'string'
+    )
+      throw new Error('INVALID_PAYLOAD');
+    const result = await agentCenter.rejectApproval(
+      agentContext,
+      agentRunId(payload),
+      (payload as { reason: string }).reason,
+    );
+    if (!result.ok) throw new Error(result.error.code);
+    return agentSnapshot();
+  });
+  ipcMain.handle(IPC_CHANNELS.agentCenterCancel, async (event, payload: unknown) => {
+    if (!event.sender || event.sender.isDestroyed()) throw new Error('INVALID_SENDER');
+    const input = payload as { runId: Id<'agent-run'>; reason?: string };
+    const result = await agentCenter.cancel(agentContext, agentRunId(payload), input?.reason);
+    if (!result.ok) throw new Error(result.error.code);
+    return agentSnapshot();
   });
 };
 
