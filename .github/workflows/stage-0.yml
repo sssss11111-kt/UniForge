@@ -1,5 +1,6 @@
 name: stage-0
 on:
+  workflow_dispatch:
   push:
     branches: [main, master, 'codex/**']
   pull_request:
@@ -32,3 +33,4 @@ jobs:
           name: uniforge-windows-preview
           path: out/make
           if-no-files-found: warn
+
