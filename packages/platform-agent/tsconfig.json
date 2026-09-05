@@ -1,6 +1,15 @@
 {
   "extends": "../../tsconfig.base.json",
-  "compilerOptions": { "composite": true, "declaration": true, "noEmit": false, "outDir": "dist" },
-  "include": ["index.ts", "*.ts"],
-  "references": [{ "path": "../contracts" }]
+  "compilerOptions": {
+    "composite": true,
+    "declaration": true,
+    "noEmit": false,
+    "outDir": "dist"
+  },
+  "include": ["index.ts", "*.ts", "native/**/*.ts"],
+  "references": [
+    {
+      "path": "../contracts"
+    }
+  ]
 }
