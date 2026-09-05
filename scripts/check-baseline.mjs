@@ -9,6 +9,18 @@ const required = [
   'apps/desktop/src/main/index.ts',
 ];
 for (const file of required) await access(file);
+const pkg = JSON.parse(await readFile('package.json', 'utf8'));
+for (const script of [
+  'typecheck',
+  'lint',
+  'unit',
+  'e2e-smoke',
+  'check-boundaries',
+  'check-doc-links',
+]) {
+  if (typeof pkg.scripts?.[script] !== 'string')
+    throw new Error(`Missing required script: ${script}`);
+}
 const ts = await readFile('tsconfig.base.json', 'utf8');
 if (!/"strict"\s*:\s*true/.test(ts)) throw new Error('TypeScript strict mode is required');
 console.log('Baseline files and strict mode are present.');

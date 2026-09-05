@@ -3,7 +3,7 @@ import path from 'node:path';
 
 const root = process.cwd();
 const forbidden =
-  /(?:from\s+['"](?:electron|node:sqlite|better-sqlite3|langgraph|@langchain)|require\(['"](?:electron|node:sqlite|better-sqlite3|langgraph|@langchain))/;
+  /(?:from|import|export).*['"](?:electron|node:sqlite|better-sqlite3|langgraph|@langchain|openai|@modelcontextprotocol\/sdk)['"]|require\(['"](?:electron|node:sqlite|better-sqlite3|langgraph|@langchain|openai|@modelcontextprotocol\/sdk)/;
 const roots = process.argv.slice(2).length
   ? process.argv.slice(2)
   : ['packages/contracts', 'packages/core'];
