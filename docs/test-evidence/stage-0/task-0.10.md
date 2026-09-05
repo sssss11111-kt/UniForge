@@ -6,10 +6,10 @@ Implemented the framework-neutral ten-method `AgentRuntime` contract and a RunSe
 
 ## Automated validation
 
-| Check | Command | Result |
-|---|---|---|
+| Check                                                        | Command                                                                                                                                                                                      | Result                  |
+| ------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------- |
 | Focused lifecycle, projection, authorization, recovery tests | `npm run unit -- packages/platform-agent/run-service.test.ts tests/integration/agent-event-projection.test.ts tests/security/run-authorization.test.ts tests/recovery/run-lifecycle.test.ts` | PASS — 4 files, 7 tests |
-| Workspace type check | `npm run typecheck` | PASS |
+| Workspace type check                                         | `npm run typecheck`                                                                                                                                                                          | PASS                    |
 
 ## Acceptance coverage
 
