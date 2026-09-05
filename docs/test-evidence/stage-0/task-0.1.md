@@ -17,4 +17,6 @@
 
 Observed environment: Node `v24.18.0`, npm `11.16.0`. `npm run build:desktop` exits 0 and emits `apps/desktop/dist/main/index.js`, `preload/index.js`, and renderer HTML. The Electron smoke was started with `_electron.launch` and downloaded the Electron binary; the environment timed out before a completed test result, so it remains BLOCKED pending a fresh bounded run.
 
+`npm audit --omit=optional --json` observed 24 advisories: 3 low, 20 high, 1 critical. The critical/high chain is transitive through Electron Forge 7.11.2 (`tar`, `extract-zip`, `@electron/rebuild`); npm offers Forge 6.4.2 as a major downgrade. No blind fix was applied. Residual risk is accepted for this development-only baseline and must be remediated before packaging/release; no production installer is shipped here.
+
 The smoke limitation is recorded explicitly; no success state is fabricated. Forge configuration includes the pinned Squirrel maker for the later packaging gate.

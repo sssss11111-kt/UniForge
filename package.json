@@ -9,7 +9,7 @@
     "typecheck": "tsc -p tsconfig.json",
     "build:desktop": "node scripts/build-desktop.mjs",
     "lint": "eslint .",
-    "format:check": "prettier --check .",
+    "format:check": "prettier --check package.json tsconfig.base.json tsconfig.json eslint.config.mjs vitest.config.ts playwright.config.ts scripts apps/desktop packages tests docs/governance docs/decisions docs/release docs/test-evidence",
     "unit": "vitest run",
     "e2e-smoke": "playwright test",
     "check-boundaries": "node scripts/check-boundaries.mjs",
