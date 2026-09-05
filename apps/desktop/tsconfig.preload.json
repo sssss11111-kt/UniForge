@@ -11,5 +11,5 @@
     "moduleResolution": "Node",
     "verbatimModuleSyntax": false
   },
-  "include": ["src/preload/index.ts"]
+  "include": ["src/preload/**/*.ts"]
 }

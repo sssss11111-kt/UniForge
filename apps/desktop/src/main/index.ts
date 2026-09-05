@@ -1,4 +1,5 @@
 import { app, BrowserWindow } from 'electron';
+import { registerHandlers } from './ipc/handlers.js';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -27,6 +28,7 @@ const createWindow = (): void => {
 };
 
 app.whenReady().then(() => {
+  registerHandlers(app.getVersion());
   createWindow();
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow();
