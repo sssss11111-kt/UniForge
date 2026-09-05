@@ -14,6 +14,7 @@
     "model/**/*.ts",
     "tool/**/*.ts",
     "agent/**/*.ts",
-    "settings/**/*.ts"
+    "settings/**/*.ts",
+    "dashboard/**/*.ts"
   ]
 }

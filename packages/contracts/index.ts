@@ -12,3 +12,4 @@ export * from './agent/definition.js';
 export * from './agent/runtime.js';
 export * from './app-shell/navigation.js';
 export * from './settings/index.js';
+export * from './dashboard/index.js';

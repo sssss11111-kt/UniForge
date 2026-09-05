@@ -3,7 +3,12 @@ import { DEFAULT_APP_SHELL, type AppShellDto } from '@uniforge/contracts/app-she
 import { IPC_CHANNELS, type HealthDto } from '@uniforge/contracts/ipc/dto.js';
 import type { UpdateModelSettingsInput } from '@uniforge/contracts/settings/index.js';
 import { SettingsCenter } from '@uniforge/core/application/settings-center.js';
-export const registerIpcHandlers = (version: string, settings = new SettingsCenter()): void => {
+import { createDefaultDashboardService } from '@uniforge/core/application/dashboard-service.js';
+export const registerIpcHandlers = (
+  version: string,
+  settings = new SettingsCenter(),
+  dashboard = createDefaultDashboardService(),
+): void => {
   ipcMain.handle(IPC_CHANNELS.health, (event: IpcMainInvokeEvent, payload: unknown): HealthDto => {
     if (!event.sender || event.sender.isDestroyed()) throw new Error('INVALID_SENDER');
     if (payload !== undefined) throw new Error('INVALID_PAYLOAD');
@@ -36,6 +41,14 @@ export const registerIpcHandlers = (version: string, settings = new SettingsCent
       )
         throw new Error('INVALID_PAYLOAD');
       return settings.updateModel(payload as UpdateModelSettingsInput);
+    },
+  );
+  ipcMain.handle(
+    IPC_CHANNELS.dashboardSnapshot,
+    async (event: IpcMainInvokeEvent, payload: unknown) => {
+      if (!event.sender || event.sender.isDestroyed()) throw new Error('INVALID_SENDER');
+      if (payload !== undefined) throw new Error('INVALID_PAYLOAD');
+      return dashboard.getSnapshot();
     },
   );
 };

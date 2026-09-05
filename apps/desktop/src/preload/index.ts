@@ -7,6 +7,7 @@ const healthChannel = 'uniforge:health';
 const appShellChannel = 'uniforge:app-shell';
 const settingsSnapshotChannel = 'uniforge:settings-snapshot';
 const settingsUpdateModelChannel = 'uniforge:settings-update-model';
+const dashboardSnapshotChannel = 'uniforge:dashboard-snapshot';
 
 const testPreferences =
   process.env.UF_TEST_MODE === '1'
@@ -22,6 +23,9 @@ contextBridge.exposeInMainWorld(
     settings: Object.freeze({
       getSnapshot: () => ipcRenderer.invoke(settingsSnapshotChannel),
       updateModel: (input: unknown) => ipcRenderer.invoke(settingsUpdateModelChannel, input),
+    }),
+    dashboard: Object.freeze({
+      getSnapshot: () => ipcRenderer.invoke(dashboardSnapshotChannel),
     }),
     ...(testPreferences ? { testPreferences } : {}),
   }),

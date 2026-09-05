@@ -1,8 +1,12 @@
+import type { AppShellDto } from '../app-shell/navigation.js';
+import type { DashboardSnapshotDto } from '../dashboard/index.js';
+
 export const IPC_CHANNELS = Object.freeze({
   health: 'uniforge:health',
   appShell: 'uniforge:app-shell',
   settingsSnapshot: 'uniforge:settings-snapshot',
   settingsUpdateModel: 'uniforge:settings-update-model',
+  dashboardSnapshot: 'uniforge:dashboard-snapshot',
 } as const);
 export type IpcChannel = (typeof IPC_CHANNELS)[keyof typeof IPC_CHANNELS];
 export interface HealthDto {
@@ -11,4 +15,4 @@ export interface HealthDto {
 }
 
 export type AppShellResponseDto = AppShellDto;
-import type { AppShellDto } from '../app-shell/navigation.js';
+export type DashboardResponseDto = DashboardSnapshotDto;

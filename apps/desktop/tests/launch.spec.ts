@@ -36,7 +36,14 @@ test('app shell exposes primary navigation and roadmap states', async () => {
         electronType: typeof (window as unknown as { electron?: unknown }).electron,
       };
     });
-    expect(bridge.keys).toEqual(['appShell', 'health', 'settings', 'testPreferences', 'version']);
+    expect(bridge.keys).toEqual([
+      'appShell',
+      'dashboard',
+      'health',
+      'settings',
+      'testPreferences',
+      'version',
+    ]);
     expect(bridge.preferences).toEqual({
       nodeIntegration: false,
       contextIsolation: true,
@@ -47,7 +54,11 @@ test('app shell exposes primary navigation and roadmap states', async () => {
     expect(bridge.processType).toBe('undefined');
     expect(bridge.electronType).toBe('undefined');
     await expect(page.getByRole('heading', { name: '运行状态' })).toBeVisible();
-    await expect(page.getByText(/默认工作区/)).toBeVisible();
+    await expect(page.getByText('默认工作区', { exact: true })).toBeVisible();
+    await expect(page.getByRole('heading', { name: '概览' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: '今日焦点' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: '课程与考试' })).toBeVisible();
+    await expect(page.getByText(/当前没有待处理审批/)).toBeVisible();
   } finally {
     await app.close();
   }
