@@ -11,6 +11,8 @@
   "scripts": {
     "typecheck": "tsc -b tsconfig.json --pretty false",
     "build:desktop": "node scripts/build-desktop.mjs",
+    "package-windows": "node scripts/package-windows.mjs",
+    "verify:windows-package": "node scripts/verify-windows-package.mjs",
     "lint": "eslint .",
     "format:check": "prettier --check package.json tsconfig.base.json tsconfig.json tsconfig.tests.json .prettierrc.json .github/workflows/stage-0.yml eslint.config.mjs vitest.config.ts playwright.config.ts scripts apps/desktop packages tests docs/governance docs/decisions docs/release docs/test-evidence",
     "unit": "vitest run",

@@ -6,3 +6,5 @@
 - [ ] Typecheck, lint, unit, boundary, and smoke checks pass
 - [ ] Evidence report saved
 - [ ] Git checkpoint created
+- [ ] Windows preview installer hash and manifest retained
+- [ ] Clean Windows install/upgrade/rollback evidence recorded, or explicitly marked BLOCKED

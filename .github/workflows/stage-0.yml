@@ -20,3 +20,10 @@ jobs:
       - run: npm run unit
       - run: npm run build:desktop
       - run: npm run e2e-smoke
+      - run: npm run package-windows
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: uniforge-windows-preview
+          path: out/make
+          if-no-files-found: warn
