@@ -40,6 +40,17 @@
           <h2 id="settings-title">运行状态</h2>
           <div id="settings-summary">正在加载设置…</div>
         </section>
+        <section id="course-page" class="settings-card" aria-labelledby="course-title">
+          <p class="eyebrow">课内学习</p>
+          <h2 id="course-title">课程入口</h2>
+          <p id="course-state">正在加载课程状态…</p>
+          <form id="course-form">
+            <input id="course-name" required placeholder="课程名称" aria-label="课程名称" />
+            <input id="course-term" required placeholder="学期" aria-label="学期" />
+            <button type="submit">创建课程</button>
+          </form>
+          <p id="course-error" role="alert"></p>
+        </section>
       </main>
     </div>
     <script src="./app.js"></script>

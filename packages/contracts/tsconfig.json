@@ -15,6 +15,7 @@
     "tool/**/*.ts",
     "agent/**/*.ts",
     "settings/**/*.ts",
-    "dashboard/**/*.ts"
+    "dashboard/**/*.ts",
+    "course/**/*.ts"
   ]
 }

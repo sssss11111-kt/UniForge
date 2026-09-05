@@ -1,5 +1,6 @@
 import type { AppShellDto } from '../app-shell/navigation.js';
 import type { DashboardSnapshotDto } from '../dashboard/index.js';
+import type { CourseSnapshotDto } from '../course/index.js';
 
 export const IPC_CHANNELS = Object.freeze({
   health: 'uniforge:health',
@@ -7,6 +8,8 @@ export const IPC_CHANNELS = Object.freeze({
   settingsSnapshot: 'uniforge:settings-snapshot',
   settingsUpdateModel: 'uniforge:settings-update-model',
   dashboardSnapshot: 'uniforge:dashboard-snapshot',
+  courseSnapshot: 'uniforge:course-snapshot',
+  courseCreate: 'uniforge:course-create',
 } as const);
 export type IpcChannel = (typeof IPC_CHANNELS)[keyof typeof IPC_CHANNELS];
 export interface HealthDto {
@@ -16,3 +19,4 @@ export interface HealthDto {
 
 export type AppShellResponseDto = AppShellDto;
 export type DashboardResponseDto = DashboardSnapshotDto;
+export type CourseResponseDto = CourseSnapshotDto;

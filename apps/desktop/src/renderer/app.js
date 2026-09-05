@@ -6,6 +6,15 @@
   const settingsSummary = document.getElementById('settings-summary');
   const dashboardItems = document.getElementById('dashboard-items');
   const dashboardWorkspaceState = document.getElementById('dashboard-workspace-state');
+  const courseState = document.getElementById('course-state');
+  const courseForm = document.getElementById('course-form');
+  const courseError = document.getElementById('course-error');
+  const renderCourse = (snapshot) => {
+    const course = snapshot.course;
+    courseState.textContent = course.name
+      ? `${course.name} · ${course.term.name} · ${course.type}`
+      : '尚未创建课程。创建后课程将成为本地领域对象。';
+  };
   const renderDashboard = (snapshot) => {
     dashboardWorkspaceState.textContent = `${snapshot.workspaceName} · ${snapshot.workspaceStatus}`;
     dashboardItems.replaceChildren();
@@ -69,11 +78,29 @@
       const model = snapshot.models[0];
       settingsSummary.textContent = `${snapshot.workspace.name} · ${snapshot.workspace.status} · 模型 ${model?.model ?? '未配置'} · 外网 ${snapshot.permissions.externalNetwork}`;
       renderDashboard(await window.uniforge.dashboard.getSnapshot());
+      renderCourse(await window.uniforge.course.getSnapshot());
+      courseForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        courseError.textContent = '';
+        try {
+          renderCourse(
+            await window.uniforge.course.create({
+              commandId: `command-${Date.now()}`,
+              name: document.getElementById('course-name').value,
+              termName: document.getElementById('course-term').value,
+              type: 'CUSTOM',
+            }),
+          );
+        } catch {
+          courseError.textContent = '课程创建失败，请检查输入或应用诊断。';
+        }
+      });
     } catch {
       description.textContent = '工作台加载失败，请检查应用诊断。';
       settingsSummary.textContent = '设置加载失败，请检查应用诊断。';
       dashboardWorkspaceState.textContent = '加载失败';
       dashboardItems.replaceChildren();
+      courseState.textContent = '课程状态加载失败。';
       const error = document.createElement('p');
       error.className = 'dashboard-placeholder';
       error.textContent = '概览加载失败，请检查应用诊断。';

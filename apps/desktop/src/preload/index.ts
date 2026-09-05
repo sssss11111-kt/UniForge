@@ -8,6 +8,8 @@ const appShellChannel = 'uniforge:app-shell';
 const settingsSnapshotChannel = 'uniforge:settings-snapshot';
 const settingsUpdateModelChannel = 'uniforge:settings-update-model';
 const dashboardSnapshotChannel = 'uniforge:dashboard-snapshot';
+const courseSnapshotChannel = 'uniforge:course-snapshot';
+const courseCreateChannel = 'uniforge:course-create';
 
 const testPreferences =
   process.env.UF_TEST_MODE === '1'
@@ -26,6 +28,10 @@ contextBridge.exposeInMainWorld(
     }),
     dashboard: Object.freeze({
       getSnapshot: () => ipcRenderer.invoke(dashboardSnapshotChannel),
+    }),
+    course: Object.freeze({
+      getSnapshot: () => ipcRenderer.invoke(courseSnapshotChannel),
+      create: (input: unknown) => ipcRenderer.invoke(courseCreateChannel, input),
     }),
     ...(testPreferences ? { testPreferences } : {}),
   }),

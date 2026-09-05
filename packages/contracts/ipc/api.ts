@@ -1,6 +1,7 @@
 import type { AppShellResponseDto, HealthDto } from './dto.js';
 import type { SettingsSnapshotDto, UpdateModelSettingsInput } from '../settings/index.js';
 import type { DashboardSnapshotDto } from '../dashboard/index.js';
+import type { CourseSnapshotDto, CreateCourseInput } from '../course/index.js';
 export interface UniforgeApi {
   readonly health: () => Promise<HealthDto>;
   readonly appShell: () => Promise<AppShellResponseDto>;
@@ -10,5 +11,9 @@ export interface UniforgeApi {
   };
   readonly dashboard: {
     readonly getSnapshot: () => Promise<DashboardSnapshotDto>;
+  };
+  readonly course: {
+    readonly getSnapshot: () => Promise<CourseSnapshotDto>;
+    readonly create: (input: Omit<CreateCourseInput, 'context'>) => Promise<CourseSnapshotDto>;
   };
 }

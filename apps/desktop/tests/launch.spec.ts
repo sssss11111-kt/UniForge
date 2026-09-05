@@ -38,6 +38,7 @@ test('app shell exposes primary navigation and roadmap states', async () => {
     });
     expect(bridge.keys).toEqual([
       'appShell',
+      'course',
       'dashboard',
       'health',
       'settings',

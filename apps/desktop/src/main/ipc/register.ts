@@ -4,10 +4,12 @@ import { IPC_CHANNELS, type HealthDto } from '@uniforge/contracts/ipc/dto.js';
 import type { UpdateModelSettingsInput } from '@uniforge/contracts/settings/index.js';
 import { SettingsCenter } from '@uniforge/core/application/settings-center.js';
 import { createDefaultDashboardService } from '@uniforge/core/application/dashboard-service.js';
+import { CourseService } from '@uniforge/core/application/course-service.js';
 export const registerIpcHandlers = (
   version: string,
   settings = new SettingsCenter(),
   dashboard = createDefaultDashboardService(),
+  course = new CourseService(),
 ): void => {
   ipcMain.handle(IPC_CHANNELS.health, (event: IpcMainInvokeEvent, payload: unknown): HealthDto => {
     if (!event.sender || event.sender.isDestroyed()) throw new Error('INVALID_SENDER');
@@ -51,4 +53,28 @@ export const registerIpcHandlers = (
       return dashboard.getSnapshot();
     },
   );
+  ipcMain.handle(IPC_CHANNELS.courseSnapshot, async (event, payload: unknown) => {
+    if (!event.sender || event.sender.isDestroyed()) throw new Error('INVALID_SENDER');
+    if (payload !== undefined) throw new Error('INVALID_PAYLOAD');
+    return course.getSnapshot();
+  });
+  ipcMain.handle(IPC_CHANNELS.courseCreate, async (event, payload: unknown) => {
+    if (!event.sender || event.sender.isDestroyed()) throw new Error('INVALID_SENDER');
+    if (!payload || typeof payload !== 'object') throw new Error('INVALID_PAYLOAD');
+    const input = payload as Record<string, unknown>;
+    if (
+      typeof input.commandId !== 'string' ||
+      typeof input.name !== 'string' ||
+      typeof input.termName !== 'string' ||
+      typeof input.type !== 'string'
+    )
+      throw new Error('INVALID_PAYLOAD');
+    return course.createCourse({
+      commandId: input.commandId as never,
+      name: input.name,
+      termName: input.termName,
+      type: input.type as never,
+      context: { actor: 'user', permissions: ['course:write'] },
+    });
+  });
 };
