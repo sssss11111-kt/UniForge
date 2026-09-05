@@ -15,4 +15,6 @@
 | `npm run unit -- tests/engineering/baseline.test.ts tests/architecture/dependency-boundaries.test.ts` | 0 | 2 files / 2 tests passed; negative fixture detected forbidden import |
 | `npm run e2e-smoke -- apps/desktop/tests/launch.spec.ts` | blocked | Electron smoke requires a compiled desktop entry; no build script is included in Task 0.1 |
 
+Observed environment: Node `v24.18.0`, npm `11.16.0`. `npm run build:desktop` exits 0 and emits `apps/desktop/dist/main/index.js`, `preload/index.js`, and renderer HTML. The Electron smoke was started with `_electron.launch` and downloaded the Electron binary; the environment timed out before a completed test result, so it remains BLOCKED pending a fresh bounded run.
+
 The smoke limitation is recorded explicitly; no success state is fabricated. Forge configuration includes the pinned Squirrel maker for the later packaging gate.

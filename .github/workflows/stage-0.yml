@@ -12,6 +12,11 @@ jobs:
         with: { node-version-file: '.node-version', cache: npm }
       - run: npm ci
       - run: npm run check-baseline
+      - run: npm run check-boundaries
+      - run: npm run check-doc-links
       - run: npm run typecheck
       - run: npm run lint
+      - run: npm run format:check
       - run: npm run unit
+      - run: npm run build:desktop
+      - run: npm run e2e-smoke
