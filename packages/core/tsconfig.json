@@ -6,7 +6,10 @@
     "domain/**/*.ts",
     "errors/**/*.ts",
     "application/**/*.ts",
-    "events/**/*.ts"
+    "events/**/*.ts",
+    "permissions/**/*.ts",
+    "approvals/**/*.ts",
+    "identity/**/*.ts"
   ],
   "references": [{ "path": "../contracts" }]
 }
