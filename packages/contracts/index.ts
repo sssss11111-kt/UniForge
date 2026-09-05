@@ -6,3 +6,4 @@ export * from './domain/commands.js';
 export * from './domain/events.js';
 export * from './domain/permission.js';
 export * from './domain/memory.js';
+export * from './model/gateway.js';
