@@ -2,7 +2,7 @@ import { cp, mkdir, readdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
 import { spawnSync } from 'node:child_process';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const stage = path.join(root, 'out', '.stage0-windows');
@@ -72,12 +72,30 @@ await writeFile(
       type: 'module',
       main: 'dist/main/index.js',
       description: 'UniForge preview test build',
+      author: 'Tong <17512401625@163.com>',
+      config: { forge: 'forge.config.mjs' },
+      devDependencies: { electron: rootPackage.devDependencies.electron },
     },
     null,
     2,
   ),
 );
 await cp(path.join(root, 'sidecars'), path.join(appRoot, 'sidecars'), { recursive: true });
+await writeFile(
+  path.join(appRoot, 'forge.config.mjs'),
+  `import { MakerSquirrel } from ${JSON.stringify(
+    pathToFileURL(
+      path.join(
+        root,
+        'node_modules',
+        '@electron-forge',
+        'maker-squirrel',
+        'dist',
+        'MakerSquirrel.js',
+      ),
+    ).href,
+  )};\nexport default {\n  packagerConfig: { asar: true, name: 'UniForge', executableName: 'uniforge', appBundleId: 'com.uniforge.desktop', extraResource: ['sidecars'] },\n  rebuildConfig: {},\n  makers: [new MakerSquirrel({})],\n};\n`,
+);
 run(
   process.execPath,
   [
@@ -87,12 +105,14 @@ run(
     'win32',
     '--arch',
     'x64',
-    '--config',
-    path.join(root, 'apps', 'desktop', 'forge.config.ts'),
+    appRoot,
   ],
-  appRoot,
+  root,
 );
 const makeRoot = path.join(root, 'out', 'make');
+const generatedMakeRoot = path.join(appRoot, 'out', 'make');
+await rm(makeRoot, { recursive: true, force: true });
+await cp(generatedMakeRoot, makeRoot, { recursive: true });
 const artifacts = [];
 async function collect(dir) {
   for (const entry of await readdir(dir, { withFileTypes: true })) {

@@ -12,7 +12,7 @@ test('blank technical window launches with secure web preferences', async () => 
     const bridge = await page.evaluate(() => {
       const exposed = (
         window as unknown as {
-          uniforge?: { version?: unknown; testPreferences?: unknown };
+          uniforge?: { version?: unknown; testPreferences?: unknown; health?: unknown };
           require?: unknown;
           process?: unknown;
           electron?: unknown;
@@ -27,7 +27,7 @@ test('blank technical window launches with secure web preferences', async () => 
         electronType: typeof (window as unknown as { electron?: unknown }).electron,
       };
     });
-    expect(bridge.keys).toEqual(['testPreferences', 'version']);
+    expect(bridge.keys).toEqual(['health', 'testPreferences', 'version']);
     expect(bridge.preferences).toEqual({
       nodeIntegration: false,
       contextIsolation: true,
