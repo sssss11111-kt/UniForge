@@ -25,3 +25,4 @@ export * from './english/training.js';
 export * from './english/ielts.js';
 export * from './english/mock-exam.js';
 export * from './knowledge/content.js';
+export * from './knowledge/topic.js';
