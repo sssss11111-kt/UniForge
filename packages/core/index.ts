@@ -28,4 +28,5 @@ export * from './application/news-source-service.js';
 export * from './application/news-claim-service.js';
 export * from './application/news-verification-service.js';
 export * from './application/news-workspace-service.js';
+export * from './application/news-action-service.js';
 export * from './application/memory-service.js';
