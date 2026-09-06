@@ -37,3 +37,4 @@ export * from './news/workspace.js';
 export * from './news/action.js';
 export * from './project/workspace.js';
 export * from './project/task.js';
+export * from './project/execution.js';
