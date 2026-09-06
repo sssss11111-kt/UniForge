@@ -14,7 +14,9 @@ describe('CourseWorkspaceBoundary', () => {
       ok: false,
       error: 'PROTECTED_PATH',
     });
-    expect(boundary.assertEntry('C:/Users/Tong/Documents/ChatGPT/New project', 'main.py')).toMatchObject({
+    expect(
+      boundary.assertEntry('C:/Users/Tong/Documents/ChatGPT/New project', 'main.py'),
+    ).toMatchObject({
       ok: false,
       error: 'PROTECTED_PATH',
     });

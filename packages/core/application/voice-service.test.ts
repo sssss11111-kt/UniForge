@@ -19,8 +19,12 @@ describe('VoiceService', () => {
   it('keeps speech unavailable visible when the sidecar health check fails', async () => {
     const service = new VoiceService({
       health: async () => ({ status: 'unavailable', reason: 'runtime not provisioned' }),
-      transcribe: async () => { throw new Error('must not run'); },
-      synthesize: async () => { throw new Error('must not run'); },
+      transcribe: async () => {
+        throw new Error('must not run');
+      },
+      synthesize: async () => {
+        throw new Error('must not run');
+      },
       cancel: async () => undefined,
     });
 
@@ -79,7 +83,9 @@ describe('VoiceService', () => {
   it('reports cancellation and sidecar failure without claiming success', async () => {
     const service = new VoiceService({
       health: async () => ({ status: 'ready' }),
-      transcribe: async () => { throw new Error('engine crashed'); },
+      transcribe: async () => {
+        throw new Error('engine crashed');
+      },
       synthesize: async () => ({ format: 'wav', base64: 'AwQ=' }),
       cancel: async () => undefined,
     });
@@ -89,9 +95,10 @@ describe('VoiceService', () => {
 
     const cancellable = new VoiceService({
       health: async () => ({ status: 'ready' }),
-      transcribe: async (_audio, signal) => await new Promise<string>((resolve, reject) => {
-        signal?.addEventListener('abort', () => reject(new Error('aborted')), { once: true });
-      }),
+      transcribe: async (_audio, signal) =>
+        await new Promise<string>((resolve, reject) => {
+          signal?.addEventListener('abort', () => reject(new Error('aborted')), { once: true });
+        }),
       synthesize: async () => ({ format: 'wav', base64: 'AwQ=' }),
       cancel: async () => undefined,
     });
@@ -110,6 +117,8 @@ describe('VoiceService', () => {
       synthesize: async () => ({ format: 'wav', base64: 'AwQ=' }),
       cancel: async () => undefined,
     });
-    await expect(service.execute(input({ context: { actor: 'user', permissions: [] } }))).rejects.toThrow('PERMISSION_DENIED');
+    await expect(
+      service.execute(input({ context: { actor: 'user', permissions: [] } })),
+    ).rejects.toThrow('PERMISSION_DENIED');
   });
 });

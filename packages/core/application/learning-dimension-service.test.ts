@@ -47,13 +47,16 @@ describe('LearningDimensionService', () => {
       provenance,
       context: { actor: 'user' as const, permissions: ['learning-dimension:write'] },
     };
-    expect(() => service.recordEvidence({ ...input, context: { actor: 'user', permissions: [] } })).toThrow(
-      'permission denied',
-    );
+    expect(() =>
+      service.recordEvidence({ ...input, context: { actor: 'user', permissions: [] } }),
+    ).toThrow('permission denied');
     expect(() => service.recordEvidence({ ...input, score: 2 })).toThrow('score');
-    expect(() => service.recordEvidence({ ...input, provenance: { ...provenance, recordedAt: 'yesterday' as never } })).toThrow(
-      'provenance',
-    );
+    expect(() =>
+      service.recordEvidence({
+        ...input,
+        provenance: { ...provenance, recordedAt: 'yesterday' as never },
+      }),
+    ).toThrow('provenance');
     service.recordEvidence(input);
     expect(service.getSnapshot('vocabulary-2').dimensions.COLLOCATION.errors).toBe(1);
     expect(service.getSnapshot('vocabulary-2').dimensions.CONTEXT.attempts).toBe(0);
@@ -68,6 +71,8 @@ describe('LearningDimensionService', () => {
     });
     const snapshot = service.getSnapshot('vocabulary-3');
     snapshot.evidence[0]!.provenance.source.sourceId = 'mutated';
-    expect(service.getSnapshot('vocabulary-3').evidence[0]?.provenance.source.sourceId).toBe('practice-1');
+    expect(service.getSnapshot('vocabulary-3').evidence[0]?.provenance.source.sourceId).toBe(
+      'practice-1',
+    );
   });
 });

@@ -8,12 +8,26 @@ describe('course execution tool', () => {
       check: () => ({ decision: 'ALLOW' as const, reason: 'approved' }),
       verifyApproval: () => true,
     });
-    gateway.register(createCourseExecutionTool('course.execute', async () => ({ status: 'COMPLETED', stdout: 'ok', stderr: '' })));
-    const result = await gateway.invoke('course.execute', { operation: 'RUN' }, {
-      actorId: 'actor-1' as Id<'actor'>,
-      workspaceId: 'workspace-1' as Id<'workspace'>,
-      correlationId: 'execution-1',
-    } as RequestContext, { approvalToken: 'approval-1' });
-    expect(result).toMatchObject({ ok: true, value: { output: { status: 'COMPLETED' }, provenance: { toolId: 'course.execute' } } });
+    gateway.register(
+      createCourseExecutionTool('course.execute', async () => ({
+        status: 'COMPLETED',
+        stdout: 'ok',
+        stderr: '',
+      })),
+    );
+    const result = await gateway.invoke(
+      'course.execute',
+      { operation: 'RUN' },
+      {
+        actorId: 'actor-1' as Id<'actor'>,
+        workspaceId: 'workspace-1' as Id<'workspace'>,
+        correlationId: 'execution-1',
+      } as RequestContext,
+      { approvalToken: 'approval-1' },
+    );
+    expect(result).toMatchObject({
+      ok: true,
+      value: { output: { status: 'COMPLETED' }, provenance: { toolId: 'course.execute' } },
+    });
   });
 });

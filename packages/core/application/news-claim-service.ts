@@ -1,2 +1,26 @@
 import type { CreateNewsClaimInput, NewsClaim } from '@uniforge/contracts';
-export class NewsClaimService { private readonly claims=new Map<string,NewsClaim>(); create(input:CreateNewsClaimInput):NewsClaim { if(!input.permissions.includes('news:propose')) throw new Error('Missing permission: news:propose'); if(!input.claim.citations.length) throw new Error('Citation required'); if(input.claim.generatedBy==='AI'&&input.claim.label!=='AI Generated') throw new Error('AI Generated label required'); const c={...input.claim,citations:input.claim.citations.map(x=>({...x})),status:'PENDING' as const}; this.claims.set(c.id,c); return {...c,citations:c.citations.map(x=>({...x}))}; } approve(id:string,permissions:readonly string[]):NewsClaim { if(!permissions.includes('news:write')) throw new Error('Missing permission: news:write'); const c=this.claims.get(id); if(!c) throw new Error('Claim not found'); const a={...c,status:'APPROVED' as const}; this.claims.set(id,a); return {...a,citations:a.citations.map(x=>({...x}))}; } }
+export class NewsClaimService {
+  private readonly claims = new Map<string, NewsClaim>();
+  create(input: CreateNewsClaimInput): NewsClaim {
+    if (!input.permissions.includes('news:propose'))
+      throw new Error('Missing permission: news:propose');
+    if (!input.claim.citations.length) throw new Error('Citation required');
+    if (input.claim.generatedBy === 'AI' && input.claim.label !== 'AI Generated')
+      throw new Error('AI Generated label required');
+    const c = {
+      ...input.claim,
+      citations: input.claim.citations.map((x) => ({ ...x })),
+      status: 'PENDING' as const,
+    };
+    this.claims.set(c.id, c);
+    return { ...c, citations: c.citations.map((x) => ({ ...x })) };
+  }
+  approve(id: string, permissions: readonly string[]): NewsClaim {
+    if (!permissions.includes('news:write')) throw new Error('Missing permission: news:write');
+    const c = this.claims.get(id);
+    if (!c) throw new Error('Claim not found');
+    const a = { ...c, status: 'APPROVED' as const };
+    this.claims.set(id, a);
+    return { ...a, citations: a.citations.map((x) => ({ ...x })) };
+  }
+}

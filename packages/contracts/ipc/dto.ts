@@ -75,6 +75,8 @@ export type VoiceResponseDto = VoiceSnapshotDto;
 export type BackupResponseDto = import('../lifecycle/index.js').BackupSnapshotDto;
 export type RecycleResponseDto = import('../lifecycle/index.js').RecycleSnapshotDto;
 export type ExitResponseDto = import('../lifecycle/index.js').ExitDecisionDto;
-export type KnowledgeWorkspaceResponseDto = import('../knowledge/workspace.js').KnowledgeWorkspaceSnapshot;
+export type KnowledgeWorkspaceResponseDto =
+  import('../knowledge/workspace.js').KnowledgeWorkspaceSnapshot;
 export type NewsWorkspaceResponseDto = import('../news/workspace.js').NewsWorkspaceSnapshot;
-export type ProjectWorkspaceResponseDto = import('../project/workspace-snapshot.js').ProjectWorkspaceSnapshot;
+export type ProjectWorkspaceResponseDto =
+  import('../project/workspace-snapshot.js').ProjectWorkspaceSnapshot;

@@ -119,7 +119,8 @@ export class VocabularyService {
 
   updateState(entryId: string, state: VocabularyStateInput): VocabularyEntry {
     const entry = this.find(entryId);
-    if (!this.permission.canWriteState) throw new Error('permission denied: vocabulary-state:write');
+    if (!this.permission.canWriteState)
+      throw new Error('permission denied: vocabulary-state:write');
     if (!Number.isFinite(state.familiarity) || state.familiarity < 0 || state.familiarity > 1)
       throw new Error('vocabulary familiarity must be between 0 and 1');
     entry.state = {
@@ -156,7 +157,11 @@ export class VocabularyService {
   }
 
   private copyMorphology(value: Morphology): Morphology {
-    return { ...value, relatedForms: [...value.relatedForms], ...(value.source ? { source: { ...value.source } } : {}) };
+    return {
+      ...value,
+      relatedForms: [...value.relatedForms],
+      ...(value.source ? { source: { ...value.source } } : {}),
+    };
   }
 
   private copyRelation(value: ExamRelation): ExamRelation {

@@ -1,2 +1,32 @@
-import { describe, expect, it } from 'vitest'; import { SearchIndexService } from './search-index-service.js';
-describe('SearchIndexService',()=>{it('rebuilds a derived index and returns source references',()=>{const s=new SearchIndexService();s.rebuild({indexVersion:'v1',documents:[{id:'d',sourceEntityId:'c1',text:'distributed truth',version:1}],permissions:['knowledge:index:write']});expect(s.search('truth',['knowledge:read'])[0]).toMatchObject({sourceEntityId:'c1',indexVersion:'v1'});s.clearDerivedIndex(['knowledge:index:write']);expect(s.search('truth',['knowledge:read'])).toEqual([]);});it('fails closed and rejects duplicate source entities',()=>{const s=new SearchIndexService();expect(()=>s.rebuild({indexVersion:'v1',documents:[{id:'a',sourceEntityId:'c',text:'a',version:1},{id:'b',sourceEntityId:'c',text:'b',version:1}],permissions:['knowledge:index:write']})).toThrow('Duplicate');expect(()=>s.search('x',[])).toThrow('knowledge:read');});});
+import { describe, expect, it } from 'vitest';
+import { SearchIndexService } from './search-index-service.js';
+describe('SearchIndexService', () => {
+  it('rebuilds a derived index and returns source references', () => {
+    const s = new SearchIndexService();
+    s.rebuild({
+      indexVersion: 'v1',
+      documents: [{ id: 'd', sourceEntityId: 'c1', text: 'distributed truth', version: 1 }],
+      permissions: ['knowledge:index:write'],
+    });
+    expect(s.search('truth', ['knowledge:read'])[0]).toMatchObject({
+      sourceEntityId: 'c1',
+      indexVersion: 'v1',
+    });
+    s.clearDerivedIndex(['knowledge:index:write']);
+    expect(s.search('truth', ['knowledge:read'])).toEqual([]);
+  });
+  it('fails closed and rejects duplicate source entities', () => {
+    const s = new SearchIndexService();
+    expect(() =>
+      s.rebuild({
+        indexVersion: 'v1',
+        documents: [
+          { id: 'a', sourceEntityId: 'c', text: 'a', version: 1 },
+          { id: 'b', sourceEntityId: 'c', text: 'b', version: 1 },
+        ],
+        permissions: ['knowledge:index:write'],
+      }),
+    ).toThrow('Duplicate');
+    expect(() => s.search('x', [])).toThrow('knowledge:read');
+  });
+});

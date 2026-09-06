@@ -8,17 +8,17 @@ This vertical slice adds a typed backup, recycle-bin, and exit surface. Backups 
 
 Environment: Windows, Node/npm from the repository toolchain, 2026-09-06.
 
-| Command | Result |
-| --- | --- |
-| `npx vitest run packages/core/domain/lifecycle/service.test.ts tests/integration/diagnostics-backup.test.ts --config vitest.config.ts` | PASS — 2 files, 6 tests |
-| `npm run integration` | PASS — 8 files, 12 tests |
-| `npm run typecheck` | PASS |
-| `npm run lint` | PASS |
-| `npm run build:desktop` | PASS |
-| `npm run check-boundaries` | PASS |
-| `npm run check-doc-links` | PASS |
-| `npx prettier --check ...` (changed files) | PASS |
-| `git diff --check` | PASS |
+| Command                                                                                                                                | Result                   |
+| -------------------------------------------------------------------------------------------------------------------------------------- | ------------------------ |
+| `npx vitest run packages/core/domain/lifecycle/service.test.ts tests/integration/diagnostics-backup.test.ts --config vitest.config.ts` | PASS — 2 files, 6 tests  |
+| `npm run integration`                                                                                                                  | PASS — 8 files, 12 tests |
+| `npm run typecheck`                                                                                                                    | PASS                     |
+| `npm run lint`                                                                                                                         | PASS                     |
+| `npm run build:desktop`                                                                                                                | PASS                     |
+| `npm run check-boundaries`                                                                                                             | PASS                     |
+| `npm run check-doc-links`                                                                                                              | PASS                     |
+| `npx prettier --check ...` (changed files)                                                                                             | PASS                     |
+| `git diff --check`                                                                                                                     | PASS                     |
 
 The boundary test proves an escaped backup destination returns `PROTECTED_PATH`; the round-trip test proves authorized managed content remains verifiable and restorable while excluded content and secret fields are omitted. Exit tests prove unsaved confirmation, close-to-tray without shutdown, all participant shutdown attempts, and visible shutdown failures.
 

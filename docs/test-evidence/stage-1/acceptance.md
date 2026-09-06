@@ -9,23 +9,23 @@ Stage 1 delivers the approved desktop/course vertical slices from Task 1.1 throu
 
 ## Task checkpoints
 
-| Task | Checkpoint |
-|---|---|
-| 1.1 App Shell | `1a52ec5` |
-| 1.2 Settings / Model / Permission / Workspace | `0c2e7cf` |
-| 1.3 Dashboard | `a731416` |
-| 1.4 Course Domain | `563abb2` |
-| 1.5 Course Material Import | `9040d6e` |
-| 1.6 Syllabus / Timetable / Deadline Recognition | `b8105a5` |
-| 1.7 Course AI | `b40f81a` |
-| 1.8 Assignment Modes | `dfdb5a2` |
-| 1.9 Course Code Execution | `8999539` |
-| 1.10 Course Notes | `c306fa2` |
-| 1.11 Mastery / Wrong Problems | `092d9c3` |
-| 1.12 Exam / Review Plan | `fbe46d6` |
-| 1.13 Agent Center Basic | `dba99c7` |
-| 1.14 Voice MVP | `b8c7bd5` |
-| 1.15 Backup / Recycle / Exit | `91dcce8` |
+| Task                                            | Checkpoint |
+| ----------------------------------------------- | ---------- |
+| 1.1 App Shell                                   | `1a52ec5`  |
+| 1.2 Settings / Model / Permission / Workspace   | `0c2e7cf`  |
+| 1.3 Dashboard                                   | `a731416`  |
+| 1.4 Course Domain                               | `563abb2`  |
+| 1.5 Course Material Import                      | `9040d6e`  |
+| 1.6 Syllabus / Timetable / Deadline Recognition | `b8105a5`  |
+| 1.7 Course AI                                   | `b40f81a`  |
+| 1.8 Assignment Modes                            | `dfdb5a2`  |
+| 1.9 Course Code Execution                       | `8999539`  |
+| 1.10 Course Notes                               | `c306fa2`  |
+| 1.11 Mastery / Wrong Problems                   | `092d9c3`  |
+| 1.12 Exam / Review Plan                         | `fbe46d6`  |
+| 1.13 Agent Center Basic                         | `dba99c7`  |
+| 1.14 Voice MVP                                  | `b8c7bd5`  |
+| 1.15 Backup / Recycle / Exit                    | `91dcce8`  |
 
 ## Verification evidence
 

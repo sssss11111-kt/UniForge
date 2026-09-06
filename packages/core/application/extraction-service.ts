@@ -1,7 +1,33 @@
-import type { ApproveExtractionInput, CreateExtractionProposalInput, ExtractionProposal } from '@uniforge/contracts';
+import type {
+  ApproveExtractionInput,
+  CreateExtractionProposalInput,
+  ExtractionProposal,
+} from '@uniforge/contracts';
 export class ExtractionService {
- private readonly proposals=new Map<string,ExtractionProposal>();
- create(input:CreateExtractionProposalInput):ExtractionProposal { if(!input.permissions.includes('knowledge:propose')) throw new Error('Missing permission: knowledge:propose'); if(!input.proposal.citations.length) throw new Error('Citation required'); if(input.proposal.generatedBy==='AI' && input.proposal.label!=='AI Generated') throw new Error('AI Generated label required'); const p={...input.proposal,citations:input.proposal.citations.map(c=>({...c}),)}; this.proposals.set(p.id,p); return {...p,citations:p.citations.map(c=>({...c}))}; }
- approve(input:ApproveExtractionInput):ExtractionProposal { if(!input.permissions.includes('knowledge:write')) throw new Error('Missing permission: knowledge:write'); const p=this.proposals.get(input.proposalId); if(!p) throw new Error('Proposal not found'); const next={...p,approval:'APPROVED' as const}; this.proposals.set(next.id,next); return {...next,citations:next.citations.map(c=>({...c}))}; }
- get(id:string,permissions:readonly string[]):ExtractionProposal|null { if(!permissions.includes('knowledge:read')) throw new Error('Missing permission: knowledge:read'); const p=this.proposals.get(id); return p?{...p,citations:p.citations.map(c=>({...c}))}:null; }
+  private readonly proposals = new Map<string, ExtractionProposal>();
+  create(input: CreateExtractionProposalInput): ExtractionProposal {
+    if (!input.permissions.includes('knowledge:propose'))
+      throw new Error('Missing permission: knowledge:propose');
+    if (!input.proposal.citations.length) throw new Error('Citation required');
+    if (input.proposal.generatedBy === 'AI' && input.proposal.label !== 'AI Generated')
+      throw new Error('AI Generated label required');
+    const p = { ...input.proposal, citations: input.proposal.citations.map((c) => ({ ...c })) };
+    this.proposals.set(p.id, p);
+    return { ...p, citations: p.citations.map((c) => ({ ...c })) };
+  }
+  approve(input: ApproveExtractionInput): ExtractionProposal {
+    if (!input.permissions.includes('knowledge:write'))
+      throw new Error('Missing permission: knowledge:write');
+    const p = this.proposals.get(input.proposalId);
+    if (!p) throw new Error('Proposal not found');
+    const next = { ...p, approval: 'APPROVED' as const };
+    this.proposals.set(next.id, next);
+    return { ...next, citations: next.citations.map((c) => ({ ...c })) };
+  }
+  get(id: string, permissions: readonly string[]): ExtractionProposal | null {
+    if (!permissions.includes('knowledge:read'))
+      throw new Error('Missing permission: knowledge:read');
+    const p = this.proposals.get(id);
+    return p ? { ...p, citations: p.citations.map((c) => ({ ...c })) } : null;
+  }
 }

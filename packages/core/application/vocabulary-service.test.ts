@@ -8,7 +8,10 @@ describe('VocabularyService', () => {
       lemma: '  resilient ',
       source: { sourceId: 'source-1', locator: 'page-2' },
     });
-    service.addSense(entry.id, { definition: 'able to recover quickly', partOfSpeech: 'adjective' });
+    service.addSense(entry.id, {
+      definition: 'able to recover quickly',
+      partOfSpeech: 'adjective',
+    });
     service.addPronunciation(entry.id, { ipa: '/rɪˈzɪliənt/', dialect: 'US' });
     service.addPhrase(entry.id, { text: 'resilient system' });
     service.addExample(entry.id, { text: 'She is resilient.' });
@@ -45,15 +48,17 @@ describe('VocabularyService', () => {
     expect(() => service.createEntry({ lemma: '   ' })).toThrow('lemma is required');
     service.createEntry({ lemma: 'Word' });
     expect(() => service.createEntry({ lemma: ' word ' })).toThrow('already exists');
-    expect(() => new VocabularyService({ canWrite: false, canWriteState: true }).createEntry({ lemma: 'x' })).toThrow(
-      'permission denied',
-    );
+    expect(() =>
+      new VocabularyService({ canWrite: false, canWriteState: true }).createEntry({ lemma: 'x' }),
+    ).toThrow('permission denied');
     const stateService = new VocabularyService({ canWrite: true, canWriteState: false });
     const entry = stateService.createEntry({ lemma: 'state' });
     expect(() => stateService.updateState(entry.id, { status: 'KNOWN', familiarity: 1 })).toThrow(
       'vocabulary-state:write',
     );
-    expect(() => service.updateState('missing', { status: 'KNOWN', familiarity: 1 })).toThrow('not found');
+    expect(() => service.updateState('missing', { status: 'KNOWN', familiarity: 1 })).toThrow(
+      'not found',
+    );
   });
 
   it('returns defensive snapshots', () => {

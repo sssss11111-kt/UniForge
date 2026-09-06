@@ -71,7 +71,9 @@ export class LearningDimensionService {
           correct: items.filter((item) => item.outcome === 'CORRECT').length,
           errors: items.filter((item) => item.outcome === 'INCORRECT').length,
           score: items.length
-            ? Number((items.reduce((total, item) => total + item.score, 0) / items.length).toFixed(3))
+            ? Number(
+                (items.reduce((total, item) => total + item.score, 0) / items.length).toFixed(3),
+              )
             : null,
           evidenceIds: items.map((item) => item.id),
         };
@@ -94,9 +96,14 @@ export class LearningDimensionService {
   private validate(input: RecordLearningDimensionEvidenceInput): void {
     if (!input.evidenceId.trim() || !input.vocabularyEntryId.trim())
       throw new Error('learning dimension ids are required');
-    if (!LEARNING_DIMENSIONS.includes(input.dimension)) throw new Error('invalid learning dimension');
-    if (!['CORRECT', 'INCORRECT'].includes(input.outcome)) throw new Error('invalid learning dimension outcome');
-    if (input.score !== undefined && (!Number.isFinite(input.score) || input.score < 0 || input.score > 1))
+    if (!LEARNING_DIMENSIONS.includes(input.dimension))
+      throw new Error('invalid learning dimension');
+    if (!['CORRECT', 'INCORRECT'].includes(input.outcome))
+      throw new Error('invalid learning dimension outcome');
+    if (
+      input.score !== undefined &&
+      (!Number.isFinite(input.score) || input.score < 0 || input.score > 1)
+    )
       throw new Error('learning dimension score must be between 0 and 1');
     if (!parseInstant(input.provenance.recordedAt).ok || !input.provenance.source.sourceId.trim())
       throw new Error('invalid learning dimension provenance');

@@ -154,9 +154,13 @@ contextBridge.exposeInMainWorld(
       request: (input: unknown) => ipcRenderer.invoke(exitRequestChannel, input),
       shutdown: () => ipcRenderer.invoke(exitShutdownChannel),
     }),
-    knowledge: Object.freeze({ getSnapshot: () => ipcRenderer.invoke(knowledgeWorkspaceSnapshotChannel) }),
+    knowledge: Object.freeze({
+      getSnapshot: () => ipcRenderer.invoke(knowledgeWorkspaceSnapshotChannel),
+    }),
     news: Object.freeze({ getSnapshot: () => ipcRenderer.invoke(newsWorkspaceSnapshotChannel) }),
-    project: Object.freeze({ getSnapshot: () => ipcRenderer.invoke(projectWorkspaceSnapshotChannel) }),
+    project: Object.freeze({
+      getSnapshot: () => ipcRenderer.invoke(projectWorkspaceSnapshotChannel),
+    }),
     ...(testPreferences ? { testPreferences } : {}),
   }),
 );

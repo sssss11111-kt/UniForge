@@ -26,11 +26,17 @@ export class VoiceService {
 
   public constructor(
     private readonly speech: SpeechPort,
-    private readonly approval: VoiceApprovalPort = { request: async () => ({ status: 'APPROVED' }) },
+    private readonly approval: VoiceApprovalPort = {
+      request: async () => ({ status: 'APPROVED' }),
+    },
   ) {}
 
   async getSnapshot(): Promise<VoiceSnapshotDto> {
-    return { state: this.sessions.at(-1)?.status ?? 'IDLE', sessions: [...this.sessions], sidecar: this.sidecar };
+    return {
+      state: this.sessions.at(-1)?.status ?? 'IDLE',
+      sessions: [...this.sessions],
+      sidecar: this.sidecar,
+    };
   }
 
   async execute(input: VoiceRequest): Promise<{ ok: true; value: VoiceSnapshotDto }> {
@@ -41,20 +47,43 @@ export class VoiceService {
     this.upsert(base(input));
     const health = await this.speech.health();
     this.sidecar = health;
-    if (health.status !== 'ready') return this.store({ ...base(input), status: 'UNAVAILABLE', ...(health.reason ? { error: health.reason } : {}) });
-    const approval = input.provider === 'cloud' ? await this.approval.request({ requestId: input.requestId, operation: input.operation }) : { status: 'APPROVED' as const };
-    if (approval.status === 'DENIED') return this.store({ ...base(input), status: 'FAILED', error: 'APPROVAL_DENIED', ...(approval.approvalId ? { approvalId: approval.approvalId } : {}) });
+    if (health.status !== 'ready')
+      return this.store({
+        ...base(input),
+        status: 'UNAVAILABLE',
+        ...(health.reason ? { error: health.reason } : {}),
+      });
+    const approval =
+      input.provider === 'cloud'
+        ? await this.approval.request({ requestId: input.requestId, operation: input.operation })
+        : { status: 'APPROVED' as const };
+    if (approval.status === 'DENIED')
+      return this.store({
+        ...base(input),
+        status: 'FAILED',
+        error: 'APPROVAL_DENIED',
+        ...(approval.approvalId ? { approvalId: approval.approvalId } : {}),
+      });
     if (approval.status === 'PENDING' && !input.approvalId)
-      return this.store({ ...base(input), status: 'WAITING_APPROVAL', ...(approval.approvalId ? { approvalId: approval.approvalId } : {}) });
+      return this.store({
+        ...base(input),
+        status: 'WAITING_APPROVAL',
+        ...(approval.approvalId ? { approvalId: approval.approvalId } : {}),
+      });
     const controller = new AbortController();
     this.controllers.set(input.requestId, controller);
     try {
-      const value = input.operation === 'STT'
-        ? { text: await this.speech.transcribe(input.audio!, controller.signal) }
-        : { audio: await this.speech.synthesize(input.text!, controller.signal) };
+      const value =
+        input.operation === 'STT'
+          ? { text: await this.speech.transcribe(input.audio!, controller.signal) }
+          : { audio: await this.speech.synthesize(input.text!, controller.signal) };
       return this.store({ ...base(input), status: 'COMPLETED', ...(input.incognito ? {} : value) });
     } catch (error) {
-      return this.store({ ...base(input), status: controller.signal.aborted ? 'CANCELLED' : 'FAILED', error: error instanceof Error ? error.message : 'VOICE_FAILED' });
+      return this.store({
+        ...base(input),
+        status: controller.signal.aborted ? 'CANCELLED' : 'FAILED',
+        error: error instanceof Error ? error.message : 'VOICE_FAILED',
+      });
     } finally {
       this.controllers.delete(input.requestId);
     }
@@ -79,10 +108,20 @@ export class VoiceService {
     else this.sessions[index] = session;
   }
   private snapshot(): VoiceSnapshotDto {
-    return { state: this.sessions.at(-1)?.status ?? 'IDLE', sessions: [...this.sessions], sidecar: this.sidecar };
+    return {
+      state: this.sessions.at(-1)?.status ?? 'IDLE',
+      sessions: [...this.sessions],
+      sidecar: this.sidecar,
+    };
   }
 }
 
 function base(input: VoiceRequest): VoiceSession {
-  return { requestId: input.requestId, operation: input.operation, mode: input.mode, status: 'STARTING', incognito: input.incognito };
+  return {
+    requestId: input.requestId,
+    operation: input.operation,
+    mode: input.mode,
+    status: 'STARTING',
+    incognito: input.incognito,
+  };
 }
