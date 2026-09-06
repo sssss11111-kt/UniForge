@@ -48,6 +48,7 @@ const exitRequestChannel = 'uniforge:exit-request';
 const exitShutdownChannel = 'uniforge:exit-shutdown';
 const knowledgeWorkspaceSnapshotChannel = 'uniforge:knowledge-workspace-snapshot';
 const newsWorkspaceSnapshotChannel = 'uniforge:news-workspace-snapshot';
+const projectWorkspaceSnapshotChannel = 'uniforge:project-workspace-snapshot';
 
 const testPreferences =
   process.env.UF_TEST_MODE === '1'
@@ -155,6 +156,7 @@ contextBridge.exposeInMainWorld(
     }),
     knowledge: Object.freeze({ getSnapshot: () => ipcRenderer.invoke(knowledgeWorkspaceSnapshotChannel) }),
     news: Object.freeze({ getSnapshot: () => ipcRenderer.invoke(newsWorkspaceSnapshotChannel) }),
+    project: Object.freeze({ getSnapshot: () => ipcRenderer.invoke(projectWorkspaceSnapshotChannel) }),
     ...(testPreferences ? { testPreferences } : {}),
   }),
 );

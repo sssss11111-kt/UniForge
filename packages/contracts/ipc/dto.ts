@@ -53,6 +53,7 @@ export const IPC_CHANNELS = Object.freeze({
   exitShutdown: 'uniforge:exit-shutdown',
   knowledgeWorkspaceSnapshot: 'uniforge:knowledge-workspace-snapshot',
   newsWorkspaceSnapshot: 'uniforge:news-workspace-snapshot',
+  projectWorkspaceSnapshot: 'uniforge:project-workspace-snapshot',
 } as const);
 export type IpcChannel = (typeof IPC_CHANNELS)[keyof typeof IPC_CHANNELS];
 export interface HealthDto {
@@ -76,3 +77,4 @@ export type RecycleResponseDto = import('../lifecycle/index.js').RecycleSnapshot
 export type ExitResponseDto = import('../lifecycle/index.js').ExitDecisionDto;
 export type KnowledgeWorkspaceResponseDto = import('../knowledge/workspace.js').KnowledgeWorkspaceSnapshot;
 export type NewsWorkspaceResponseDto = import('../news/workspace.js').NewsWorkspaceSnapshot;
+export type ProjectWorkspaceResponseDto = import('../project/workspace-snapshot.js').ProjectWorkspaceSnapshot;

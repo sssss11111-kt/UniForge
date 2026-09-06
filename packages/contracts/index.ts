@@ -39,3 +39,4 @@ export * from './project/workspace.js';
 export * from './project/task.js';
 export * from './project/execution.js';
 export * from './project/artifact.js';
+export * from './project/workspace-snapshot.js';

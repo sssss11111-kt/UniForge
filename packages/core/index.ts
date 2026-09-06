@@ -33,4 +33,5 @@ export * from './application/project-workspace-service.js';
 export * from './application/project-task-service.js';
 export * from './application/project-execution-service.js';
 export * from './application/project-artifact-service.js';
+export * from './application/project-workspace-snapshot-service.js';
 export * from './application/memory-service.js';

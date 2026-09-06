@@ -31,6 +31,7 @@ import { InMemoryRecycleStore, RecycleBinService, ExitCoordinator } from '@unifo
 import type { BackupCreateInput, ExitRequestDto } from '@uniforge/contracts/lifecycle/index.js';
 import { KnowledgeWorkspaceService } from '@uniforge/core/application/knowledge-workspace-service.js';
 import { NewsWorkspaceService } from '@uniforge/core/application/news-workspace-service.js';
+import { ProjectWorkspaceSnapshotService } from '@uniforge/core/application/project-workspace-snapshot-service.js';
 export const registerIpcHandlers = (
   version: string,
   settings = new SettingsCenter(),
@@ -65,6 +66,7 @@ export const registerIpcHandlers = (
   exit = new ExitCoordinator([]),
   knowledge = new KnowledgeWorkspaceService(),
   news = new NewsWorkspaceService(),
+  project = new ProjectWorkspaceSnapshotService(),
 ): void => {
   ipcMain.handle(IPC_CHANNELS.health, (event: IpcMainInvokeEvent, payload: unknown): HealthDto => {
     if (!event.sender || event.sender.isDestroyed()) throw new Error('INVALID_SENDER');
@@ -80,6 +82,11 @@ export const registerIpcHandlers = (
     if (!event.sender || event.sender.isDestroyed()) throw new Error('INVALID_SENDER');
     if (payload !== undefined) throw new Error('INVALID_PAYLOAD');
     return news.getSnapshot(['news:read']);
+  });
+  ipcMain.handle(IPC_CHANNELS.projectWorkspaceSnapshot, async (event, payload: unknown) => {
+    if (!event.sender || event.sender.isDestroyed()) throw new Error('INVALID_SENDER');
+    if (payload !== undefined) throw new Error('INVALID_PAYLOAD');
+    return project.getSnapshot(['project:read']);
   });
   ipcMain.handle(
     IPC_CHANNELS.appShell,
