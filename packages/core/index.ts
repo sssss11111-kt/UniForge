@@ -25,4 +25,5 @@ export * from './application/search-index-service.js';
 export * from './application/decision-action-service.js';
 export * from './application/knowledge-workspace-service.js';
 export * from './application/news-source-service.js';
+export * from './application/news-claim-service.js';
 export * from './application/memory-service.js';
