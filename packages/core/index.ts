@@ -20,3 +20,4 @@ export * from './application/ielts-workspace-service.js';
 export * from './application/mock-exam-service.js';
 export * from './application/content-service.js';
 export * from './application/topic-relation-service.js';
+export * from './application/extraction-service.js';
