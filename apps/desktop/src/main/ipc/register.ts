@@ -29,6 +29,7 @@ import { VoiceService, type SpeechPort } from '@uniforge/core/application/voice-
 import type { VoiceRequest } from '@uniforge/contracts/voice/index.js';
 import { InMemoryRecycleStore, RecycleBinService, ExitCoordinator } from '@uniforge/core';
 import type { BackupCreateInput, ExitRequestDto } from '@uniforge/contracts/lifecycle/index.js';
+import { KnowledgeWorkspaceService } from '@uniforge/core/application/knowledge-workspace-service.js';
 export const registerIpcHandlers = (
   version: string,
   settings = new SettingsCenter(),
@@ -61,11 +62,17 @@ export const registerIpcHandlers = (
   voice = new VoiceService(unavailableSpeech()),
   recycle = new RecycleBinService(new InMemoryRecycleStore()),
   exit = new ExitCoordinator([]),
+  knowledge = new KnowledgeWorkspaceService(),
 ): void => {
   ipcMain.handle(IPC_CHANNELS.health, (event: IpcMainInvokeEvent, payload: unknown): HealthDto => {
     if (!event.sender || event.sender.isDestroyed()) throw new Error('INVALID_SENDER');
     if (payload !== undefined) throw new Error('INVALID_PAYLOAD');
     return { ok: true, version };
+  });
+  ipcMain.handle(IPC_CHANNELS.knowledgeWorkspaceSnapshot, async (event, payload: unknown) => {
+    if (!event.sender || event.sender.isDestroyed()) throw new Error('INVALID_SENDER');
+    if (payload !== undefined) throw new Error('INVALID_PAYLOAD');
+    return knowledge.getSnapshot(['knowledge:read']);
   });
   ipcMain.handle(
     IPC_CHANNELS.appShell,

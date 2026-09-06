@@ -51,6 +51,7 @@ export const IPC_CHANNELS = Object.freeze({
   recycleRestore: 'uniforge:recycle-restore',
   exitRequest: 'uniforge:exit-request',
   exitShutdown: 'uniforge:exit-shutdown',
+  knowledgeWorkspaceSnapshot: 'uniforge:knowledge-workspace-snapshot',
 } as const);
 export type IpcChannel = (typeof IPC_CHANNELS)[keyof typeof IPC_CHANNELS];
 export interface HealthDto {
@@ -72,3 +73,4 @@ export type VoiceResponseDto = VoiceSnapshotDto;
 export type BackupResponseDto = import('../lifecycle/index.js').BackupSnapshotDto;
 export type RecycleResponseDto = import('../lifecycle/index.js').RecycleSnapshotDto;
 export type ExitResponseDto = import('../lifecycle/index.js').ExitDecisionDto;
+export type KnowledgeWorkspaceResponseDto = import('../knowledge/workspace.js').KnowledgeWorkspaceSnapshot;

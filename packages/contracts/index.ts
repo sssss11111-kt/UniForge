@@ -29,3 +29,4 @@ export * from './knowledge/topic.js';
 export * from './knowledge/extraction.js';
 export * from './knowledge/search.js';
 export * from './knowledge/decision.js';
+export * from './knowledge/workspace.js';

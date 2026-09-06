@@ -1,0 +1,2 @@
+import { describe, expect, it } from 'vitest'; import { KnowledgeWorkspaceService } from './knowledge-workspace-service.js';
+describe('KnowledgeWorkspaceService',()=>{it('returns a safe empty workspace snapshot',()=>{expect(new KnowledgeWorkspaceService().getSnapshot(['knowledge:read'])).toMatchObject({status:'READY',pendingApprovals:0});});it('fails closed without read permission',()=>{expect(()=>new KnowledgeWorkspaceService().getSnapshot([])).toThrow('knowledge:read');});});

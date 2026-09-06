@@ -23,4 +23,5 @@ export * from './application/topic-relation-service.js';
 export * from './application/extraction-service.js';
 export * from './application/search-index-service.js';
 export * from './application/decision-action-service.js';
+export * from './application/knowledge-workspace-service.js';
 export * from './application/memory-service.js';
