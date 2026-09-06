@@ -45,6 +45,12 @@ export const IPC_CHANNELS = Object.freeze({
   voiceSnapshot: 'uniforge:voice-snapshot',
   voiceExecute: 'uniforge:voice-execute',
   voiceCancel: 'uniforge:voice-cancel',
+  backupCreate: 'uniforge:backup-create',
+  backupValidate: 'uniforge:backup-validate',
+  recycleList: 'uniforge:recycle-list',
+  recycleRestore: 'uniforge:recycle-restore',
+  exitRequest: 'uniforge:exit-request',
+  exitShutdown: 'uniforge:exit-shutdown',
 } as const);
 export type IpcChannel = (typeof IPC_CHANNELS)[keyof typeof IPC_CHANNELS];
 export interface HealthDto {
@@ -63,3 +69,6 @@ export type CourseMasteryResponseDto = import('../course/mastery.js').MasterySna
 export type CourseExamReviewResponseDto = import('../course/exam-review.js').ReviewPlanSnapshotDto;
 export type AgentCenterResponseDto = AgentCenterSnapshotDto;
 export type VoiceResponseDto = VoiceSnapshotDto;
+export type BackupResponseDto = import('../lifecycle/index.js').BackupSnapshotDto;
+export type RecycleResponseDto = import('../lifecycle/index.js').RecycleSnapshotDto;
+export type ExitResponseDto = import('../lifecycle/index.js').ExitDecisionDto;

@@ -12,6 +12,7 @@ export { createCourseMaterialCopy } from './files/course-material-copy.js';
 export { StructuredLogger, type LogEntry, type LogLevel } from './logging/structured.js';
 export {
   createBackup,
+  createWorkspaceBackup,
   restoreBackup,
   validateBackup,
   type BackupInput,

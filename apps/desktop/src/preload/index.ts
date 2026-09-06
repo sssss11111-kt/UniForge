@@ -40,6 +40,12 @@ const agentCenterCancelChannel = 'uniforge:agent-center-cancel';
 const voiceSnapshotChannel = 'uniforge:voice-snapshot';
 const voiceExecuteChannel = 'uniforge:voice-execute';
 const voiceCancelChannel = 'uniforge:voice-cancel';
+const backupCreateChannel = 'uniforge:backup-create';
+const backupValidateChannel = 'uniforge:backup-validate';
+const recycleListChannel = 'uniforge:recycle-list';
+const recycleRestoreChannel = 'uniforge:recycle-restore';
+const exitRequestChannel = 'uniforge:exit-request';
+const exitShutdownChannel = 'uniforge:exit-shutdown';
 
 const testPreferences =
   process.env.UF_TEST_MODE === '1'
@@ -132,6 +138,18 @@ contextBridge.exposeInMainWorld(
       getSnapshot: () => ipcRenderer.invoke(voiceSnapshotChannel),
       execute: (input: unknown) => ipcRenderer.invoke(voiceExecuteChannel, input),
       cancel: (requestId: string) => ipcRenderer.invoke(voiceCancelChannel, { requestId }),
+    }),
+    backup: Object.freeze({
+      create: (input: unknown) => ipcRenderer.invoke(backupCreateChannel, input),
+      validate: (source: string) => ipcRenderer.invoke(backupValidateChannel, source),
+    }),
+    recycle: Object.freeze({
+      list: () => ipcRenderer.invoke(recycleListChannel),
+      restore: (id: string) => ipcRenderer.invoke(recycleRestoreChannel, id),
+    }),
+    exit: Object.freeze({
+      request: (input: unknown) => ipcRenderer.invoke(exitRequestChannel, input),
+      shutdown: () => ipcRenderer.invoke(exitShutdownChannel),
     }),
     ...(testPreferences ? { testPreferences } : {}),
   }),

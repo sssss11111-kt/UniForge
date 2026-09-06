@@ -29,6 +29,13 @@ import type { ReviewPlanSnapshotDto, CreateReviewPlanInput } from '../course/exa
 import type { AgentCenterSnapshotDto, CreateAgentRunInput } from '../agent/center.js';
 import type { Id } from '../domain/primitives.js';
 import type { VoiceRequest, VoiceSnapshotDto } from '../voice/index.js';
+import type {
+  BackupCreateInput,
+  BackupSnapshotDto,
+  RecycleSnapshotDto,
+  ExitRequestDto,
+  ExitDecisionDto,
+} from '../lifecycle/index.js';
 export interface UniforgeApi {
   readonly health: () => Promise<HealthDto>;
   readonly appShell: () => Promise<AppShellResponseDto>;
@@ -112,5 +119,19 @@ export interface UniforgeApi {
     readonly getSnapshot: () => Promise<VoiceSnapshotDto>;
     readonly execute: (input: Omit<VoiceRequest, 'context'>) => Promise<VoiceSnapshotDto>;
     readonly cancel: (requestId: string) => Promise<VoiceSnapshotDto>;
+  };
+  readonly backup: {
+    readonly create: (input: BackupCreateInput) => Promise<BackupSnapshotDto>;
+    readonly validate: (source: string) => Promise<BackupSnapshotDto>;
+  };
+  readonly recycle: {
+    readonly list: () => Promise<RecycleSnapshotDto>;
+    readonly restore: (id: string) => Promise<RecycleSnapshotDto>;
+  };
+  readonly exit: {
+    readonly request: (input: ExitRequestDto) => Promise<ExitDecisionDto>;
+    readonly shutdown: () => Promise<{
+      failures: readonly { participant: string; message: string }[];
+    }>;
   };
 }

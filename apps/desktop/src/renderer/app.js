@@ -34,6 +34,11 @@
   const voiceState = document.getElementById('voice-state');
   const voiceStart = document.getElementById('voice-start');
   const voiceCancel = document.getElementById('voice-cancel');
+  const backupCreate = document.getElementById('backup-create');
+  const recycleRefresh = document.getElementById('recycle-refresh');
+  const appExit = document.getElementById('app-exit');
+  const recoveryState = document.getElementById('recovery-state');
+  const recycleItems = document.getElementById('recycle-items');
   let activeVoiceRequest;
   const renderVoice = (snapshot) => {
     const latest = snapshot.sessions.at(-1);
@@ -42,12 +47,14 @@
       : snapshot.sidecar.status === 'unavailable'
         ? `语音不可用：${snapshot.sidecar.reason ?? '未配置语音运行时'}`
         : '语音尚未运行。';
-    voiceCancel.disabled = !latest || ['COMPLETED', 'FAILED', 'CANCELLED', 'UNAVAILABLE'].includes(latest.status);
+    voiceCancel.disabled =
+      !latest || ['COMPLETED', 'FAILED', 'CANCELLED', 'UNAVAILABLE'].includes(latest.status);
   };
   const renderAgentCenter = (snapshot) => {
     agentCenterRuns.replaceChildren();
     if (!snapshot.runs.length) {
-      agentCenterState.textContent = '暂无 Agent 运行记录。创建任务后，运行、失败、取消和审批状态将在这里保留。';
+      agentCenterState.textContent =
+        '暂无 Agent 运行记录。创建任务后，运行、失败、取消和审批状态将在这里保留。';
       return;
     }
     agentCenterState.textContent = `${snapshot.runs.length} 个运行记录，${snapshot.approvals.length} 个等待审批。`;
@@ -228,18 +235,65 @@
       renderReviewPlan(await window.uniforge.course.reviewPlan.getSnapshot());
       renderAgentCenter(await window.uniforge.agentCenter.getSnapshot());
       renderVoice(await window.uniforge.voice.getSnapshot());
+      const renderRecycle = (snapshot) => {
+        recycleItems.replaceChildren();
+        recoveryState.textContent = `回收站 ${snapshot.entries.length} 项；删除内容在保留期内可恢复。`;
+        snapshot.entries.forEach((entry) => {
+          const item = document.createElement('button');
+          item.type = 'button';
+          item.textContent = `恢复 ${entry.entityType}/${entry.entityId}`;
+          item.addEventListener('click', async () =>
+            renderRecycle(await window.uniforge.recycle.restore(entry.id)),
+          );
+          recycleItems.append(item);
+        });
+      };
+      renderRecycle(await window.uniforge.recycle.list());
+      backupCreate.addEventListener('click', async () => {
+        try {
+          await window.uniforge.backup.create({ schemaVersion: 1, domainData: {} });
+          recoveryState.textContent = '备份已创建并带有可验证清单。';
+        } catch (error) {
+          recoveryState.textContent =
+            error?.message === 'CANCELLED' ? '已取消备份。' : '备份失败，请检查应用诊断。';
+        }
+      });
+      recycleRefresh.addEventListener('click', async () =>
+        renderRecycle(await window.uniforge.recycle.list()),
+      );
+      appExit.addEventListener('click', async () => {
+        const decision = await window.uniforge.exit.request({ hasUnsavedChanges: false });
+        if (decision.action === 'EXIT') await window.uniforge.exit.shutdown();
+      });
       voiceStart.addEventListener('click', async () => {
         activeVoiceRequest = `voice-${Date.now()}`;
-        renderVoice({ sessions: [{ requestId: activeVoiceRequest, status: 'STARTING' }], sidecar: { status: 'ready' } });
+        renderVoice({
+          sessions: [{ requestId: activeVoiceRequest, status: 'STARTING' }],
+          sidecar: { status: 'ready' },
+        });
         try {
-          renderVoice(await window.uniforge.voice.execute({ requestId: activeVoiceRequest, operation: 'STT', mode: 'GLOBAL', audio: { format: 'wav', base64: '' }, incognito: true, continuous: false, wakeWordEnabled: false }));
+          renderVoice(
+            await window.uniforge.voice.execute({
+              requestId: activeVoiceRequest,
+              operation: 'STT',
+              mode: 'GLOBAL',
+              audio: { format: 'wav', base64: '' },
+              incognito: true,
+              continuous: false,
+              wakeWordEnabled: false,
+            }),
+          );
         } catch (error) {
           voiceState.textContent = `语音请求失败：${error?.message ?? 'UNKNOWN'}`;
         }
       });
       voiceCancel.addEventListener('click', async () => {
         if (!activeVoiceRequest) return;
-        try { renderVoice(await window.uniforge.voice.cancel(activeVoiceRequest)); } catch { voiceState.textContent = '语音取消失败，请检查应用诊断。'; }
+        try {
+          renderVoice(await window.uniforge.voice.cancel(activeVoiceRequest));
+        } catch {
+          voiceState.textContent = '语音取消失败，请检查应用诊断。';
+        }
       });
       executionForm.addEventListener('submit', async (event) => {
         event.preventDefault();

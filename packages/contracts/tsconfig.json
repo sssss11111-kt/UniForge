@@ -17,6 +17,7 @@
     "settings/**/*.ts",
     "dashboard/**/*.ts",
     "course/**/*.ts",
-    "voice/**/*.ts"
+    "voice/**/*.ts",
+    "lifecycle/**/*.ts"
   ]
 }

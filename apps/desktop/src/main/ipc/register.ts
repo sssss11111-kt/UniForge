@@ -11,7 +11,11 @@ import { CourseRecognitionService } from '@uniforge/core/application/course-reco
 import { CourseAiService } from '@uniforge/core/application/course-ai-service.js';
 import { AssignmentService } from '@uniforge/core/application/assignment-service.js';
 import type { ModelGateway } from '@uniforge/contracts';
-import { createCourseMaterialCopy } from '@uniforge/infrastructure';
+import {
+  createCourseMaterialCopy,
+  createWorkspaceBackup,
+  validateBackup,
+} from '@uniforge/infrastructure';
 import { ControlledCourseRunner } from '@uniforge/infrastructure';
 import { CourseExecutionService } from '@uniforge/core/application/course-execution-service.js';
 import { CourseNotesService } from '@uniforge/core/application/course-notes-service.js';
@@ -23,6 +27,8 @@ import type { Id } from '@uniforge/contracts/domain/primitives.js';
 import { AgentCenterService } from '@uniforge/platform-agent';
 import { VoiceService, type SpeechPort } from '@uniforge/core/application/voice-service.js';
 import type { VoiceRequest } from '@uniforge/contracts/voice/index.js';
+import { InMemoryRecycleStore, RecycleBinService, ExitCoordinator } from '@uniforge/core';
+import type { BackupCreateInput, ExitRequestDto } from '@uniforge/contracts/lifecycle/index.js';
 export const registerIpcHandlers = (
   version: string,
   settings = new SettingsCenter(),
@@ -53,6 +59,8 @@ export const registerIpcHandlers = (
   }),
   agentCenter = new AgentCenterService(),
   voice = new VoiceService(unavailableSpeech()),
+  recycle = new RecycleBinService(new InMemoryRecycleStore()),
+  exit = new ExitCoordinator([]),
 ): void => {
   ipcMain.handle(IPC_CHANNELS.health, (event: IpcMainInvokeEvent, payload: unknown): HealthDto => {
     if (!event.sender || event.sender.isDestroyed()) throw new Error('INVALID_SENDER');
@@ -510,22 +518,94 @@ export const registerIpcHandlers = (
     if (!event.sender || event.sender.isDestroyed()) throw new Error('INVALID_SENDER');
     if (!payload || typeof payload !== 'object') throw new Error('INVALID_PAYLOAD');
     const input = payload as Record<string, unknown>;
-    if (typeof input.requestId !== 'string' || (input.operation !== 'STT' && input.operation !== 'TTS') || (input.mode !== 'GLOBAL' && input.mode !== 'AGENT_INPUT')) throw new Error('INVALID_PAYLOAD');
-    const result = await voice.execute({ ...input, context: { actor: 'user', permissions: ['voice:use'] } } as unknown as VoiceRequest);
+    if (
+      typeof input.requestId !== 'string' ||
+      (input.operation !== 'STT' && input.operation !== 'TTS') ||
+      (input.mode !== 'GLOBAL' && input.mode !== 'AGENT_INPUT')
+    )
+      throw new Error('INVALID_PAYLOAD');
+    const result = await voice.execute({
+      ...input,
+      context: { actor: 'user', permissions: ['voice:use'] },
+    } as unknown as VoiceRequest);
     return result.value;
   });
   ipcMain.handle(IPC_CHANNELS.voiceCancel, async (event, payload: unknown) => {
     if (!event.sender || event.sender.isDestroyed()) throw new Error('INVALID_SENDER');
-    if (!payload || typeof payload !== 'object' || typeof (payload as { requestId?: unknown }).requestId !== 'string') throw new Error('INVALID_PAYLOAD');
+    if (
+      !payload ||
+      typeof payload !== 'object' ||
+      typeof (payload as { requestId?: unknown }).requestId !== 'string'
+    )
+      throw new Error('INVALID_PAYLOAD');
     return (await voice.cancel((payload as { requestId: string }).requestId)).value;
+  });
+  const workspaceRoot = path.resolve(app.getPath('userData'), 'workspace');
+  ipcMain.handle(IPC_CHANNELS.backupCreate, async (event, payload: unknown) => {
+    if (!event.sender || event.sender.isDestroyed()) throw new Error('INVALID_SENDER');
+    if (!payload || typeof payload !== 'object') throw new Error('INVALID_PAYLOAD');
+    const input = payload as Record<string, unknown>;
+    if (typeof input.schemaVersion !== 'number' || !('domainData' in input))
+      throw new Error('INVALID_PAYLOAD');
+    const selected = await dialog.showSaveDialog({
+      defaultPath: path.join(workspaceRoot, 'backups', `backup-${Date.now()}.json`),
+    });
+    if (selected.canceled || !selected.filePath) throw new Error('CANCELLED');
+    const result = await createWorkspaceBackup(
+      selected.filePath,
+      workspaceRoot,
+      input as unknown as BackupCreateInput,
+    );
+    if (!result.ok) throw new Error(result.error.code);
+    return { status: 'CREATED' as const, manifest: result.value };
+  });
+  ipcMain.handle(IPC_CHANNELS.backupValidate, async (event, payload: unknown) => {
+    if (!event.sender || event.sender.isDestroyed()) throw new Error('INVALID_SENDER');
+    if (typeof payload !== 'string' || !payload.trim()) throw new Error('INVALID_PAYLOAD');
+    const result = await validateBackup(payload);
+    return result.ok
+      ? { status: 'CREATED' as const, manifest: result.value }
+      : { status: 'INVALID' as const, error: result.error.message };
+  });
+  ipcMain.handle(IPC_CHANNELS.recycleList, (event, payload: unknown) => {
+    if (!event.sender || event.sender.isDestroyed()) throw new Error('INVALID_SENDER');
+    if (payload !== undefined) throw new Error('INVALID_PAYLOAD');
+    return { entries: recycle.list('workspace-default') };
+  });
+  ipcMain.handle(IPC_CHANNELS.recycleRestore, (event, payload: unknown) => {
+    if (!event.sender || event.sender.isDestroyed()) throw new Error('INVALID_SENDER');
+    if (typeof payload !== 'string' || !payload.trim()) throw new Error('INVALID_PAYLOAD');
+    recycle.restore(payload);
+    return { entries: recycle.list('workspace-default') };
+  });
+  ipcMain.handle(IPC_CHANNELS.exitRequest, (event, payload: unknown) => {
+    if (!event.sender || event.sender.isDestroyed()) throw new Error('INVALID_SENDER');
+    if (
+      !payload ||
+      typeof payload !== 'object' ||
+      typeof (payload as { hasUnsavedChanges?: unknown }).hasUnsavedChanges !== 'boolean'
+    )
+      throw new Error('INVALID_PAYLOAD');
+    return exit.decide(payload as ExitRequestDto);
+  });
+  ipcMain.handle(IPC_CHANNELS.exitShutdown, async (event, payload: unknown) => {
+    if (!event.sender || event.sender.isDestroyed()) throw new Error('INVALID_SENDER');
+    if (payload !== undefined) throw new Error('INVALID_PAYLOAD');
+    const result = await exit.shutdown();
+    if (!result.failures.length) app.quit();
+    return result;
   });
 };
 
 function unavailableSpeech(): SpeechPort {
   return {
     health: async () => ({ status: 'unavailable', reason: 'Speech runtime not provisioned' }),
-    transcribe: async () => { throw new Error('Speech runtime not provisioned'); },
-    synthesize: async () => { throw new Error('Speech runtime not provisioned'); },
+    transcribe: async () => {
+      throw new Error('Speech runtime not provisioned');
+    },
+    synthesize: async () => {
+      throw new Error('Speech runtime not provisioned');
+    },
     cancel: async () => undefined,
   };
 }
