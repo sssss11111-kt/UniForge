@@ -18,4 +18,4 @@ export * from './course/index.js';
 export * from './voice/index.js';
 export * from './lifecycle/index.js';
 
-export * from './english/exam-space';
+export * from './english/exam-space.js';

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { ExamSpaceService } from './exam-space-service';
+import { ExamSpaceService } from './exam-space-service.js';
 describe('ExamSpaceService', () => {
   it('starts empty and creates supported spaces', () => {
     const s = new ExamSpaceService();

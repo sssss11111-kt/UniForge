@@ -12,4 +12,4 @@ export * from './application/course-material-service.js';
 export * from './application/course-ai-service.js';
 export * from './application/course-mastery-service.js';
 
-export * from './application/exam-space-service';
+export * from './application/exam-space-service.js';

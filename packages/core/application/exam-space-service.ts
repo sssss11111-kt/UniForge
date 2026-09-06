@@ -3,7 +3,7 @@ import type {
   ExamSpace,
   ExamSpaceSnapshot,
   ExamRuleSet,
-} from '@uniforge/contracts/english/exam-space';
+} from '@uniforge/contracts/english/exam-space.js';
 export interface ExamSpacePermission {
   canWrite: boolean;
 }
