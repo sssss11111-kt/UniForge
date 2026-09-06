@@ -19,6 +19,7 @@
     "course/**/*.ts",
     "voice/**/*.ts",
     "lifecycle/**/*.ts",
-    "english/**/*.ts"
+    "english/**/*.ts",
+    "knowledge/**/*.ts"
   ]
 }
