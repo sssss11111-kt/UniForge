@@ -17,3 +17,4 @@ export * from './application/vocabulary-service.js';
 export * from './application/learning-dimension-service.js';
 export * from './application/adaptive-training-service.js';
 export * from './application/ielts-workspace-service.js';
+export * from './application/mock-exam-service.js';

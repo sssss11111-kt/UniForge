@@ -23,3 +23,4 @@ export * from './english/vocabulary.js';
 export * from './english/learning-dimensions.js';
 export * from './english/training.js';
 export * from './english/ielts.js';
+export * from './english/mock-exam.js';
