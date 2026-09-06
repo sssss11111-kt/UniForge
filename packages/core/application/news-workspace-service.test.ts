@@ -1,0 +1,2 @@
+import { describe, expect, it } from 'vitest'; import { NewsWorkspaceService } from './news-workspace-service.js';
+describe('NewsWorkspaceService',()=>{it('returns an honest empty state',()=>expect(new NewsWorkspaceService().getSnapshot(['news:read'])).toMatchObject({status:'READY',conflictingCount:0}));it('fails closed',()=>expect(()=>new NewsWorkspaceService().getSnapshot([])).toThrow('news:read'));});

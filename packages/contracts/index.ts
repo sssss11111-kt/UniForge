@@ -33,3 +33,4 @@ export * from './knowledge/workspace.js';
 export * from './news/source.js';
 export * from './news/claim.js';
 export * from './news/verification.js';
+export * from './news/workspace.js';

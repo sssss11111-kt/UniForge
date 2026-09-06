@@ -47,6 +47,7 @@ const recycleRestoreChannel = 'uniforge:recycle-restore';
 const exitRequestChannel = 'uniforge:exit-request';
 const exitShutdownChannel = 'uniforge:exit-shutdown';
 const knowledgeWorkspaceSnapshotChannel = 'uniforge:knowledge-workspace-snapshot';
+const newsWorkspaceSnapshotChannel = 'uniforge:news-workspace-snapshot';
 
 const testPreferences =
   process.env.UF_TEST_MODE === '1'
@@ -153,6 +154,7 @@ contextBridge.exposeInMainWorld(
       shutdown: () => ipcRenderer.invoke(exitShutdownChannel),
     }),
     knowledge: Object.freeze({ getSnapshot: () => ipcRenderer.invoke(knowledgeWorkspaceSnapshotChannel) }),
+    news: Object.freeze({ getSnapshot: () => ipcRenderer.invoke(newsWorkspaceSnapshotChannel) }),
     ...(testPreferences ? { testPreferences } : {}),
   }),
 );
