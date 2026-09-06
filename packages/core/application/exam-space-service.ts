@@ -25,9 +25,9 @@ export class ExamSpaceService {
       name: input.name.trim(),
       examType: input.examType,
       ruleSet,
-      examDate: input.examDate,
       createdAt: new Date().toISOString(),
     };
+    if (input.examDate) space.examDate = input.examDate;
     this.spaces.push(space);
     return { ...space, ruleSet: { ...ruleSet } };
   }

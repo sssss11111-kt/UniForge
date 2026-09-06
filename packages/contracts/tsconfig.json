@@ -18,6 +18,7 @@
     "dashboard/**/*.ts",
     "course/**/*.ts",
     "voice/**/*.ts",
-    "lifecycle/**/*.ts"
+    "lifecycle/**/*.ts",
+    "english/**/*.ts"
   ]
 }
