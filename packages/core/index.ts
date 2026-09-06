@@ -21,3 +21,5 @@ export * from './application/mock-exam-service.js';
 export * from './application/content-service.js';
 export * from './application/topic-relation-service.js';
 export * from './application/extraction-service.js';
+export * from './application/search-index-service.js';
+export * from './application/memory-service.js';

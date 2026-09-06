@@ -27,3 +27,4 @@ export * from './english/mock-exam.js';
 export * from './knowledge/content.js';
 export * from './knowledge/topic.js';
 export * from './knowledge/extraction.js';
+export * from './knowledge/search.js';
