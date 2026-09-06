@@ -13,3 +13,4 @@ export * from './application/course-ai-service.js';
 export * from './application/course-mastery-service.js';
 
 export * from './application/exam-space-service.js';
+export * from './application/vocabulary-service.js';
