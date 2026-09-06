@@ -8,6 +8,7 @@
     "./*": "./dist/*"
   },
   "dependencies": {
-    "@uniforge/contracts": "0.0.0"
+    "@uniforge/contracts": "0.0.0",
+    "ts-fsrs": "5.4.2"
   }
 }
