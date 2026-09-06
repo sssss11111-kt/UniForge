@@ -35,3 +35,4 @@ export * from './news/claim.js';
 export * from './news/verification.js';
 export * from './news/workspace.js';
 export * from './news/action.js';
+export * from './project/workspace.js';

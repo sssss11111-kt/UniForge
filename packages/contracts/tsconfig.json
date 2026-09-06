@@ -21,6 +21,7 @@
     "lifecycle/**/*.ts",
     "english/**/*.ts",
     "knowledge/**/*.ts",
-    "news/**/*.ts"
+    "news/**/*.ts",
+    "project/**/*.ts"
   ]
 }
