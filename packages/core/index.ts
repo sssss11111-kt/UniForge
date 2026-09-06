@@ -15,3 +15,4 @@ export * from './application/course-mastery-service.js';
 export * from './application/exam-space-service.js';
 export * from './application/vocabulary-service.js';
 export * from './application/learning-dimension-service.js';
+export * from './application/adaptive-training-service.js';

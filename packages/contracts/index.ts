@@ -21,3 +21,4 @@ export * from './lifecycle/index.js';
 export * from './english/exam-space.js';
 export * from './english/vocabulary.js';
 export * from './english/learning-dimensions.js';
+export * from './english/training.js';
