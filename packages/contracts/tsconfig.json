@@ -20,6 +20,7 @@
     "voice/**/*.ts",
     "lifecycle/**/*.ts",
     "english/**/*.ts",
-    "knowledge/**/*.ts"
+    "knowledge/**/*.ts",
+    "news/**/*.ts"
   ]
 }
