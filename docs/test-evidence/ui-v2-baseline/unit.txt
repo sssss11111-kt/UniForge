@@ -1,0 +1,17 @@
+
+> uniforge@0.0.0 unit
+> node scripts/run-test-group.mjs unit
+
+
+ RUN  v5.0.0 C:/Users/Tong/Documents/ChatGPT/New project
+
+
+ Test Files  70 passed (70)
+      Tests  168 passed (168)
+   Start at  19:49:55
+   Duration  5.60s (transform 81%, import 9%, tests 9%, worker 1%)
+
+  Transform  transforming modules took 39.30s · 81% of tracked time, re-done on every run
+             persist transforms across runs with fsModuleCache: true
+             learn more: https://vitest.dev/guide/improving-performance#caching-between-reruns
+

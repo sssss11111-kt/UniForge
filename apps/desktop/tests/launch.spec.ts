@@ -37,13 +37,21 @@ test('app shell exposes primary navigation and roadmap states', async () => {
       };
     });
     expect(bridge.keys).toEqual([
+      'agentCenter',
       'appShell',
+      'backup',
       'course',
       'dashboard',
+      'exit',
       'health',
+      'knowledge',
+      'news',
+      'project',
+      'recycle',
       'settings',
       'testPreferences',
       'version',
+      'voice',
     ]);
     expect(bridge.preferences).toEqual({
       nodeIntegration: false,
@@ -54,6 +62,9 @@ test('app shell exposes primary navigation and roadmap states', async () => {
     expect(bridge.requireType).toBe('undefined');
     expect(bridge.processType).toBe('undefined');
     expect(bridge.electronType).toBe('undefined');
+    await expect(page.getByRole('button', { name: /04 项目实践/ })).toBeDisabled();
+    await expect(page.getByRole('button', { name: /05 知识与情报/ })).toBeDisabled();
+    await expect(page.getByRole('button', { name: /06 AI 新闻/ })).toBeDisabled();
     await expect(page.getByRole('heading', { name: '运行状态' })).toBeVisible();
     await expect(page.getByText('默认工作区', { exact: true })).toBeVisible();
     await expect(page.getByRole('heading', { name: '概览' })).toBeVisible();
