@@ -219,7 +219,17 @@
             modulePage.replaceChildren(englishOverviewAdapter.renderEnglishOverview(viewModel));
           } else if (modulePage && module.id === 'projects' && projectsOverviewAdapter) {
             const viewModel = await projectsOverviewAdapter.loadProjectOverview(window.uniforge);
-            modulePage.replaceChildren(projectsOverviewAdapter.renderProjectOverview(viewModel));
+            const overview = projectsOverviewAdapter.renderProjectOverview(viewModel);
+            const flow = await projectsOverviewAdapter.loadProjectTaskFlow(window.uniforge);
+            const flowView =
+              flow.state === 'ready' || flow.state === 'empty'
+                ? projectsOverviewAdapter.renderProjectTaskFlow(flow)
+                : projectsOverviewAdapter.renderProjectTaskFlow({
+                    tasks: [],
+                    decisions: [],
+                    artifacts: [],
+                  });
+            modulePage.replaceChildren(overview, flowView);
           } else if (modulePage) {
             modulePage.replaceChildren();
             const heading = document.createElement('h2');
