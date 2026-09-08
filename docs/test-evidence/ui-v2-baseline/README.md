@@ -9,12 +9,12 @@ excluded.
 
 ## Commands
 
-| Command | Result |
-| --- | --- |
-| `npx vitest run tests/integration/ui-shell-contract.test.ts` | PASS — 1 file, 2 tests |
-| `npm run typecheck` | PASS |
-| `npm run unit` | PASS — 70 files, 168 tests |
-| `npm run e2e-smoke` | BLOCKED — Electron launch test timed out after 30s before a window became available |
+| Command                                                      | Result                                                                              |
+| ------------------------------------------------------------ | ----------------------------------------------------------------------------------- |
+| `npx vitest run tests/integration/ui-shell-contract.test.ts` | PASS — 1 file, 2 tests                                                              |
+| `npm run typecheck`                                          | PASS                                                                                |
+| `npm run unit`                                               | PASS — 70 files, 168 tests                                                          |
+| `npm run e2e-smoke`                                          | BLOCKED — Electron launch test timed out after 30s before a window became available |
 
 Raw command output is kept beside this file. The E2E timeout is recorded as a
 known baseline failure; assertions were not weakened to make the checkpoint

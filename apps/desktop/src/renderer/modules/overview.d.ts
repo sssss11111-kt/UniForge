@@ -5,7 +5,15 @@ export interface OverviewErrorSnapshot {
 }
 
 export interface OverviewSnapshot {
-  readonly state: 'loading' | 'empty' | 'ready' | 'offline' | 'read-only' | 'permission-denied' | 'approval-required' | 'roadmap';
+  readonly state:
+    | 'loading'
+    | 'empty'
+    | 'ready'
+    | 'offline'
+    | 'read-only'
+    | 'permission-denied'
+    | 'approval-required'
+    | 'roadmap';
   readonly workspace?: { readonly name?: string; readonly status?: string };
   readonly items?: readonly unknown[];
   readonly approvals?: number;

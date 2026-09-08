@@ -5,7 +5,15 @@ export interface AgentCenterErrorSnapshot {
 }
 
 export interface AgentCenterSnapshot {
-  readonly state: 'loading' | 'empty' | 'ready' | 'offline' | 'read-only' | 'permission-denied' | 'approval-required' | 'roadmap';
+  readonly state:
+    | 'loading'
+    | 'empty'
+    | 'ready'
+    | 'offline'
+    | 'read-only'
+    | 'permission-denied'
+    | 'approval-required'
+    | 'roadmap';
   readonly runs?: readonly unknown[];
   readonly approvals?: readonly unknown[];
   readonly error?: { readonly message: string; readonly diagnosticRef?: string };
