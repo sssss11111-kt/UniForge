@@ -19,6 +19,7 @@
     "integration": "node scripts/run-test-group.mjs integration",
     "security": "npm audit --omit=dev --audit-level=high",
     "license": "node scripts/check-licenses.mjs",
+    "news-boundary": "node scripts/check-news-data-boundary.mjs",
     "sbom": "node scripts/generate-sbom.mjs",
     "e2e-smoke": "npm run build:desktop && playwright test",
     "check-boundaries": "node scripts/check-boundaries.mjs",
