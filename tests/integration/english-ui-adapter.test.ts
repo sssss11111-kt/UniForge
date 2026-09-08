@@ -25,3 +25,8 @@ test('English overview adapter preserves empty and error states', async () => {
     ).state,
   ).toBe('error');
 });
+
+test('English overview renderer is exported as a view function', async () => {
+  const module = await import('../../apps/desktop/src/renderer/modules/english.js');
+  expect(typeof module.renderEnglishOverview).toBe('function');
+});

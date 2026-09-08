@@ -11,3 +11,4 @@ export function roadmapModule(options?: {
 }): { id: string; label: string; secondaryItems: string[]; state: 'roadmap' };
 export function loadEnglishOverview(api: EnglishOverviewApi): Promise<Record<string, unknown>>;
 export function loadEnglishStudy(api: EnglishOverviewApi): Promise<Record<string, unknown>>;
+export function renderEnglishOverview(viewModel: Record<string, unknown>): HTMLElement;
