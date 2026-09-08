@@ -234,7 +234,11 @@
             const workspaceView = projectsOverviewAdapter.renderSoftwareWorkspace(
               viewModel.workspace,
             );
-            modulePage.replaceChildren(overview, flowView, workspaceView);
+            const aiView = projectsOverviewAdapter.renderProjectAiInspector({
+              status: 'unavailable',
+              reason: 'Project AI 尚未连接；不会伪造模型成功状态。',
+            });
+            modulePage.replaceChildren(overview, flowView, workspaceView, aiView);
           } else if (modulePage) {
             modulePage.replaceChildren();
             const heading = document.createElement('h2');

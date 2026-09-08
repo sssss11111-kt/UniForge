@@ -112,6 +112,20 @@ export function renderSoftwareWorkspace({
   return root;
 }
 
+export function renderProjectAiInspector({
+  status = 'unavailable',
+  reason = '尚未配置 Project AI',
+} = {}) {
+  const root = globalThis.document.createElement('aside');
+  root.className = 'project-ai-inspector';
+  const title = globalThis.document.createElement('h2');
+  title.textContent = 'Project AI';
+  const state = globalThis.document.createElement('p');
+  state.textContent = status === 'ready' ? '可提出建议，所有修改仍需授权与审批。' : reason;
+  root.append(title, state);
+  return root;
+}
+
 export function renderProjectTaskFlow({ tasks = [], decisions = [], artifacts = [] } = {}) {
   const root = globalThis.document.createElement('section');
   root.className = 'project-task-flow';
