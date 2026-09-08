@@ -19,6 +19,30 @@ describe('UI shell migration contract', () => {
     expect(available.has('news')).toBe(false);
   });
 
+  it('loads read-only snapshots and roadmap modules without direct IPC', async () => {
+    const { loadOverview } = await import('../../apps/desktop/src/renderer/modules/overview.js');
+    const { loadAgentCenter } =
+      await import('../../apps/desktop/src/renderer/modules/agent-center.js');
+    const { roadmapModule } = await import('../../apps/desktop/src/renderer/modules/knowledge.js');
+    expect(
+      (
+        await loadOverview({
+          dashboard: {
+            getSnapshot: async () => ({ items: [], workspaceName: 'w', workspaceStatus: 'ready' }),
+          },
+        })
+      ).state,
+    ).toBe('empty');
+    expect(
+      (
+        await loadAgentCenter({
+          agentCenter: { getSnapshot: async () => ({ runs: [], approvals: [] }) },
+        })
+      ).state,
+    ).toBe('empty');
+    expect(roadmapModule().state).toBe('roadmap');
+  });
+
   it('defines the approved warm editorial tokens in the source stylesheet', async () => {
     const css = (await readFile('apps/desktop/src/renderer/ui/tokens.css', 'utf8')).toLowerCase();
 
@@ -63,5 +87,45 @@ describe('UI shell migration contract', () => {
       'approval-required',
     ])
       expect(source).toContain(`'${state}'`);
+  });
+
+  it('turns a rejected dashboard snapshot into a visible error state', async () => {
+    const result = await loadOverview({
+      dashboard: {
+        getSnapshot: async () => {
+          throw new Error('DB_OFFLINE');
+        },
+      },
+    });
+
+    expect(result.state).toBe('error');
+    expect(result.error.message).toBe('DB_OFFLINE');
+  });
+
+  it('turns a rejected Agent snapshot into a visible error state', async () => {
+    const result = await loadAgentCenter({
+      agentCenter: {
+        getSnapshot: async () => {
+          throw new Error('AGENT_OFFLINE');
+        },
+      },
+    });
+
+    expect(result.state).toBe('error');
+    expect(result.error.message).toBe('AGENT_OFFLINE');
+  });
+
+  it('does not call IPC for a roadmap module', () => {
+    const api = {
+      knowledge: {
+        getSnapshot: () => {
+          throw new Error('must not call');
+        },
+      },
+    };
+    const result = roadmapModule({ id: 'knowledge', label: '知识与情报', secondaryItems: [] }, api);
+
+    expect(result.state).toBe('roadmap');
+    expect(result.id).toBe('knowledge');
   });
 });
