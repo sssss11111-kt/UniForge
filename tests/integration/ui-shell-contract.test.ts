@@ -102,7 +102,7 @@ describe('UI shell migration contract', () => {
     });
 
     expect(result.state).toBe('error');
-    expect(result.error.message).toBe('DB_OFFLINE');
+    expect(result.error?.message).toBe('DB_OFFLINE');
   });
 
   it('turns a rejected Agent snapshot into a visible error state', async () => {
@@ -115,7 +115,7 @@ describe('UI shell migration contract', () => {
     });
 
     expect(result.state).toBe('error');
-    expect(result.error.message).toBe('AGENT_OFFLINE');
+    expect(result.error?.message).toBe('AGENT_OFFLINE');
   });
 
   it('does not call IPC for a roadmap module', () => {
