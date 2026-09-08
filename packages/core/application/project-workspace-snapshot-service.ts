@@ -9,6 +9,9 @@ export class ProjectWorkspaceSnapshotService {
       runningExecutions: 0,
       reviewArtifacts: 0,
       failedOperations: 0,
+      files: [],
+      git: { status: 'UNAVAILABLE', branch: null },
+      test: { status: 'NOT_RUN', summary: '尚未授权项目工作区' },
     };
   }
 }
