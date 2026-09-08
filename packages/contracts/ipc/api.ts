@@ -32,6 +32,9 @@ import type { VoiceRequest, VoiceSnapshotDto } from '../voice/index.js';
 import type { KnowledgeWorkspaceSnapshot } from '../knowledge/workspace.js';
 import type { NewsWorkspaceSnapshot } from '../news/workspace.js';
 import type { ProjectWorkspaceSnapshot } from '../project/workspace-snapshot.js';
+import type { ExamSpaceSnapshot } from '../english/exam-space.js';
+import type { VocabularySnapshot } from '../english/vocabulary.js';
+import type { ProjectTaskSnapshot } from '../project/task.js';
 import type {
   BackupCreateInput,
   BackupSnapshotDto,
@@ -125,7 +128,14 @@ export interface UniforgeApi {
   };
   readonly knowledge: { readonly getSnapshot: () => Promise<KnowledgeWorkspaceSnapshot> };
   readonly news: { readonly getSnapshot: () => Promise<NewsWorkspaceSnapshot> };
-  readonly project: { readonly getSnapshot: () => Promise<ProjectWorkspaceSnapshot> };
+  readonly english: {
+    readonly getSnapshot: () => Promise<ExamSpaceSnapshot>;
+    readonly vocabulary: { readonly getSnapshot: () => Promise<VocabularySnapshot> };
+  };
+  readonly project: {
+    readonly getSnapshot: () => Promise<ProjectWorkspaceSnapshot>;
+    readonly tasks: { readonly getSnapshot: () => Promise<ProjectTaskSnapshot> };
+  };
   readonly backup: {
     readonly create: (input: BackupCreateInput) => Promise<BackupSnapshotDto>;
     readonly validate: (source: string) => Promise<BackupSnapshotDto>;

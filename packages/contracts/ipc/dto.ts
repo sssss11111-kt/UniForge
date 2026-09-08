@@ -8,6 +8,8 @@ import type {
 } from '../course/index.js';
 import type { AgentCenterSnapshotDto } from '../agent/center.js';
 import type { VoiceSnapshotDto } from '../voice/index.js';
+import type { ExamSpaceSnapshot } from '../english/exam-space.js';
+import type { VocabularySnapshot } from '../english/vocabulary.js';
 
 export const IPC_CHANNELS = Object.freeze({
   health: 'uniforge:health',
@@ -54,6 +56,9 @@ export const IPC_CHANNELS = Object.freeze({
   knowledgeWorkspaceSnapshot: 'uniforge:knowledge-workspace-snapshot',
   newsWorkspaceSnapshot: 'uniforge:news-workspace-snapshot',
   projectWorkspaceSnapshot: 'uniforge:project-workspace-snapshot',
+  englishSnapshot: 'uniforge:english-snapshot',
+  englishVocabularySnapshot: 'uniforge:english-vocabulary-snapshot',
+  projectTaskSnapshot: 'uniforge:project-task-snapshot',
 } as const);
 export type IpcChannel = (typeof IPC_CHANNELS)[keyof typeof IPC_CHANNELS];
 export interface HealthDto {
@@ -80,3 +85,6 @@ export type KnowledgeWorkspaceResponseDto =
 export type NewsWorkspaceResponseDto = import('../news/workspace.js').NewsWorkspaceSnapshot;
 export type ProjectWorkspaceResponseDto =
   import('../project/workspace-snapshot.js').ProjectWorkspaceSnapshot;
+export type EnglishResponseDto = ExamSpaceSnapshot;
+export type EnglishVocabularyResponseDto = VocabularySnapshot;
+export type ProjectTaskResponseDto = import('../project/task.js').ProjectTaskSnapshot;

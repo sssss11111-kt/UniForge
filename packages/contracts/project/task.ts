@@ -19,3 +19,8 @@ export interface CreateProjectTaskInput {
   task: ProjectTask;
   permissions: readonly string[];
 }
+
+export interface ProjectTaskSnapshot {
+  status: 'READY' | 'EMPTY';
+  tasks: readonly ProjectTask[];
+}

@@ -10,6 +10,12 @@ test('modules 03-04 expose typed read snapshots and no arbitrary renderer bridge
   expect(api).toContain('readonly project:');
   expect(api).toContain('ProjectWorkspaceSnapshot');
   expect(preload).toContain('projectWorkspaceSnapshotChannel');
+  expect(dto).toContain('englishSnapshot');
+  expect(dto).toContain('projectTaskSnapshot');
+  expect(api).toContain('readonly english:');
+  expect(api).toContain('readonly tasks:');
+  expect(preload).toContain('englishVocabularySnapshotChannel');
+  expect(preload).toContain('projectTaskSnapshotChannel');
   expect(preload).not.toContain('contextBridge.exposeInMainWorld("fs"');
 });
 

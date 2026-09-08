@@ -49,6 +49,9 @@ const exitShutdownChannel = 'uniforge:exit-shutdown';
 const knowledgeWorkspaceSnapshotChannel = 'uniforge:knowledge-workspace-snapshot';
 const newsWorkspaceSnapshotChannel = 'uniforge:news-workspace-snapshot';
 const projectWorkspaceSnapshotChannel = 'uniforge:project-workspace-snapshot';
+const englishSnapshotChannel = 'uniforge:english-snapshot';
+const englishVocabularySnapshotChannel = 'uniforge:english-vocabulary-snapshot';
+const projectTaskSnapshotChannel = 'uniforge:project-task-snapshot';
 
 const testPreferences =
   process.env.UF_TEST_MODE === '1'
@@ -160,6 +163,15 @@ contextBridge.exposeInMainWorld(
     news: Object.freeze({ getSnapshot: () => ipcRenderer.invoke(newsWorkspaceSnapshotChannel) }),
     project: Object.freeze({
       getSnapshot: () => ipcRenderer.invoke(projectWorkspaceSnapshotChannel),
+      tasks: Object.freeze({
+        getSnapshot: () => ipcRenderer.invoke(projectTaskSnapshotChannel),
+      }),
+    }),
+    english: Object.freeze({
+      getSnapshot: () => ipcRenderer.invoke(englishSnapshotChannel),
+      vocabulary: Object.freeze({
+        getSnapshot: () => ipcRenderer.invoke(englishVocabularySnapshotChannel),
+      }),
     }),
     ...(testPreferences ? { testPreferences } : {}),
   }),

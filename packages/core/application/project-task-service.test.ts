@@ -20,5 +20,26 @@ describe('ProjectTaskService', () => {
   it('fails closed', () => {
     const s = new ProjectTaskService();
     expect(() => s.get('x', [])).toThrow('project:read');
+    expect(() => s.getSnapshot([])).toThrow('project:read');
+  });
+  it('returns an honest empty or ready task snapshot', () => {
+    const s = new ProjectTaskService();
+    expect(s.getSnapshot(['project:read'])).toEqual({ status: 'EMPTY', tasks: [] });
+    s.create({
+      task: {
+        id: 't',
+        projectId: 'p',
+        goalId: 'g',
+        title: 'build',
+        status: 'TODO',
+        dependsOn: [],
+        requiresApproval: false,
+      },
+      permissions: ['project:write'],
+    });
+    expect(s.getSnapshot(['project:read'])).toMatchObject({
+      status: 'READY',
+      tasks: [{ id: 't' }],
+    });
   });
 });

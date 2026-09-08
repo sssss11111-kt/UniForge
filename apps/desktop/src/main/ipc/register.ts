@@ -32,6 +32,9 @@ import type { BackupCreateInput, ExitRequestDto } from '@uniforge/contracts/life
 import { KnowledgeWorkspaceService } from '@uniforge/core/application/knowledge-workspace-service.js';
 import { NewsWorkspaceService } from '@uniforge/core/application/news-workspace-service.js';
 import { ProjectWorkspaceSnapshotService } from '@uniforge/core/application/project-workspace-snapshot-service.js';
+import { ExamSpaceService } from '@uniforge/core/application/exam-space-service.js';
+import { VocabularyService } from '@uniforge/core/application/vocabulary-service.js';
+import { ProjectTaskService } from '@uniforge/core/application/project-task-service.js';
 export const registerIpcHandlers = (
   version: string,
   settings = new SettingsCenter(),
@@ -67,6 +70,9 @@ export const registerIpcHandlers = (
   knowledge = new KnowledgeWorkspaceService(),
   news = new NewsWorkspaceService(),
   project = new ProjectWorkspaceSnapshotService(),
+  examSpace = new ExamSpaceService(),
+  vocabulary = new VocabularyService(),
+  projectTasks = new ProjectTaskService(),
 ): void => {
   ipcMain.handle(IPC_CHANNELS.health, (event: IpcMainInvokeEvent, payload: unknown): HealthDto => {
     if (!event.sender || event.sender.isDestroyed()) throw new Error('INVALID_SENDER');
@@ -87,6 +93,21 @@ export const registerIpcHandlers = (
     if (!event.sender || event.sender.isDestroyed()) throw new Error('INVALID_SENDER');
     if (payload !== undefined) throw new Error('INVALID_PAYLOAD');
     return project.getSnapshot(['project:read']);
+  });
+  ipcMain.handle(IPC_CHANNELS.englishSnapshot, async (event, payload: unknown) => {
+    if (!event.sender || event.sender.isDestroyed()) throw new Error('INVALID_SENDER');
+    if (payload !== undefined) throw new Error('INVALID_PAYLOAD');
+    return examSpace.getSnapshot();
+  });
+  ipcMain.handle(IPC_CHANNELS.englishVocabularySnapshot, async (event, payload: unknown) => {
+    if (!event.sender || event.sender.isDestroyed()) throw new Error('INVALID_SENDER');
+    if (payload !== undefined) throw new Error('INVALID_PAYLOAD');
+    return vocabulary.getSnapshot();
+  });
+  ipcMain.handle(IPC_CHANNELS.projectTaskSnapshot, async (event, payload: unknown) => {
+    if (!event.sender || event.sender.isDestroyed()) throw new Error('INVALID_SENDER');
+    if (payload !== undefined) throw new Error('INVALID_PAYLOAD');
+    return projectTasks.getSnapshot(['project:read']);
   });
   ipcMain.handle(
     IPC_CHANNELS.appShell,

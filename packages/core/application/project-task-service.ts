@@ -1,4 +1,4 @@
-import type { CreateProjectTaskInput, ProjectTask } from '@uniforge/contracts';
+import type { CreateProjectTaskInput, ProjectTask, ProjectTaskSnapshot } from '@uniforge/contracts';
 export class ProjectTaskService {
   private readonly tasks = new Map<string, ProjectTask>();
   create(input: CreateProjectTaskInput): ProjectTask {
@@ -26,5 +26,13 @@ export class ProjectTaskService {
     if (!permissions.includes('project:read')) throw new Error('Missing permission: project:read');
     const t = this.tasks.get(id);
     return t ? { ...t, dependsOn: [...t.dependsOn] } : null;
+  }
+  getSnapshot(permissions: readonly string[]): ProjectTaskSnapshot {
+    if (!permissions.includes('project:read')) throw new Error('Missing permission: project:read');
+    const tasks = [...this.tasks.values()].map((task) => ({
+      ...task,
+      dependsOn: [...task.dependsOn],
+    }));
+    return { status: tasks.length ? 'READY' : 'EMPTY', tasks };
   }
 }
