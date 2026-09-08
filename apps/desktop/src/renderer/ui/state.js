@@ -10,7 +10,8 @@ const STATES = new Set([
 ]);
 
 export function normalizeState(snapshot) {
-  if (!snapshot || typeof snapshot !== 'object') return { state: 'empty' };
+  if (!snapshot || typeof snapshot !== 'object')
+    return { state: 'error', message: 'INVALID_VIEW_STATE' };
   const candidate = snapshot.state;
   if (typeof candidate === 'string' && STATES.has(candidate)) {
     return {
@@ -21,5 +22,5 @@ export function normalizeState(snapshot) {
         : {}),
     };
   }
-  return { state: 'ready' };
+  return { state: 'error', message: 'INVALID_VIEW_STATE' };
 }
