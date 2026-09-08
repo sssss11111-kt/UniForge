@@ -20,3 +20,9 @@ export function renderSoftwareWorkspace(options?: {
   git?: Record<string, unknown>;
   test?: Record<string, unknown>;
 }): HTMLElement;
+
+export function renderProjectTaskFlow(options?: {
+  tasks?: readonly Record<string, unknown>[];
+  decisions?: readonly unknown[];
+  artifacts?: readonly unknown[];
+}): HTMLElement;

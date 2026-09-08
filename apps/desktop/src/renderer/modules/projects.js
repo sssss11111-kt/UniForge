@@ -93,3 +93,20 @@ export function renderSoftwareWorkspace({
   root.append(title, guard, fileList, evidence);
   return root;
 }
+
+export function renderProjectTaskFlow({ tasks = [], decisions = [], artifacts = [] } = {}) {
+  const root = globalThis.document.createElement('section');
+  root.className = 'project-task-flow';
+  const heading = globalThis.document.createElement('h2');
+  heading.textContent = '任务与证据';
+  const list = globalThis.document.createElement('ul');
+  for (const task of tasks) {
+    const item = globalThis.document.createElement('li');
+    item.textContent = `${task.title ?? task.id} · ${task.status ?? 'UNKNOWN'} · 依赖 ${task.dependsOn?.length ?? 0}`;
+    list.append(item);
+  }
+  const summary = globalThis.document.createElement('p');
+  summary.textContent = `决策 ${decisions.length} 项 · 产物 ${artifacts.length} 项；正文仍由领域对象和来源证据持有。`;
+  root.append(heading, list, summary);
+  return root;
+}
