@@ -158,7 +158,10 @@ contextBridge.exposeInMainWorld(
       shutdown: () => ipcRenderer.invoke(exitShutdownChannel),
     }),
     knowledge: Object.freeze({
-      getSnapshot: () => ipcRenderer.invoke(knowledgeWorkspaceSnapshotChannel),
+      getSnapshot: () =>
+        ipcRenderer.invoke(knowledgeWorkspaceSnapshotChannel) as ReturnType<
+          UniforgeApi['knowledge']['getSnapshot']
+        >,
     }),
     news: Object.freeze({ getSnapshot: () => ipcRenderer.invoke(newsWorkspaceSnapshotChannel) }),
     project: Object.freeze({

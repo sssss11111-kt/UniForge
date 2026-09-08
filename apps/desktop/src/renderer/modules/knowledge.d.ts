@@ -12,3 +12,5 @@ export interface RoadmapModule {
 }
 
 export function roadmapModule(input?: RoadmapModuleInput, api?: unknown): RoadmapModule;
+export function loadKnowledgeWorkspace(api: unknown): Promise<Record<string, unknown>>;
+export function renderKnowledgeWorkspace(viewModel: Record<string, unknown>): HTMLElement;
