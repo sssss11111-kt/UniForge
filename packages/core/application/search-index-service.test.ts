@@ -56,7 +56,11 @@ describe('SearchIndexService', () => {
   it('marks the derived index stale when canonical source versions change', () => {
     const s = new SearchIndexService();
     const document = { id: 'd', sourceEntityId: 'c1', text: 'distributed truth', version: 1 };
-    s.rebuild({ indexVersion: 'v1', documents: [document], permissions: ['knowledge:index:write'] });
+    s.rebuild({
+      indexVersion: 'v1',
+      documents: [document],
+      permissions: ['knowledge:index:write'],
+    });
     expect(s.checkFreshness([document], ['knowledge:read'])).toBe('READY');
     expect(
       s.checkFreshness([{ ...document, version: 2, text: 'updated truth' }], ['knowledge:read']),
@@ -77,7 +81,11 @@ describe('SearchIndexService', () => {
   it('does not mutate canonical input while rebuilding derived state', () => {
     const s = new SearchIndexService();
     const document = { id: 'd', sourceEntityId: 'c1', text: 'canonical body', version: 1 };
-    const input = { indexVersion: 'v1', documents: [document], permissions: ['knowledge:index:write'] };
+    const input = {
+      indexVersion: 'v1',
+      documents: [document],
+      permissions: ['knowledge:index:write'],
+    };
     s.rebuild(input);
     document.text = 'canonical body changed outside the index';
     expect(s.search('canonical body', ['knowledge:read'])).toHaveLength(1);

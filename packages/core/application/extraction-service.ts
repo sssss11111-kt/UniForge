@@ -87,7 +87,9 @@ export class ExtractionService {
     const ids = proposal.evidenceIds?.length
       ? proposal.evidenceIds
       : proposal.evidenceRefs?.map((evidence) => evidence.id).filter(Boolean);
-    return [...new Set(ids?.length ? ids : proposal.citations.map((citation) => citation.contentId))];
+    return [
+      ...new Set(ids?.length ? ids : proposal.citations.map((citation) => citation.contentId)),
+    ];
   }
   private requireProposal(id: string): ExtractionProposal {
     const proposal = this.proposals.get(id);

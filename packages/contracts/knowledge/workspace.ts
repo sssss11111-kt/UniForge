@@ -2,12 +2,7 @@ import type { ContentProvenance } from './provenance.js';
 type Provenance = ContentProvenance;
 
 export type KnowledgeWorkspaceState =
-  | 'READY'
-  | 'EMPTY'
-  | 'ERROR'
-  | 'OFFLINE'
-  | 'READ_ONLY'
-  | 'APPROVAL';
+  'READY' | 'EMPTY' | 'ERROR' | 'OFFLINE' | 'READ_ONLY' | 'APPROVAL';
 
 export interface KnowledgeInboxItemDto {
   readonly id: string;

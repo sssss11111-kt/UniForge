@@ -40,15 +40,16 @@ export function renderKnowledgeWorkspace(viewModel) {
   title.textContent = '知识与情报';
   root.append(title);
   const state = globalThis.document.createElement('p');
-  state.textContent = viewModel.state === 'error'
-    ? (viewModel.error?.message ?? '知识工作区加载失败')
-    : viewModel.state === 'offline'
-      ? '知识服务离线；当前仅显示已保存快照。'
-      : viewModel.state === 'empty'
-        ? '暂无知识内容；导入内容后会在来源证据保留的前提下显示。'
-        : viewModel.readOnly
-          ? '只读快照；写入、删除和外部操作需要 typed command 与权限审批。'
-          : '知识数据来自本地领域快照。';
+  state.textContent =
+    viewModel.state === 'error'
+      ? (viewModel.error?.message ?? '知识工作区加载失败')
+      : viewModel.state === 'offline'
+        ? '知识服务离线；当前仅显示已保存快照。'
+        : viewModel.state === 'empty'
+          ? '暂无知识内容；导入内容后会在来源证据保留的前提下显示。'
+          : viewModel.readOnly
+            ? '只读快照；写入、删除和外部操作需要 typed command 与权限审批。'
+            : '知识数据来自本地领域快照。';
   root.append(state);
   const summary = globalThis.document.createElement('div');
   summary.className = 'knowledge-workspace-summary';

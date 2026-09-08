@@ -135,7 +135,9 @@ describe('ExtractionService', () => {
     };
     expect(() => s.create({ proposal, permissions: [] })).toThrow('knowledge:propose');
     s.create({ proposal, permissions: ['knowledge:propose'] });
-    expect(() => s.approve({ proposalId: proposal.id, permissions: [] })).toThrow('knowledge:write');
+    expect(() => s.approve({ proposalId: proposal.id, permissions: [] })).toThrow(
+      'knowledge:write',
+    );
     expect(() => s.get(proposal.id, [])).toThrow('knowledge:read');
   });
 });
