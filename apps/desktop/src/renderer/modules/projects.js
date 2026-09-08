@@ -139,6 +139,16 @@ export function renderProjectTaskFlow({ tasks = [], decisions = [], artifacts = 
   }
   const summary = globalThis.document.createElement('p');
   summary.textContent = `决策 ${decisions.length} 项 · 产物 ${artifacts.length} 项；正文仍由领域对象和来源证据持有。`;
-  root.append(heading, list, summary);
+  const actions = globalThis.document.createElement('div');
+  actions.className = 'project-task-actions';
+  for (const label of ['创建任务', '请求审批']) {
+    const button = globalThis.document.createElement('button');
+    button.type = 'button';
+    button.textContent = label;
+    button.disabled = true;
+    button.title = '需要后续 typed command 与权限审批合同';
+    actions.append(button);
+  }
+  root.append(heading, list, summary, actions);
   return root;
 }
