@@ -13,3 +13,10 @@ export function loadProjectOverview(api: ProjectOverviewApi): Promise<{
   [key: string]: unknown;
 }>;
 export function renderProjectOverview(viewModel: Record<string, unknown>): HTMLElement;
+export function renderSoftwareWorkspace(options?: {
+  authorized?: boolean;
+  canonicalPath?: string | null;
+  files?: readonly string[];
+  git?: Record<string, unknown>;
+  test?: Record<string, unknown>;
+}): HTMLElement;

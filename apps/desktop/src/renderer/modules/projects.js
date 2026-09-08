@@ -65,3 +65,31 @@ export function renderProjectOverview(viewModel) {
   root.append(grid, workspace);
   return root;
 }
+
+export function renderSoftwareWorkspace({
+  authorized = false,
+  canonicalPath = null,
+  files = [],
+  git = {},
+  test = {},
+} = {}) {
+  const root = globalThis.document.createElement('section');
+  root.className = 'software-workspace';
+  const title = globalThis.document.createElement('h2');
+  title.textContent = '软件项目工作区';
+  const guard = globalThis.document.createElement('p');
+  guard.textContent =
+    authorized && canonicalPath
+      ? `授权根目录：${canonicalPath}`
+      : '未授权项目工作区；文件、终端和 Git 操作均已禁用。';
+  const fileList = globalThis.document.createElement('ul');
+  for (const file of files) {
+    const item = globalThis.document.createElement('li');
+    item.textContent = String(file);
+    fileList.append(item);
+  }
+  const evidence = globalThis.document.createElement('p');
+  evidence.textContent = `Git：${git.status ?? '未连接'} · 测试：${test.status ?? '未运行'}`;
+  root.append(title, guard, fileList, evidence);
+  return root;
+}
