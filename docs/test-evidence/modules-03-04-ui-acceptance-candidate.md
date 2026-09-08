@@ -12,7 +12,7 @@ Implemented and verified:
 - Guarded task action affordances for future typed commands and approvals.
 - 03 and 04 navigation routes enabled; 05 and 06 remain roadmap-disabled.
 
-Git checkpoints: `5316b72`, `e3b14b6`, `310635c`, `a75c4e9`, `556804e`, `c751714`, `711dadd`, `2099bde`, `b8a29ce`, `c59146e`.
+Git checkpoints: `5316b72`, `e3b14b6`, `310635c`, `a75c4e9`, `556804e`, `c751714`, `711dadd`, `2099bde`, `b8a29ce`, `c59146e`, `5c92951`, `68e0410`, `b9c3dd4`.
 
 Validation on 2026-09-08:
 
@@ -20,7 +20,7 @@ Validation on 2026-09-08:
 - `npm run lint` passed.
 - `npm run typecheck` passed.
 - `npm run unit` passed: 70 files / 169 tests.
-- `npm run integration` passed: 19 files / 39 tests.
+- `npm run integration` passed: 19 files / 40 tests.
 - `npm run build:desktop` passed.
 - `npm run e2e-smoke` passed: 4 tests.
 - `npm run check-boundaries` passed.
