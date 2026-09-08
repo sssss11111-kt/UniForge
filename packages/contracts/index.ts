@@ -33,6 +33,8 @@ export * from './knowledge/search.js';
 export * from './knowledge/decision.js';
 export * from './knowledge/workspace.js';
 export * from './news/source.js';
+export * from './news/event.js';
+export * from './news/provenance.js';
 export * from './news/claim.js';
 export * from './news/verification.js';
 export * from './news/workspace.js';
