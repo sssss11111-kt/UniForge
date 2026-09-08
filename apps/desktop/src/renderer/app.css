@@ -90,7 +90,10 @@ textarea {
 
 .app-shell {
   display: grid;
-  grid-template-columns: 248px 1fr;
+  grid-template-columns: var(--uf-primary-width) var(--uf-secondary-width) minmax(0, 1fr) var(
+      --uf-inspector-width
+    );
+  grid-template-rows: minmax(0, 1fr) var(--uf-command-height);
   min-height: 100vh;
 }
 .sidebar {
@@ -144,6 +147,77 @@ textarea {
 }
 .main-content {
   padding: var(--uf-space-8) 40px;
+  grid-column: 3;
+  overflow: auto;
+}
+.sidebar {
+  grid-column: 1;
+}
+.secondary-sidebar {
+  grid-column: 2;
+  padding: 20px 14px;
+  border-right: 1px solid var(--uf-border);
+  background: var(--uf-surface-muted);
+}
+.secondary-sidebar h2 {
+  margin: 0 0 18px;
+  font-size: 16px;
+}
+.secondary-item {
+  width: 100%;
+  padding: 8px;
+  border: 0;
+  background: transparent;
+  text-align: left;
+}
+.secondary-item[aria-current='page'],
+.secondary-item:hover {
+  background: var(--uf-accent-soft);
+}
+.inspector-sidebar {
+  grid-column: 4;
+  padding: 20px 14px;
+  border-left: 1px solid var(--uf-border);
+  background: var(--uf-surface);
+  overflow: auto;
+}
+.inspector-sidebar.is-collapsed {
+  display: none;
+}
+.inspector-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+.inspector-heading button {
+  padding: 6px;
+}
+.command-bar {
+  grid-column: 1 / -1;
+  grid-row: 2;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  border-top: 1px solid var(--uf-border);
+  background: var(--uf-surface);
+}
+.command-bar input {
+  flex: 1;
+  min-width: 0;
+}
+.command-context {
+  color: var(--uf-muted);
+  font-size: 12px;
+}
+@media (max-width: 1180px) {
+  .app-shell {
+    grid-template-columns: var(--uf-primary-width) var(--uf-secondary-width) minmax(0, 1fr);
+  }
+  .inspector-sidebar {
+    display: none;
+  }
 }
 .topbar {
   display: flex;
@@ -251,4 +325,45 @@ h1 {
 .content-card p:last-child {
   margin: 0;
   color: var(--uf-muted);
+}
+
+.uf-app-shell {
+  display: grid;
+  grid-template-columns: var(--uf-primary-width) var(--uf-secondary-width) minmax(0, 1fr) var(
+      --uf-inspector-width
+    );
+  grid-template-rows: minmax(0, 1fr) var(--uf-command-height);
+  height: 100vh;
+}
+.uf-app-shell[data-inspector-open='false'] {
+  grid-template-columns: var(--uf-primary-width) var(--uf-secondary-width) minmax(0, 1fr);
+}
+.uf-app-shell > [data-region] {
+  min-width: 0;
+  overflow: auto;
+  padding: 12px;
+  border-right: 1px solid var(--uf-border);
+}
+.uf-app-shell > [data-region='primary'] {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 8px 4px;
+}
+.uf-app-shell [aria-current='page'] {
+  background: var(--uf-accent-soft);
+  border-left: 2px solid var(--uf-text);
+}
+.uf-app-shell > [data-region='command'] {
+  grid-column: 1 / -1;
+  display: flex;
+  gap: 12px;
+  border-top: 1px solid var(--uf-border);
+}
+.uf-app-shell [data-region='command'] input {
+  flex: 1;
+  min-width: 0;
+}
+.uf-app-shell [hidden] {
+  display: none;
 }

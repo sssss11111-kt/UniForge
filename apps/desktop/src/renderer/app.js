@@ -1,5 +1,12 @@
 /* global document, window */
 (() => {
+  const inspector = document.querySelector('.inspector-sidebar');
+  const inspectorToggle = document.getElementById('inspector-toggle');
+  inspectorToggle?.addEventListener('click', () => {
+    const collapsed = inspector?.classList.toggle('is-collapsed') ?? false;
+    inspectorToggle.setAttribute('aria-expanded', String(!collapsed));
+    inspectorToggle.textContent = collapsed ? '展开状态侧栏' : '收起状态侧栏';
+  });
   const navigation = document.getElementById('primary-navigation');
   const description = document.getElementById('module-description');
   const availableDescription = '从这里开始管理你的学习、Agent 任务和工作空间。';
