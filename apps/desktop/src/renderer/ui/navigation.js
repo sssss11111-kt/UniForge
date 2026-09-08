@@ -5,7 +5,7 @@ export const navigationRegistry = Object.freeze([
   { id: 'english', label: '03 英语备考', status: 'available' },
   { id: 'projects', label: '04 项目实践', status: 'available' },
   { id: 'knowledge', label: '05 知识与情报', status: 'roadmap' },
-  { id: 'news', label: '06 AI 新闻', status: 'roadmap' },
+  { id: 'news', label: '06 AI 新闻', status: 'available' },
 ]);
 export function selectRoute(registry, id) {
   return registry.find((route) => route.id === id && route.status === 'available') ?? null;

@@ -50,6 +50,7 @@
   let activeVoiceRequest;
   let englishOverviewAdapter;
   let projectsOverviewAdapter;
+  let newsWorkspaceAdapter;
   const renderVoice = (snapshot) => {
     const latest = snapshot.sessions.at(-1);
     voiceState.textContent = latest
@@ -239,6 +240,9 @@
               reason: 'Project AI 尚未连接；不会伪造模型成功状态。',
             });
             modulePage.replaceChildren(overview, flowView, workspaceView, aiView);
+          } else if (modulePage && module.id === 'news' && newsWorkspaceAdapter) {
+            const viewModel = await newsWorkspaceAdapter.loadNewsWorkspace(window.uniforge);
+            modulePage.replaceChildren(newsWorkspaceAdapter.renderNewsWorkspace(viewModel));
           } else if (modulePage) {
             modulePage.replaceChildren();
             const heading = document.createElement('h2');
@@ -271,6 +275,7 @@
     try {
       englishOverviewAdapter = await import('./modules/english.js');
       projectsOverviewAdapter = await import('./modules/projects.js');
+      newsWorkspaceAdapter = await import('./modules/news.js');
       render(await window.uniforge.appShell());
       const snapshot = await window.uniforge.settings.getSnapshot();
       const model = snapshot.models[0];
