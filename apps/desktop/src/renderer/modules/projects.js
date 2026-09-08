@@ -108,7 +108,12 @@ export function renderSoftwareWorkspace({
   }
   const evidence = globalThis.document.createElement('p');
   evidence.textContent = `Git：${git.status ?? '未连接'} · 测试：${test.status ?? '未运行'}`;
-  root.append(title, guard, fileList, evidence);
+  const scope = globalThis.document.createElement('p');
+  scope.className = 'project-workspace-scope';
+  scope.textContent = authorized
+    ? '操作范围：仅限当前授权项目根目录；每次写入需权限与审批。'
+    : '操作范围：无；请先授权项目工作区。';
+  root.append(title, guard, fileList, evidence, scope);
   return root;
 }
 
