@@ -66,7 +66,7 @@ test('app shell exposes primary navigation and roadmap states', async () => {
     await expect(page.getByRole('button', { name: /03 英语备考/ })).toBeEnabled();
     await expect(page.getByRole('button', { name: /04 项目实践/ })).toBeEnabled();
     await expect(page.getByRole('button', { name: /05 知识与情报/ })).toBeDisabled();
-    await expect(page.getByRole('button', { name: /06 AI 新闻/ })).toBeDisabled();
+    await expect(page.getByRole('button', { name: /06 AI 新闻/ })).toBeEnabled();
     await expect(page.getByRole('heading', { name: '运行状态' })).toBeVisible();
     await expect(page.getByText('默认工作区', { exact: true })).toBeVisible();
     await expect(page.getByRole('heading', { name: '概览' })).toBeVisible();

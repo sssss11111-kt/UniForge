@@ -17,6 +17,10 @@ export interface NewsWorkspaceViewModel {
   readonly error?: { readonly message: string };
 }
 
-export function roadmapModule(input?: { id?: string; label?: string; secondaryItems?: readonly unknown[] }): unknown;
+export function roadmapModule(input?: {
+  id?: string;
+  label?: string;
+  secondaryItems?: readonly unknown[];
+}): unknown;
 export function loadNewsWorkspace(api: NewsWorkspaceApi): Promise<NewsWorkspaceViewModel>;
 export function renderNewsWorkspace(viewModel: NewsWorkspaceViewModel): HTMLElement;

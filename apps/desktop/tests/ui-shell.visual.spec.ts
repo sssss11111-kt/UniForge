@@ -24,7 +24,7 @@ test('warm shell meets desktop layout and responsive constraints', async () => {
   }
 });
 
-test('shell controls are keyboard reachable and roadmap actions remain disabled', async () => {
+test('shell controls are keyboard reachable and the news workspace route is enabled', async () => {
   const app = await electron.launch({ cwd: path.resolve('apps/desktop'), args: ['.'] });
   try {
     const page = await app.firstWindow();
@@ -33,7 +33,7 @@ test('shell controls are keyboard reachable and roadmap actions remain disabled'
     await expect(page.getByRole('button', { name: /03 英语备考/ })).toBeEnabled();
     await expect(page.getByRole('button', { name: /04 项目实践/ })).toBeEnabled();
     await expect(page.getByRole('button', { name: /05 知识与情报/ })).toBeDisabled();
-    await expect(page.getByRole('button', { name: /06 AI 新闻/ })).toBeDisabled();
+    await expect(page.getByRole('button', { name: /06 AI 新闻/ })).toBeEnabled();
   } finally {
     await app.close();
   }

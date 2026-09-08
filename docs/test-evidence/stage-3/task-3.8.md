@@ -12,21 +12,21 @@ Executed 2026-09-08 against the Stage 3 Knowledge & Intelligence scope.
 
 ## Validation evidence
 
-| Gate | Result |
-|---|---|
-| Focused Stage 3 domain/security/recovery tests | 14 files, 35 tests passed |
-| `npm run typecheck` | passed |
-| `npm run lint -- --quiet` | passed |
-| `npm run format:check` | passed |
-| `npm run unit` | 71 files, 184 tests passed |
-| `npm run integration` | 20 files, 45 tests passed |
-| `npm run security` | 0 high vulnerabilities |
-| `npm run license` | 508 external packages reviewed; passed |
-| `npm run check-boundaries` | passed |
-| `npm run check-doc-links` | passed |
-| `npm run build:desktop` | passed |
-| `npm run e2e-smoke` | 4 tests passed |
-| `git diff --check` | passed |
+| Gate                                           | Result                                 |
+| ---------------------------------------------- | -------------------------------------- |
+| Focused Stage 3 domain/security/recovery tests | 14 files, 35 tests passed              |
+| `npm run typecheck`                            | passed                                 |
+| `npm run lint -- --quiet`                      | passed                                 |
+| `npm run format:check`                         | passed                                 |
+| `npm run unit`                                 | 71 files, 184 tests passed             |
+| `npm run integration`                          | 20 files, 45 tests passed              |
+| `npm run security`                             | 0 high vulnerabilities                 |
+| `npm run license`                              | 508 external packages reviewed; passed |
+| `npm run check-boundaries`                     | passed                                 |
+| `npm run check-doc-links`                      | passed                                 |
+| `npm run build:desktop`                        | passed                                 |
+| `npm run e2e-smoke`                            | 4 tests passed                         |
+| `git diff --check`                             | passed                                 |
 
 The acceptance run also corrected the Knowledge Renderer declaration from an untyped `Record<string, unknown>` result to an explicit view-model contract. This removed strict typecheck failures when accessing source health and visible IPC errors.
 
