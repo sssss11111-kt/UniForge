@@ -1,5 +1,14 @@
 export interface ProjectOverviewApi {
-  project?: { getSnapshot?: () => Promise<Record<string, unknown>> };
+  project?: {
+    getSnapshot?: () => Promise<Record<string, unknown>>;
+    tasks?: { getSnapshot?: () => Promise<ProjectTaskFlowSnapshot> };
+  };
+}
+
+export interface ProjectTaskFlowSnapshot {
+  tasks?: readonly Record<string, unknown>[];
+  decisions?: readonly unknown[];
+  artifacts?: readonly unknown[];
 }
 export function roadmapModule(options?: {
   id?: string;
@@ -12,6 +21,22 @@ export function loadProjectOverview(api: ProjectOverviewApi): Promise<{
   capabilityBlocks: string[];
   [key: string]: unknown;
 }>;
+export function loadProjectTaskFlow(api: ProjectOverviewApi): Promise<
+  | {
+      state: 'roadmap';
+      reason: string;
+    }
+  | {
+      state: 'empty' | 'ready';
+      tasks: readonly Record<string, unknown>[];
+      decisions: readonly unknown[];
+      artifacts: readonly unknown[];
+    }
+  | {
+      state: 'error';
+      error: { message: string };
+    }
+>;
 export function renderProjectOverview(viewModel: Record<string, unknown>): HTMLElement;
 export function renderSoftwareWorkspace(options?: {
   authorized?: boolean;

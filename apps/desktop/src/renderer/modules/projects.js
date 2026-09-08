@@ -25,6 +25,24 @@ export async function loadProjectOverview(api) {
   }
 }
 
+export async function loadProjectTaskFlow(api) {
+  try {
+    const tasks = await api?.project?.tasks?.getSnapshot?.();
+    if (!tasks) return { state: 'roadmap', reason: '项目任务 IPC 尚未启用' };
+    return {
+      state: Array.isArray(tasks.tasks) && tasks.tasks.length ? 'ready' : 'empty',
+      tasks: Array.isArray(tasks.tasks) ? tasks.tasks : [],
+      decisions: Array.isArray(tasks.decisions) ? tasks.decisions : [],
+      artifacts: Array.isArray(tasks.artifacts) ? tasks.artifacts : [],
+    };
+  } catch (error) {
+    return {
+      state: 'error',
+      error: { message: error instanceof Error ? error.message : String(error ?? 'UNKNOWN_ERROR') },
+    };
+  }
+}
+
 export function renderProjectOverview(viewModel) {
   const root = globalThis.document.createElement('section');
   root.className = 'project-overview';
