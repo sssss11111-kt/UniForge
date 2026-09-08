@@ -2,6 +2,8 @@
 
 Prepared 2026-09-08.
 
+Status: implementation and automated UI acceptance gates complete; real write/execute commands remain intentionally gated behind their Domain Command and Approval contracts.
+
 Implemented and verified:
 
 - English overview Snapshot through typed IPC and frozen Preload API.
