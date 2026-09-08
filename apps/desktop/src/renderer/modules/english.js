@@ -25,3 +25,43 @@ export async function loadEnglishOverview(api) {
     };
   }
 }
+
+export async function loadEnglishStudy(api) {
+  try {
+    const vocabulary = await api?.english?.vocabulary?.getSnapshot?.();
+    if (!vocabulary) return { state: 'roadmap', reason: '词汇 IPC 尚未启用' };
+    const entries = Array.isArray(vocabulary.entries) ? vocabulary.entries : [];
+    return {
+      state: entries.length ? 'ready' : 'empty',
+      entries,
+      dimensions: [
+        'Recognition',
+        'Spelling',
+        'Listening',
+        'Pronunciation',
+        'Grammar',
+        'Morphology',
+        'Collocation',
+        'Context',
+        'Polysemy',
+      ],
+      ieltsTabs: [
+        'Overview',
+        'Plan',
+        'Vocabulary',
+        'Listening',
+        'Reading',
+        'Writing',
+        'Speaking',
+        'Mock Exam',
+        'Materials',
+        'AI Coach',
+      ],
+    };
+  } catch (error) {
+    return {
+      state: 'error',
+      error: { message: error instanceof Error ? error.message : String(error ?? 'UNKNOWN_ERROR') },
+    };
+  }
+}

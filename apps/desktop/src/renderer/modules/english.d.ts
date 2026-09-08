@@ -10,3 +10,4 @@ export function roadmapModule(options?: {
   secondaryItems?: readonly string[];
 }): { id: string; label: string; secondaryItems: string[]; state: 'roadmap' };
 export function loadEnglishOverview(api: EnglishOverviewApi): Promise<Record<string, unknown>>;
+export function loadEnglishStudy(api: EnglishOverviewApi): Promise<Record<string, unknown>>;
