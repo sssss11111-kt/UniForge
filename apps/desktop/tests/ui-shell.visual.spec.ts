@@ -30,7 +30,7 @@ test('shell controls are keyboard reachable and roadmap actions remain disabled'
     const page = await app.firstWindow();
     await page.locator('button').first().focus();
     await expect(page.locator(':focus-visible')).toBeVisible();
-    await expect(page.getByRole('button', { name: /03 英语备考/ })).toBeDisabled();
+    await expect(page.getByRole('button', { name: /03 英语备考/ })).toBeEnabled();
     await expect(page.getByRole('button', { name: /04 项目实践/ })).toBeDisabled();
     await expect(page.getByRole('button', { name: /05 知识与情报/ })).toBeDisabled();
     await expect(page.getByRole('button', { name: /06 AI 新闻/ })).toBeDisabled();

@@ -48,6 +48,7 @@
   const recoveryState = document.getElementById('recovery-state');
   const recycleItems = document.getElementById('recycle-items');
   let activeVoiceRequest;
+  let englishOverviewAdapter;
   const renderVoice = (snapshot) => {
     const latest = snapshot.sessions.at(-1);
     voiceState.textContent = latest
@@ -207,12 +208,15 @@
         description.textContent = availableDescription;
       }
       if (!item.disabled) {
-        item.addEventListener('click', () => {
+        item.addEventListener('click', async () => {
           navigation.querySelector('[aria-current="page"]')?.removeAttribute('aria-current');
           item.setAttribute('aria-current', 'page');
           description.textContent =
             module.id === 'overview' ? availableDescription : '该模块已进入开发范围。';
-          if (modulePage) {
+          if (modulePage && module.id === 'english' && englishOverviewAdapter) {
+            const viewModel = await englishOverviewAdapter.loadEnglishOverview(window.uniforge);
+            modulePage.replaceChildren(englishOverviewAdapter.renderEnglishOverview(viewModel));
+          } else if (modulePage) {
             modulePage.replaceChildren();
             const heading = document.createElement('h2');
             heading.textContent = module.label;
@@ -242,6 +246,7 @@
 
   const start = async () => {
     try {
+      englishOverviewAdapter = await import('./modules/english.js');
       render(await window.uniforge.appShell());
       const snapshot = await window.uniforge.settings.getSnapshot();
       const model = snapshot.models[0];

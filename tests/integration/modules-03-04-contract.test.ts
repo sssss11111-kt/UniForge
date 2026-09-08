@@ -19,9 +19,9 @@ test('modules 03-04 expose typed read snapshots and no arbitrary renderer bridge
   expect(preload).not.toContain('contextBridge.exposeInMainWorld("fs"');
 });
 
-test('english and project route contracts remain roadmap until real module UI exists', async () => {
+test('English is enabled while project remains a roadmap route', async () => {
   const nav = await readFile('packages/contracts/app-shell/navigation.ts', 'utf8');
-  expect(nav).toMatch(/id: 'english',[\s\S]*status: 'roadmap'/);
+  expect(nav).toMatch(/id: 'english',[\s\S]*status: 'available'/);
   expect(nav).toMatch(/id: 'projects',[\s\S]*status: 'roadmap'/);
   expect(nav).not.toContain('development');
 });

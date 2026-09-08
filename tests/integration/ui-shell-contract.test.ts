@@ -13,10 +13,10 @@ describe('UI shell migration contract', () => {
     expect(ids).not.toContain('development');
   });
 
-  it('keeps roadmap modules disabled until a typed snapshot exists', () => {
-    const available = new Set(['overview', 'agent-center', 'course']);
+  it('enables English after its typed snapshot adapter is available', () => {
+    const available = new Set(['overview', 'agent-center', 'course', 'english']);
 
-    expect(available.has('english')).toBe(false);
+    expect(available.has('english')).toBe(true);
     expect(available.has('projects')).toBe(false);
     expect(available.has('knowledge')).toBe(false);
     expect(available.has('news')).toBe(false);

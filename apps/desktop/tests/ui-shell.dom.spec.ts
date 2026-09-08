@@ -25,7 +25,7 @@ test('shell regions, disabled routes, inspector and text rendering work in Elect
     for (const region of ['primary', 'secondary', 'main', 'inspector', 'command']) {
       await expect(page.locator(`[data-region="${region}"]`)).toBeVisible();
     }
-    await expect(page.getByRole('button', { name: /03 英语备考/ })).toBeDisabled();
+    await expect(page.getByRole('button', { name: /03 英语备考/ })).toBeEnabled();
     await expect(page.getByRole('button', { name: /执行命令/ })).toBeDisabled();
     await expect(page.locator('img')).toHaveCount(0);
     await page.getByRole('button', { name: '02 课内学习', exact: true }).click();
