@@ -1,6 +1,9 @@
 import { readFile } from 'node:fs/promises';
 
 import { describe, expect, it } from 'vitest';
+import { loadAgentCenter } from '../../apps/desktop/src/renderer/modules/agent-center.js';
+import { loadOverview } from '../../apps/desktop/src/renderer/modules/overview.js';
+import { roadmapModule } from '../../apps/desktop/src/renderer/modules/knowledge.js';
 
 describe('UI shell migration contract', () => {
   it('keeps the seven primary module ids and excludes the removed development area', () => {
