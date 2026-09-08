@@ -1,15 +1,17 @@
-import type {
-  ContentEntity,
-  ImportSourceInput,
-  SourceEvent,
-} from '@uniforge/contracts';
-import path from 'node:path';
-import crypto from 'node:crypto';
-import { mkdir, readFile, writeFile } from 'node:fs/promises';
+import type { ContentEntity, ImportSourceInput, SourceEvent } from '@uniforge/contracts';
 
 export interface ImportedSource {
   readonly sourceEvent: SourceEvent;
   readonly content: ContentEntity;
+}
+
+export interface SourceImportFilePort {
+  copyAndRead(input: { sourcePath: string; managedWorkspaceRoot: string }): Promise<{
+    body: string;
+    fileId: string;
+    sha256: string;
+    managedCopyPath: string;
+  }>;
 }
 
 /** Application boundary for copying source bytes and recording canonical metadata. */
@@ -17,17 +19,20 @@ export class SourceImportService {
   private readonly sources = new Map<string, SourceEvent>();
   private readonly contents = new Map<string, ContentEntity>();
 
+  constructor(private readonly files: SourceImportFilePort) {}
+
   async import(input: ImportSourceInput): Promise<ImportedSource> {
     this.require(input.permissions, 'knowledge:write');
     if (!input.sourceEvent.license?.trim()) throw new Error('Source license is required');
     if (!input.sourceEvent.capturedAt.trim()) throw new Error('Source capture time is required');
     if (this.sources.has(input.sourceEvent.id)) throw new Error('Source event already exists');
 
-    const managedRoot = path.resolve(input.managedWorkspaceRoot);
-    assertManagedWorkspace(managedRoot);
-    const copied = await copyIntoManagedWorkspace(input.sourcePath, managedRoot);
-    const body = (await readFile(input.sourcePath)).toString('utf8');
-    const managedCopyPath = path.join(managedRoot, copied.fileId);
+    assertManagedWorkspace(input.managedWorkspaceRoot);
+    const copied = await this.files.copyAndRead({
+      sourcePath: input.sourcePath,
+      managedWorkspaceRoot: input.managedWorkspaceRoot,
+    });
+    const { body, managedCopyPath } = copied;
     const license = input.sourceEvent.license;
     const lifecycle = input.sourceEvent.lifecycle ?? 'ACTIVE';
     const sourceEvent: SourceEvent = {
@@ -87,25 +92,23 @@ export class SourceImportService {
     return {
       ...value,
       provenance: [...value.provenance],
-      ...(value.provenanceRecords ? { provenanceRecords: value.provenanceRecords.map((record) => ({ ...record })) } : {}),
+      ...(value.provenanceRecords
+        ? { provenanceRecords: value.provenanceRecords.map((record) => ({ ...record })) }
+        : {}),
     };
   }
 }
 
-async function copyIntoManagedWorkspace(sourcePath: string, managedRoot: string): Promise<{ fileId: string; sha256: string }> {
-  const data = await readFile(sourcePath);
-  const sha256 = crypto.createHash('sha256').update(data).digest('hex');
-  await mkdir(managedRoot, { recursive: true });
-  try {
-    await writeFile(path.join(managedRoot, sha256), data, { flag: 'wx' });
-  } catch (error) {
-    if ((error as NodeJS.ErrnoException).code !== 'EEXIST') throw error;
-  }
-  return { fileId: sha256, sha256 };
-}
-
 function assertManagedWorkspace(managedRoot: string): void {
-  if (managedRoot.split(/[\\/]/).some((segment) => ['.git', 'node_modules', 'updater', 'migration', 'permission'].includes(segment.toLowerCase()))) {
+  if (
+    managedRoot
+      .split(/[\\/]/)
+      .some((segment) =>
+        ['.git', 'node_modules', 'updater', 'migration', 'permission'].includes(
+          segment.toLowerCase(),
+        ),
+      )
+  ) {
     throw new Error('PROTECTED_PATH');
   }
 }
