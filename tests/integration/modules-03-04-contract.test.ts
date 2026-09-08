@@ -10,7 +10,7 @@ test('modules 03-04 expose typed read snapshots and no arbitrary renderer bridge
   expect(api).toContain('readonly project:');
   expect(api).toContain('ProjectWorkspaceSnapshot');
   expect(preload).toContain('projectWorkspaceSnapshotChannel');
-  expect(preload).not.toContain('contextBridge.exposeInMainWorld(\"fs\"');
+  expect(preload).not.toContain('contextBridge.exposeInMainWorld("fs"');
 });
 
 test('english and project route contracts remain roadmap until real module UI exists', async () => {
