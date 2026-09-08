@@ -104,3 +104,26 @@ export function renderEnglishOverview(viewModel) {
   root.append(grid);
   return root;
 }
+
+export function renderEnglishStudy(viewModel) {
+  const root = globalThis.document.createElement('section');
+  root.className = 'english-study';
+  root.dataset.state = viewModel.state;
+  const title = globalThis.document.createElement('h2');
+  title.textContent = '词汇与 IELTS 工作区';
+  root.append(title);
+  const dimensions = globalThis.document.createElement('p');
+  dimensions.textContent = `学习维度：${(viewModel.dimensions ?? []).join(' · ')}`;
+  root.append(dimensions);
+  const tabs = globalThis.document.createElement('nav');
+  tabs.setAttribute('aria-label', 'IELTS sections');
+  for (const tab of viewModel.ieltsTabs ?? []) {
+    const item = globalThis.document.createElement('button');
+    item.type = 'button';
+    item.textContent = tab;
+    item.disabled = tab !== 'Overview';
+    tabs.append(item);
+  }
+  root.append(tabs);
+  return root;
+}

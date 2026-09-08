@@ -216,7 +216,9 @@
             module.id === 'overview' ? availableDescription : '该模块已进入开发范围。';
           if (modulePage && module.id === 'english' && englishOverviewAdapter) {
             const viewModel = await englishOverviewAdapter.loadEnglishOverview(window.uniforge);
-            modulePage.replaceChildren(englishOverviewAdapter.renderEnglishOverview(viewModel));
+            const overview = englishOverviewAdapter.renderEnglishOverview(viewModel);
+            const study = await englishOverviewAdapter.loadEnglishStudy(window.uniforge);
+            modulePage.replaceChildren(overview, englishOverviewAdapter.renderEnglishStudy(study));
           } else if (modulePage && module.id === 'projects' && projectsOverviewAdapter) {
             const viewModel = await projectsOverviewAdapter.loadProjectOverview(window.uniforge);
             const overview = projectsOverviewAdapter.renderProjectOverview(viewModel);
