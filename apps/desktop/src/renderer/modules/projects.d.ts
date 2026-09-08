@@ -6,4 +6,9 @@ export function roadmapModule(options?: {
   label?: string;
   secondaryItems?: readonly string[];
 }): { id: string; label: string; secondaryItems: string[]; state: 'roadmap' };
-export function loadProjectOverview(api: ProjectOverviewApi): Promise<Record<string, unknown>>;
+export function loadProjectOverview(api: ProjectOverviewApi): Promise<{
+  state: string;
+  workspace: { authorized: boolean; canonicalPath: string | null };
+  capabilityBlocks: string[];
+  [key: string]: unknown;
+}>;
