@@ -231,7 +231,10 @@
                     decisions: [],
                     artifacts: [],
                   });
-            modulePage.replaceChildren(overview, flowView);
+            const workspaceView = projectsOverviewAdapter.renderSoftwareWorkspace(
+              viewModel.workspace,
+            );
+            modulePage.replaceChildren(overview, flowView, workspaceView);
           } else if (modulePage) {
             modulePage.replaceChildren();
             const heading = document.createElement('h2');
