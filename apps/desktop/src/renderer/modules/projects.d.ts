@@ -12,3 +12,4 @@ export function loadProjectOverview(api: ProjectOverviewApi): Promise<{
   capabilityBlocks: string[];
   [key: string]: unknown;
 }>;
+export function renderProjectOverview(viewModel: Record<string, unknown>): HTMLElement;
