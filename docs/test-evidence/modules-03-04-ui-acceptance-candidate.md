@@ -12,7 +12,7 @@ Implemented and verified:
 - Guarded task action affordances for future typed commands and approvals.
 - 03 and 04 navigation routes enabled; 05 and 06 remain roadmap-disabled.
 
-Git checkpoints: `5316b72`, `e3b14b6`, `310635c`, `a75c4e9`, `556804e`, `c751714`, `711dadd`, `2099bde`, `b8a29ce`, `c59146e`, `5c92951`, `68e0410`, `b9c3dd4`.
+Git checkpoints: `5316b72`, `e3b14b6`, `310635c`, `a75c4e9`, `556804e`, `c751714`, `711dadd`, `2099bde`, `b8a29ce`, `c59146e`, `5c92951`, `68e0410`, `b9c3dd4`, `77a5a63`.
 
 Validation on 2026-09-08:
 
