@@ -19,3 +19,10 @@ test('english and project route contracts remain roadmap until real module UI ex
   expect(nav).toMatch(/id: 'projects',[\s\S]*status: 'roadmap'/);
   expect(nav).not.toContain('development');
 });
+
+test('renderer contains a module page mount for future 03-04 vertical slices', async () => {
+  const html = await readFile('apps/desktop/src/renderer/index.html', 'utf8');
+  const app = await readFile('apps/desktop/src/renderer/app.js', 'utf8');
+  expect(html).toContain('id="module-page"');
+  expect(app).toContain('该模块的业务快照尚未接入');
+});

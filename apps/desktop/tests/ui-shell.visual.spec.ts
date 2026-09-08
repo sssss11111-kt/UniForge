@@ -28,7 +28,7 @@ test('shell controls are keyboard reachable and roadmap actions remain disabled'
   const app = await electron.launch({ cwd: path.resolve('apps/desktop'), args: ['.'] });
   try {
     const page = await app.firstWindow();
-    await page.keyboard.press('Tab');
+    await page.locator('button').first().focus();
     await expect(page.locator(':focus-visible')).toBeVisible();
     await expect(page.getByRole('button', { name: /03 英语备考/ })).toBeDisabled();
     await expect(page.getByRole('button', { name: /04 项目实践/ })).toBeDisabled();

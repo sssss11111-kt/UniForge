@@ -9,6 +9,7 @@
   });
   const navigation = document.getElementById('primary-navigation');
   const description = document.getElementById('module-description');
+  const modulePage = document.getElementById('module-page');
   const availableDescription = '从这里开始管理你的学习、Agent 任务和工作空间。';
   const settingsSummary = document.getElementById('settings-summary');
   const dashboardItems = document.getElementById('dashboard-items');
@@ -210,13 +211,33 @@
           navigation.querySelector('[aria-current="page"]')?.removeAttribute('aria-current');
           item.setAttribute('aria-current', 'page');
           description.textContent =
-            module.id === 'overview' ? availableDescription : '该模块已进入 Stage 1 开发范围。';
+            module.id === 'overview' ? availableDescription : '该模块已进入开发范围。';
+          if (modulePage) {
+            modulePage.replaceChildren();
+            const heading = document.createElement('h2');
+            heading.textContent = module.label;
+            const body = document.createElement('p');
+            body.textContent =
+              module.id === 'agent-center'
+                ? '查看 Agent 运行、审批、产物和回放。'
+                : module.id === 'course'
+                  ? '管理课程、资料、作业和复习。'
+                  : '该模块的业务快照尚未接入，当前页面保持只读占位。';
+            modulePage.append(heading, body);
+          }
         });
       } else {
         item.setAttribute('aria-label', `${module.label}（路线图）`);
       }
       navigation.append(item);
     });
+    if (modulePage) {
+      const heading = document.createElement('h2');
+      heading.textContent = '总览工作台';
+      const body = document.createElement('p');
+      body.textContent = availableDescription;
+      modulePage.replaceChildren(heading, body);
+    }
   };
 
   const start = async () => {
