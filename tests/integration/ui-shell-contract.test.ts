@@ -28,4 +28,40 @@ describe('UI shell migration contract', () => {
     expect(css).toContain('--uf-primary-width: 76px');
     expect(css).toContain('--uf-inspector-width: 288px');
   });
+
+  it('defines provider-neutral DOM component exports without forbidden renderer imports', async () => {
+    const source = await readFile('apps/desktop/src/renderer/ui/components.js', 'utf8');
+    for (const name of [
+      'el',
+      'statusBadge',
+      'emptyState',
+      'errorState',
+      'permissionNotice',
+      'approvalCard',
+      'sourceBadge',
+      'taskRow',
+      'agentRunTimeline',
+      'inspectorPanel',
+    ]) {
+      expect(source).toContain(`export function ${name}`);
+    }
+    expect(source).not.toMatch(/from ['"](?:electron|node:)/);
+    expect(source).not.toContain('innerHTML');
+  });
+
+  it('defines the shared UI state normalizer', async () => {
+    const source = await readFile('apps/desktop/src/renderer/ui/state.js', 'utf8');
+    expect(source).toContain('export function normalizeState');
+    for (const state of [
+      'loading',
+      'empty',
+      'ready',
+      'error',
+      'offline',
+      'read-only',
+      'permission-denied',
+      'approval-required',
+    ])
+      expect(source).toContain(`'${state}'`);
+  });
 });
