@@ -5,7 +5,10 @@ import type { PersonalCore } from './personal-core.js';
 export function forgetClaim(
   core: PersonalCore,
   claimId: string,
+  permissions?: readonly string[],
 ): Result<{ claimId: string; tombstoneId: string }> {
+  if (permissions && !permissions.includes('memory:forget'))
+    return failure('DENIED', 'Missing permission: memory:forget');
   const found = core.db.prepare('SELECT claim_id FROM memory_claims WHERE claim_id=?').get(claimId);
   if (!found) return failure('NOT_FOUND', 'Claim not found');
   const at = new Date().toISOString();
@@ -17,6 +20,9 @@ export function forgetClaim(
       )
       .run('FORGOTTEN', at, claimId);
     core.db.prepare('DELETE FROM claim_evidence WHERE claim_id=?').run(claimId);
+    core.db
+      .prepare('UPDATE memory_derived_state SET valid=0, invalidated_at=? WHERE claim_id=?')
+      .run(at, claimId);
     core.db.prepare('INSERT OR REPLACE INTO forget_tombstones VALUES (?,?)').run(claimId, at);
     core.db
       .prepare('INSERT INTO outcomes VALUES (?,?,?,?)')

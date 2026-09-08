@@ -5,3 +5,4 @@ CREATE TABLE IF NOT EXISTS memory_claims (claim_id TEXT PRIMARY KEY, candidate_i
 CREATE TABLE IF NOT EXISTS claim_evidence (claim_id TEXT NOT NULL REFERENCES memory_claims(claim_id), evidence_id TEXT NOT NULL REFERENCES evidence(evidence_id), PRIMARY KEY(claim_id,evidence_id));
 CREATE TABLE IF NOT EXISTS outcomes (outcome_id TEXT PRIMARY KEY, claim_id TEXT NOT NULL REFERENCES memory_claims(claim_id), outcome TEXT NOT NULL, created_at TEXT NOT NULL);
 CREATE TABLE IF NOT EXISTS forget_tombstones (claim_id TEXT PRIMARY KEY, forgotten_at TEXT NOT NULL);
+CREATE TABLE IF NOT EXISTS memory_derived_state (claim_id TEXT NOT NULL REFERENCES memory_claims(claim_id), derived_id TEXT NOT NULL, valid INTEGER NOT NULL DEFAULT 1, invalidated_at TEXT, PRIMARY KEY(claim_id,derived_id));
