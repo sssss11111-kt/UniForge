@@ -16,7 +16,7 @@ test('app shell exposes primary navigation and roadmap states', async () => {
     );
     await expect(page.getByRole('button', { name: '01 Agent 执行中心' })).toBeEnabled();
     await expect(page.getByRole('button', { name: '02 课内学习' })).toBeEnabled();
-    await expect(page.getByRole('button', { name: /03 英语备考/ })).toBeDisabled();
+    await expect(page.getByRole('button', { name: /03 英语备考/ })).toBeEnabled();
     await expect(page.getByText('路线图').first()).toBeVisible();
     const bridge = await page.evaluate(() => {
       const exposed = (
@@ -42,6 +42,7 @@ test('app shell exposes primary navigation and roadmap states', async () => {
       'backup',
       'course',
       'dashboard',
+      'english',
       'exit',
       'health',
       'knowledge',
@@ -62,7 +63,8 @@ test('app shell exposes primary navigation and roadmap states', async () => {
     expect(bridge.requireType).toBe('undefined');
     expect(bridge.processType).toBe('undefined');
     expect(bridge.electronType).toBe('undefined');
-    await expect(page.getByRole('button', { name: /04 项目实践/ })).toBeDisabled();
+    await expect(page.getByRole('button', { name: /03 英语备考/ })).toBeEnabled();
+    await expect(page.getByRole('button', { name: /04 项目实践/ })).toBeEnabled();
     await expect(page.getByRole('button', { name: /05 知识与情报/ })).toBeDisabled();
     await expect(page.getByRole('button', { name: /06 AI 新闻/ })).toBeDisabled();
     await expect(page.getByRole('heading', { name: '运行状态' })).toBeVisible();
