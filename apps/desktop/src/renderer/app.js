@@ -49,6 +49,7 @@
   const recycleItems = document.getElementById('recycle-items');
   let activeVoiceRequest;
   let englishOverviewAdapter;
+  let projectsOverviewAdapter;
   const renderVoice = (snapshot) => {
     const latest = snapshot.sessions.at(-1);
     voiceState.textContent = latest
@@ -216,6 +217,9 @@
           if (modulePage && module.id === 'english' && englishOverviewAdapter) {
             const viewModel = await englishOverviewAdapter.loadEnglishOverview(window.uniforge);
             modulePage.replaceChildren(englishOverviewAdapter.renderEnglishOverview(viewModel));
+          } else if (modulePage && module.id === 'projects' && projectsOverviewAdapter) {
+            const viewModel = await projectsOverviewAdapter.loadProjectOverview(window.uniforge);
+            modulePage.replaceChildren(projectsOverviewAdapter.renderProjectOverview(viewModel));
           } else if (modulePage) {
             modulePage.replaceChildren();
             const heading = document.createElement('h2');
@@ -247,6 +251,7 @@
   const start = async () => {
     try {
       englishOverviewAdapter = await import('./modules/english.js');
+      projectsOverviewAdapter = await import('./modules/projects.js');
       render(await window.uniforge.appShell());
       const snapshot = await window.uniforge.settings.getSnapshot();
       const model = snapshot.models[0];

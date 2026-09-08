@@ -14,10 +14,10 @@ describe('UI shell migration contract', () => {
   });
 
   it('enables English after its typed snapshot adapter is available', () => {
-    const available = new Set(['overview', 'agent-center', 'course', 'english']);
+    const available = new Set(['overview', 'agent-center', 'course', 'english', 'projects']);
 
     expect(available.has('english')).toBe(true);
-    expect(available.has('projects')).toBe(false);
+    expect(available.has('projects')).toBe(true);
     expect(available.has('knowledge')).toBe(false);
     expect(available.has('news')).toBe(false);
   });
