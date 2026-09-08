@@ -1,9 +1,6 @@
-export interface SourceEvent {
-  id: string;
-  sourceType: 'FILE' | 'CLIPBOARD' | 'CONNECTOR' | 'USER';
-  capturedAt: string;
-  locator: string;
-}
+import type { ContentProvenance } from './provenance.js';
+import type { SourceEvent, SourceLifecycle } from './source.js';
+
 export interface ContentEntity {
   id: string;
   sourceEventId: string;
@@ -12,6 +9,10 @@ export interface ContentEntity {
   workspacePath?: string;
   provenance: readonly string[];
   createdAt: string;
+  checksum?: string;
+  license?: string;
+  lifecycle?: SourceLifecycle;
+  provenanceRecords?: readonly ContentProvenance[];
 }
 export interface ImportContentInput {
   contentId: string;

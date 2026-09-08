@@ -19,6 +19,7 @@ export * from './application/adaptive-training-service.js';
 export * from './application/ielts-workspace-service.js';
 export * from './application/mock-exam-service.js';
 export * from './application/content-service.js';
+export * from './application/source-import-service.js';
 export * from './application/topic-relation-service.js';
 export * from './application/extraction-service.js';
 export * from './application/search-index-service.js';
