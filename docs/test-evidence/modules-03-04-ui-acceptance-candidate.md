@@ -12,7 +12,7 @@ Implemented and verified:
 - Guarded task action affordances for future typed commands and approvals.
 - 03 and 04 navigation routes enabled; 05 and 06 remain roadmap-disabled.
 
-Git checkpoints: `5316b72`, `e3b14b6`, `310635c`, `a75c4e9`, `556804e`, `c751714`, `711dadd`, `2099bde`.
+Git checkpoints: `5316b72`, `e3b14b6`, `310635c`, `a75c4e9`, `556804e`, `c751714`, `711dadd`, `2099bde`, `b8a29ce`, `c59146e`.
 
 Validation on 2026-09-08:
 
@@ -23,6 +23,8 @@ Validation on 2026-09-08:
 - `npm run integration` passed: 19 files / 39 tests.
 - `npm run build:desktop` passed.
 - `npm run e2e-smoke` passed: 4 tests.
+- `npm run check-boundaries` passed.
+- `npm run check-doc-links` passed.
 
 Deferred capabilities remain visibly unavailable and are not represented as successful: vocabulary review mutations, IELTS execution, project task creation commands, workspace file/Git/test operations, and Project AI model execution. Their typed command and approval contracts remain future work.
 
