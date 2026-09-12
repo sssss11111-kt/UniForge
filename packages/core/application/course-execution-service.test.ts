@@ -80,8 +80,8 @@ describe('CourseExecutionService', () => {
     await expect(
       service.execute(request({ entrypoint: '../other/main.py' })),
     ).resolves.toMatchObject({ status: 'DENIED', errorCode: 'PROTECTED_PATH' });
-    await expect(
-      service.execute(request({ workspaceRoot: process.cwd() })),
-    ).resolves.toMatchObject({ status: 'DENIED', errorCode: 'PROTECTED_PATH' });
+    await expect(service.execute(request({ workspaceRoot: process.cwd() }))).resolves.toMatchObject(
+      { status: 'DENIED', errorCode: 'PROTECTED_PATH' },
+    );
   });
 });
