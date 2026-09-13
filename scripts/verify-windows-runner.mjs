@@ -36,6 +36,8 @@ const child = spawn(
     '--disable-gpu-sandbox',
     '--disable-features=HardwareMediaKeyHandling,AudioServiceOutOfProcess',
     '--no-sandbox',
+    '--enable-logging=stderr',
+    '--log-level=0',
   ],
   { windowsHide: true, detached: true, stdio: ['ignore', 'pipe', 'pipe'] },
 );
