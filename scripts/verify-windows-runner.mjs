@@ -33,7 +33,9 @@ const app = await (async () => {
     try {
       await access(candidate);
       return candidate;
-    } catch {}
+    } catch {
+      continue;
+    }
   }
   const rootApp = path.join(install, 'uniforge.exe');
   await access(rootApp);
