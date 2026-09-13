@@ -34,9 +34,7 @@ const child = spawn(
     '--disable-software-rasterizer',
     '--no-sandbox',
   ],
-  windowsHide: true,
-  detached: true,
-  stdio: ['ignore', 'pipe', 'pipe'],
+  { windowsHide: true, detached: true, stdio: ['ignore', 'pipe', 'pipe'] },
 );
 let stderr = '';
 child.stderr?.on('data', (chunk) => {
