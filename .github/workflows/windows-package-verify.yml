@@ -44,6 +44,13 @@ jobs:
       - name: Verify Windows install, launch, and uninstall
         run: npm run verify:windows-runner
 
+      - name: Collect Windows launch diagnostics
+        if: failure()
+        shell: pwsh
+        run: |
+          Get-ChildItem -LiteralPath "$env:LOCALAPPDATA\UniForge" -Recurse -Filter *.exe -ErrorAction SilentlyContinue | Select-Object FullName, Length | Format-List
+          Get-WinEvent -FilterHashtable @{LogName='Application'; StartTime=(Get-Date).AddMinutes(-45); Id=1000,1001} -ErrorAction SilentlyContinue | Select-Object TimeCreated, Message | Format-List
+
       - name: Upload package and verification evidence
         if: always()
         uses: actions/upload-artifact@v4
