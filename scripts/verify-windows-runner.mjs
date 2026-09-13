@@ -26,10 +26,11 @@ const update = path.join(install, 'Update.exe');
 await access(update);
 const app = path.join(install, 'uniforge.exe');
 await access(app);
+const smokeData = path.join(local, 'UniForge-smoke-data');
 const child = spawn(
   app,
   [
-    '--user-data-dir=' + path.join(install, 'test-data'),
+    '--user-data-dir=' + smokeData,
     '--disable-gpu',
     '--disable-software-rasterizer',
     '--no-sandbox',
