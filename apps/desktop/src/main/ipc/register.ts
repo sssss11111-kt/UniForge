@@ -11,12 +11,9 @@ import { CourseRecognitionService } from '@uniforge/core/application/course-reco
 import { CourseAiService } from '@uniforge/core/application/course-ai-service.js';
 import { AssignmentService } from '@uniforge/core/application/assignment-service.js';
 import type { ModelGateway } from '@uniforge/contracts';
-import {
-  createCourseMaterialCopy,
-  createWorkspaceBackup,
-  validateBackup,
-} from '@uniforge/infrastructure';
-import { ControlledCourseRunner } from '@uniforge/infrastructure';
+import { createCourseMaterialCopy } from '@uniforge/infrastructure/files/course-material-copy.js';
+import { createWorkspaceBackup, validateBackup } from '@uniforge/infrastructure/backup/service.js';
+import { ControlledCourseRunner } from '@uniforge/infrastructure/runner/course-runner.js';
 import { CourseExecutionService } from '@uniforge/core/application/course-execution-service.js';
 import { CourseNotesService } from '@uniforge/core/application/course-notes-service.js';
 import { CourseMasteryService } from '@uniforge/core/application/course-mastery-service.js';
