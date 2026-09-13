@@ -28,6 +28,7 @@ jobs:
 
       - name: Validate source and tests
         run: |
+          $ErrorActionPreference = 'Stop'
           npm run typecheck
           npm run lint
           npm run check-boundaries
@@ -58,5 +59,5 @@ jobs:
           name: uniforge-windows-package-${{ github.run_id }}
           path: |
             out/make/**
-            out/.stage0-windows/**
+            out/.stage0-windows/**/*
           if-no-files-found: warn
