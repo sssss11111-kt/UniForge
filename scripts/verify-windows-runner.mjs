@@ -24,8 +24,21 @@ const run = (file, args) =>
 await run(exe, ['--silent']);
 const update = path.join(install, 'Update.exe');
 await access(update);
-const app = path.join(install, 'uniforge.exe');
-await access(app);
+const app = await (async () => {
+  const entries = await readdir(install, { withFileTypes: true });
+  const versioned = entries
+    .filter((entry) => entry.isDirectory() && /^app-/i.test(entry.name))
+    .map((entry) => path.join(install, entry.name, 'uniforge.exe'));
+  for (const candidate of versioned) {
+    try {
+      await access(candidate);
+      return candidate;
+    } catch {}
+  }
+  const rootApp = path.join(install, 'uniforge.exe');
+  await access(rootApp);
+  return rootApp;
+})();
 const smokeData = path.join(local, 'UniForge-smoke-data');
 const child = spawn(
   app,
