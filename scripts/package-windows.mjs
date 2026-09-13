@@ -12,9 +12,16 @@ const npm =
     ? (process.env.npm_execpath ??
       path.join(path.dirname(process.execPath), 'node_modules/npm/bin/npm-cli.js'))
     : 'npm';
-function run(command, args, cwd = root) {
-  const result = spawnSync(command, args, { cwd, stdio: 'inherit', shell: false });
+function run(command, args, cwd = root, timeout = 10 * 60 * 1000) {
+  const result = spawnSync(command, args, {
+    cwd,
+    stdio: 'inherit',
+    shell: false,
+    timeout,
+    killSignal: 'SIGTERM',
+  });
   if (result.error) throw result.error;
+  if (result.signal) throw new Error(`${command} ${args.join(' ')} terminated by ${result.signal}`);
   if (result.status !== 0)
     throw new Error(`${command} ${args.join(' ')} failed (${result.status})`);
 }
