@@ -33,6 +33,8 @@ const child = spawn(
     '--user-data-dir=' + smokeData,
     '--disable-gpu',
     '--disable-software-rasterizer',
+    '--disable-gpu-sandbox',
+    '--disable-features=HardwareMediaKeyHandling,AudioServiceOutOfProcess',
     '--no-sandbox',
   ],
   { windowsHide: true, detached: true, stdio: ['ignore', 'pipe', 'pipe'] },
