@@ -1,2 +1,7 @@
 import { defineConfig } from '@playwright/test';
-export default defineConfig({ testDir: 'apps/desktop/tests', timeout: 30_000 });
+export default defineConfig({
+  testDir: 'apps/desktop/tests',
+  timeout: 30_000,
+  workers: 1,
+  fullyParallel: false,
+});
