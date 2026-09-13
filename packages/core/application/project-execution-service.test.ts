@@ -1,0 +1,37 @@
+import { describe, expect, it } from 'vitest';
+import { ProjectExecutionService } from './project-execution-service.js';
+describe('ProjectExecutionService', () => {
+  it('keeps execution pending until approval and exposes failure', () => {
+    const s = new ProjectExecutionService();
+    const e = s.start({
+      execution: {
+        id: 'r',
+        projectId: 'p',
+        workspaceId: 'w',
+        operation: 'TEST',
+        command: 'npm test',
+        status: 'SUCCEEDED',
+      },
+      permissions: ['project:execute'],
+    });
+    expect(e.status).toBe('PENDING_APPROVAL');
+    expect(s.approve(e.id, ['project:execute']).status).toBe('RUNNING');
+    expect(s.fail(e.id, 'exit 1', ['project:execute']).error).toBe('exit 1');
+  });
+  it('fails closed', () => {
+    const s = new ProjectExecutionService();
+    expect(() =>
+      s.start({
+        execution: {
+          id: 'r',
+          projectId: 'p',
+          workspaceId: 'w',
+          operation: 'RUN',
+          command: 'x',
+          status: 'RUNNING',
+        },
+        permissions: [],
+      }),
+    ).toThrow('project:execute');
+  });
+});

@@ -20,6 +20,14 @@ export class RunService implements AgentRuntime {
   private readonly definitions = new Map<string, CreateRunInput>();
   constructor(private readonly store: AgentEventStore = new InMemoryAgentEventStore()) {}
 
+  listRuns(workspaceId: Id<'workspace'>): AgentRun[] {
+    return this.store.runs().filter((run) => run.workspaceId === workspaceId);
+  }
+
+  events(runId: Id<'agent-run'>): AgentEvent[] {
+    return this.store.all(runId);
+  }
+
   private get(context: RequestContext, runId: Id<'agent-run'>): Result<AgentRun> {
     const run = this.store.snapshot(runId);
     if (!run) return failure('NOT_FOUND', 'Agent run not found', context.correlationId);

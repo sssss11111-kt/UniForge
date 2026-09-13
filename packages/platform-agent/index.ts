@@ -1,4 +1,5 @@
 export type AgentRuntimeBoundary = 'runtime-only';
+export * from './agent-center-service.js';
 export * from './agent-event-store.js';
 export * from './recovery.js';
 export * from './runtime-registry.js';

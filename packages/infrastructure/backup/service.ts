@@ -2,6 +2,7 @@ import { createHash } from 'node:crypto';
 import { mkdir, readFile, rename, rm, writeFile } from 'node:fs/promises';
 import { dirname, isAbsolute, join, normalize, relative, resolve } from 'node:path';
 import { failure, type Result } from '@uniforge/contracts/domain/primitives.js';
+import { assertAuthorizedWritable } from '../files/protected-path-policy.js';
 
 const forbidden =
   /(?:api[_-]?key|secret|token|password|cookie|credential|git[_-]?cred|login[_-]?state|raw[_-]?(?:chat|voice)|personal[_-]?core)/i;
@@ -54,6 +55,19 @@ export interface BackupManifest {
     workflows?: unknown;
   };
   checksum: string;
+}
+
+export async function createWorkspaceBackup(
+  destination: string,
+  workspaceRoot: string,
+  input: BackupInput,
+): Promise<Result<BackupManifest>> {
+  try {
+    assertAuthorizedWritable(workspaceRoot, destination);
+  } catch {
+    return failure('PROTECTED_PATH', 'Backup destination is outside the authorized workspace');
+  }
+  return createBackup(destination, input);
 }
 
 function canonical(manifest: Omit<BackupManifest, 'checksum'>): string {

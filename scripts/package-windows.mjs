@@ -24,6 +24,7 @@ if (process.platform !== 'win32' && process.env.UF_ALLOW_CROSS_WINDOWS_PACKAGE !
   );
   process.exit(2);
 }
+await rm(stage, { recursive: true, force: true });
 for (const args of [
   ['run', 'typecheck'],
   ['run', 'lint'],
@@ -37,29 +38,42 @@ for (const args of [
     process.platform === 'win32' ? process.execPath : npm,
     process.platform === 'win32' ? [npm, ...args] : args,
   );
-await rm(stage, { recursive: true, force: true });
 await mkdir(appRoot, { recursive: true });
 await cp(path.join(root, 'apps', 'desktop', 'dist'), path.join(appRoot, 'dist'), {
   recursive: true,
 });
-const contractsRoot = path.join(appRoot, 'node_modules', '@uniforge', 'contracts');
-await mkdir(contractsRoot, { recursive: true });
-await cp(path.join(root, 'packages', 'contracts', 'dist'), path.join(contractsRoot, 'dist'), {
-  recursive: true,
-});
-await writeFile(
-  path.join(contractsRoot, 'package.json'),
-  JSON.stringify(
-    {
-      name: '@uniforge/contracts',
-      version: '0.0.0',
-      type: 'module',
-      exports: { '.': './dist/index.js', './*': './dist/*' },
-    },
-    null,
-    2,
-  ),
-);
+const runtimePackages = [
+  ['contracts', '@uniforge/contracts'],
+  ['core', '@uniforge/core'],
+  ['infrastructure', '@uniforge/infrastructure'],
+  ['platform-agent', '@uniforge/platform-agent'],
+];
+for (const [directory, packageName] of runtimePackages) {
+  const packageRoot = path.join(appRoot, 'node_modules', ...packageName.split('/'));
+  const sourcePackage = JSON.parse(
+    await readFile(path.join(root, 'packages', directory, 'package.json'), 'utf8'),
+  );
+  await mkdir(packageRoot, { recursive: true });
+  await cp(path.join(root, 'packages', directory, 'dist'), path.join(packageRoot, 'dist'), {
+    recursive: true,
+  });
+  await writeFile(
+    path.join(packageRoot, 'package.json'),
+    JSON.stringify(
+      {
+        name: packageName,
+        version: sourcePackage.version,
+        type: 'module',
+        exports: { '.': './dist/index.js', './*': './dist/*' },
+        ...(sourcePackage.dependencies ? { dependencies: sourcePackage.dependencies } : {}),
+      },
+      null,
+      2,
+    ),
+  );
+}
+const fsrsRoot = path.join(appRoot, 'node_modules', 'ts-fsrs');
+await cp(path.join(root, 'node_modules', 'ts-fsrs'), fsrsRoot, { recursive: true });
 const rootPackage = JSON.parse(await readFile(path.join(root, 'package.json'), 'utf8'));
 await writeFile(
   path.join(appRoot, 'package.json'),
@@ -73,8 +87,15 @@ await writeFile(
       main: 'dist/main/index.js',
       description: 'UniForge preview test build',
       author: 'Tong <17512401625@163.com>',
-      config: { forge: 'forge.config.mjs' },
+      dependencies: {
+        '@uniforge/contracts': '0.0.0',
+        '@uniforge/core': '0.0.0',
+        '@uniforge/infrastructure': '0.0.0',
+        '@uniforge/platform-agent': '0.0.0',
+        'ts-fsrs': '5.4.2',
+      },
       devDependencies: { electron: rootPackage.devDependencies.electron },
+      config: { forge: 'forge.config.mjs' },
     },
     null,
     2,

@@ -41,6 +41,8 @@ export interface RequestContext {
   workspaceId: Id<'workspace'>;
   runId?: Id<'agent-run'>;
   correlationId: string;
+  /** Capability names granted for this request; absent means no optional capability. */
+  permissions?: readonly string[];
 }
 export function failure(
   code: FailureCode,

@@ -26,12 +26,25 @@ const update = path.join(install, 'Update.exe');
 await access(update);
 const app = path.join(install, 'uniforge.exe');
 await access(app);
-const child = spawn(app, ['--user-data-dir=' + path.join(install, 'test-data')], {
-  windowsHide: true,
-  detached: true,
+const smokeData = path.join(local, 'UniForge-smoke-data');
+const child = spawn(
+  app,
+  [
+    '--user-data-dir=' + smokeData,
+    '--disable-gpu',
+    '--disable-software-rasterizer',
+    '--no-sandbox',
+  ],
+  { windowsHide: true, detached: true, stdio: ['ignore', 'pipe', 'pipe'] },
+);
+let stderr = '';
+child.stderr?.on('data', (chunk) => {
+  stderr += chunk.toString();
 });
-await new Promise((r) => setTimeout(r, 5000));
-if (child.exitCode !== null) throw new Error('Packaged app exited before smoke check');
+await new Promise((r) => setTimeout(r, 10000));
+if (child.exitCode !== null) {
+  throw new Error(`Packaged app exited before smoke check (code ${child.exitCode}). ${stderr}`);
+}
 child.kill();
 await run(update, ['--uninstall']);
 console.log(

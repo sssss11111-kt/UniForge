@@ -1,0 +1,55 @@
+name: windows-package-verify
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [master, main, 'codex/**']
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  package-and-smoke:
+    runs-on: windows-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Validate source and tests
+        run: |
+          npm run typecheck
+          npm run lint
+          npm run check-boundaries
+          npm run check-doc-links
+          npm run unit
+          npm run integration
+
+      - name: Build Windows preview package
+        run: npm run package-windows
+
+      - name: Verify package manifest and hashes
+        run: npm run verify:windows-package
+
+      - name: Verify Windows install, launch, and uninstall
+        run: npm run verify:windows-runner
+
+      - name: Upload package and verification evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: uniforge-windows-package-${{ github.run_id }}
+          path: |
+            out/make/**
+            out/.stage0-windows/**
+          if-no-files-found: warn

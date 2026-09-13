@@ -1,0 +1,4 @@
+
+> uniforge@0.0.0 typecheck
+> tsc -b tsconfig.json --pretty false
+
