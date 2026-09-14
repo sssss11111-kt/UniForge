@@ -1,15 +1,198 @@
 <!doctype html>
-<html lang="en">
+<html lang="zh-CN">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#F4EFE7" />
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'" />
-    <title>UniForge</title>
+    <title>UniForge · 总览</title>
+    <link rel="stylesheet" href="./app.css" />
+    <link rel="stylesheet" href="./modules/english-overview.css" />
   </head>
   <body>
-    <main>
-      <h1>UniForge</h1>
-      <p>Stage 0 technical baseline</p>
-    </main>
+    <div id="app-shell" class="app-shell" data-testid="app-shell">
+      <aside class="sidebar" aria-label="主导航">
+        <div class="brand"><span class="brand-mark">U</span><span>UniForge</span></div>
+        <nav id="primary-navigation" class="primary-navigation" aria-label="主导航"></nav>
+      </aside>
+      <aside class="secondary-sidebar" data-region="secondary" aria-label="模块导航">
+        <p class="eyebrow">当前模块</p>
+        <h2>总览</h2>
+        <nav aria-label="模块导航列表">
+          <button type="button" class="secondary-item" aria-current="page">今日焦点</button
+          ><button type="button" class="secondary-item">最近活动</button>
+        </nav>
+      </aside>
+      <main class="main-content" aria-live="polite">
+        <header class="topbar">
+          <span class="eyebrow">工作台</span
+          ><span id="connection-state" class="status">本地运行</span>
+        </header>
+        <section id="module-page" class="module-page" aria-live="polite"></section>
+        <section class="content-card">
+          <p class="eyebrow">当前模块</p>
+          <h1>UniForge</h1>
+          <p id="module-description">正在加载工作台…</p>
+        </section>
+        <section class="dashboard" aria-labelledby="dashboard-title">
+          <div class="dashboard-heading">
+            <div>
+              <p class="eyebrow">今日工作台</p>
+              <h2 id="dashboard-title">概览</h2>
+            </div>
+            <span id="dashboard-workspace-state" class="status">正在加载…</span>
+          </div>
+          <div id="dashboard-items" class="dashboard-grid" aria-live="polite">
+            <p class="dashboard-placeholder">正在加载概览…</p>
+          </div>
+        </section>
+        <section class="settings-card" aria-labelledby="recovery-title">
+          <h2 id="recovery-title">备份、回收站与退出</h2>
+          <button id="backup-create" type="button">导出备份</button>
+          <button id="recycle-refresh" type="button">刷新回收站</button>
+          <button id="app-exit" type="button">退出应用</button>
+          <p id="recovery-state" aria-live="polite">恢复能力尚未操作。</p>
+          <div id="recycle-items"></div>
+        </section>
+        <section class="settings-card" aria-labelledby="settings-title">
+          <p class="eyebrow">设置中心</p>
+          <h2 id="settings-title">运行状态</h2>
+          <div id="settings-summary">正在加载设置…</div>
+        </section>
+        <section id="agent-center-page" class="settings-card" aria-labelledby="agent-center-title">
+          <p class="eyebrow">Agent 执行中心</p>
+          <h2 id="agent-center-title">任务队列与审批</h2>
+          <p id="agent-center-state">正在加载 Agent 运行记录…</p>
+          <div id="agent-center-runs" class="dashboard-grid" aria-live="polite"></div>
+        </section>
+        <section id="voice-page" class="settings-card" aria-labelledby="voice-title">
+          <p class="eyebrow">Voice MVP</p>
+          <h2 id="voice-title">全局语音与 Agent 输入</h2>
+          <button id="voice-start" type="button">开始语音输入</button>
+          <button id="voice-cancel" type="button" disabled>取消</button>
+          <p id="voice-state">语音尚未运行。</p>
+        </section>
+        <section id="course-page" class="settings-card" aria-labelledby="course-title">
+          <p class="eyebrow">课内学习</p>
+          <h2 id="course-title">课程入口</h2>
+          <p id="course-state">正在加载课程状态…</p>
+          <p id="course-material-state">课程资料尚未导入。</p>
+          <form id="course-form">
+            <input id="course-name" required placeholder="课程名称" aria-label="课程名称" />
+            <input id="course-term" required placeholder="学期" aria-label="学期" />
+            <button type="submit">创建课程</button>
+          </form>
+          <p id="course-error" role="alert"></p>
+          <button id="course-material-import" type="button">导入课程资料</button>
+          <p id="course-material-error" role="alert"></p>
+          <p id="course-recognition-state">
+            尚未产生识别提案。导入资料后，识别结果将在用户确认前显示证据。
+          </p>
+          <div id="course-ai" aria-labelledby="course-ai-title">
+            <h3 id="course-ai-title">Course AI</h3>
+            <form id="course-ai-form">
+              <input
+                id="course-ai-question"
+                required
+                placeholder="向课程 AI 提问"
+                aria-label="向课程 AI 提问"
+              />
+              <button type="submit">提问</button>
+            </form>
+            <p id="course-ai-state">Course AI 尚未运行。</p>
+            <p id="course-ai-error" role="alert"></p>
+          </div>
+          <div id="assignment-modes" aria-labelledby="assignment-modes-title">
+            <h3 id="assignment-modes-title">作业模式</h3>
+            <form id="assignment-form">
+              <select id="assignment-mode" aria-label="作业模式">
+                <option value="COLLABORATION">协作模式（默认）</option>
+                <option value="TUTORING">辅导模式</option>
+                <option value="TASK_EXECUTION">任务执行模式（需审批）</option>
+              </select>
+              <input id="assignment-prompt" required placeholder="作业目标" aria-label="作业目标" />
+              <button type="submit">开始作业</button>
+            </form>
+            <p id="assignment-state">作业模式尚未启动。</p>
+            <p id="assignment-error" role="alert"></p>
+          </div>
+          <div id="course-execution" aria-labelledby="course-execution-title">
+            <h3 id="course-execution-title">课程代码执行</h3>
+            <form id="execution-form">
+              <input
+                id="execution-workspace"
+                required
+                placeholder="授权临时工作区"
+                aria-label="授权临时工作区"
+              />
+              <input
+                id="execution-entrypoint"
+                required
+                value="main.py"
+                placeholder="入口文件"
+                aria-label="入口文件"
+              />
+              <select id="execution-operation" aria-label="执行操作">
+                <option value="COMPILE">编译</option>
+                <option value="RUN">运行</option>
+                <option value="TEST">测试</option>
+                <option value="DEBUG">调试</option>
+              </select>
+              <input
+                id="execution-command"
+                required
+                value="python main.py"
+                placeholder="受控命令"
+                aria-label="受控命令"
+              />
+              <button type="submit">执行</button>
+            </form>
+            <p id="execution-state">代码执行尚未运行。</p>
+          </div>
+          <div id="course-notes" aria-labelledby="course-notes-title">
+            <h3 id="course-notes-title">课程笔记</h3>
+            <form id="course-note-form">
+              <input id="course-note-title" required placeholder="笔记标题" aria-label="笔记标题" />
+              <textarea
+                id="course-note-body"
+                required
+                placeholder="笔记内容"
+                aria-label="笔记内容"
+              ></textarea>
+              <select id="course-note-kind" aria-label="笔记类型">
+                <option value="PERSONAL_NOTE">Personal Note</option>
+                <option value="AI_DRAFT">AI Draft</option>
+              </select>
+              <button type="submit">保存笔记</button>
+            </form>
+            <p id="course-notes-state">课程笔记尚未创建。</p>
+            <p id="course-notes-error" role="alert"></p>
+          </div>
+          <div id="course-mastery" aria-labelledby="course-mastery-title">
+            <h3 id="course-mastery-title">掌握度与错题</h3>
+            <p id="course-mastery-state">掌握度与错题尚无记录。</p>
+          </div>
+          <div id="course-review-plan" aria-labelledby="course-review-plan-title">
+            <h3 id="course-review-plan-title">考试与复习计划</h3>
+            <p id="course-review-plan-state">复习计划尚未创建。</p>
+          </div>
+        </section>
+      </main>
+      <aside class="inspector-sidebar" data-region="inspector" aria-label="状态侧栏">
+        <div class="inspector-heading">
+          <span class="eyebrow">Context</span
+          ><button id="inspector-toggle" type="button" aria-expanded="true">收起状态侧栏</button>
+        </div>
+        <h2>工作状态</h2>
+        <p>选择对象后查看上下文、来源与权限。</p>
+      </aside>
+      <form class="command-bar" data-region="command" aria-label="命令栏">
+        <input type="text" aria-label="命令输入" placeholder="输入命令或询问当前上下文" /><span
+          class="command-context"
+          >当前工作区 · 本地</span
+        ><button type="submit" disabled>执行命令</button>
+      </form>
+    </div>
+    <script src="./app.js"></script>
   </body>
 </html>

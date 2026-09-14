@@ -1,0 +1,24 @@
+
+> uniforge@0.0.0 e2e-smoke
+> npm run build:desktop && playwright test
+
+
+> uniforge@0.0.0 build:desktop
+> node scripts/build-desktop.mjs
+
+
+Running 1 test using 1 worker
+
+(node:41332) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  x  1 apps\desktop\tests\launch.spec.ts:3:1 › app shell exposes primary navigation and roadmap states (30.0s)
+
+
+  1) apps\desktop\tests\launch.spec.ts:3:1 › app shell exposes primary navigation and roadmap states 
+
+    Test timeout of 30000ms exceeded.
+
+    Error Context: test-results\launch-app-shell-exposes-p-93542-vigation-and-roadmap-states\error-context.md
+
+  1 failed
+    apps\desktop\tests\launch.spec.ts:3:1 › app shell exposes primary navigation and roadmap states 

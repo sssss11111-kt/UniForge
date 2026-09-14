@@ -7,12 +7,13 @@ export interface AgentEventStore {
   all(runId: Id<'agent-run'>): AgentEvent[];
   snapshot(runId: Id<'agent-run'>): AgentRun | undefined;
   saveSnapshot(run: AgentRun): void;
+  runs(): AgentRun[];
 }
 
 /** In-memory reference store; production persistence is wired in a later infrastructure task. */
 export class InMemoryAgentEventStore implements AgentEventStore {
   private readonly history = new Map<string, AgentEvent[]>();
-  private readonly runs = new Map<string, AgentRun>();
+  private readonly snapshots = new Map<string, AgentRun>();
   append(event: AgentEvent): void {
     const list = this.history.get(event.runId) ?? [];
     const previous = list.at(-1);
@@ -33,10 +34,13 @@ export class InMemoryAgentEventStore implements AgentEventStore {
     return this.events(runId, 0);
   }
   snapshot(runId: Id<'agent-run'>): AgentRun | undefined {
-    const run = this.runs.get(runId);
+    const run = this.snapshots.get(runId);
     return run && { ...run };
   }
   saveSnapshot(run: AgentRun): void {
-    this.runs.set(run.id, { ...run });
+    this.snapshots.set(run.id, { ...run });
+  }
+  runs(): AgentRun[] {
+    return [...this.snapshots.values()].map((run) => ({ ...run }));
   }
 }

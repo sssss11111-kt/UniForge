@@ -11,8 +11,8 @@ const testPreferences =
 
 const createWindow = (): void => {
   const window = new BrowserWindow({
-    width: 900,
-    height: 600,
+    width: 1280,
+    height: 800,
     show: true,
     webPreferences: {
       preload: path.join(currentDir, '../preload/index.js'),

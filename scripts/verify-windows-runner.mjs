@@ -24,14 +24,46 @@ const run = (file, args) =>
 await run(exe, ['--silent']);
 const update = path.join(install, 'Update.exe');
 await access(update);
-const app = path.join(install, 'uniforge.exe');
-await access(app);
-const child = spawn(app, ['--user-data-dir=' + path.join(install, 'test-data')], {
-  windowsHide: true,
-  detached: true,
+const app = await (async () => {
+  const entries = await readdir(install, { withFileTypes: true });
+  const versioned = entries
+    .filter((entry) => entry.isDirectory() && /^app-/i.test(entry.name))
+    .map((entry) => path.join(install, entry.name, 'uniforge.exe'));
+  for (const candidate of versioned) {
+    try {
+      await access(candidate);
+      return candidate;
+    } catch {
+      continue;
+    }
+  }
+  const rootApp = path.join(install, 'uniforge.exe');
+  await access(rootApp);
+  return rootApp;
+})();
+const smokeData = path.join(local, 'UniForge-smoke-data');
+const child = spawn(
+  app,
+  [
+    '--user-data-dir=' + smokeData,
+    '--disable-gpu',
+    '--disable-software-rasterizer',
+    '--disable-gpu-sandbox',
+    '--disable-features=HardwareMediaKeyHandling,AudioServiceOutOfProcess',
+    '--no-sandbox',
+    '--enable-logging=stderr',
+    '--log-level=0',
+  ],
+  { windowsHide: true, detached: true, stdio: ['ignore', 'pipe', 'pipe'] },
+);
+let stderr = '';
+child.stderr?.on('data', (chunk) => {
+  stderr += chunk.toString();
 });
-await new Promise((r) => setTimeout(r, 5000));
-if (child.exitCode !== null) throw new Error('Packaged app exited before smoke check');
+await new Promise((r) => setTimeout(r, 10000));
+if (child.exitCode !== null) {
+  throw new Error(`Packaged app exited before smoke check (code ${child.exitCode}). ${stderr}`);
+}
 child.kill();
 await run(update, ['--uninstall']);
 console.log(

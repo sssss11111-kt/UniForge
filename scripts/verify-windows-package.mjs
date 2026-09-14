@@ -21,7 +21,20 @@ for (const artifact of manifest.artifacts) {
   )
     throw new Error(`Hash mismatch: ${artifact.path}`);
 }
-console.error(
-  'BLOCKED: clean Windows install, launch, SQLite, sidecar, uninstall, and rollback require an isolated Windows VM.',
+if (process.platform !== 'win32') {
+  console.error(
+    'BLOCKED: clean Windows install, launch, SQLite, sidecar, uninstall, and rollback require an isolated Windows VM.',
+  );
+  process.exit(2);
+}
+
+if (process.env.GITHUB_ACTIONS !== 'true' && process.env.UF_WINDOWS_VM !== '1') {
+  console.error(
+    'BLOCKED: local packaging verification requires an isolated Windows VM. Set UF_WINDOWS_VM=1 only inside that VM.',
+  );
+  process.exit(2);
+}
+
+console.log(
+  'Windows package manifest and artifact hashes verified. Install/launch/uninstall evidence must be collected by the Windows runner smoke job.',
 );
-process.exit(2);

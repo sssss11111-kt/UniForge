@@ -244,3 +244,27 @@ export function createMcpTool(id: string, t: McpTransport): ToolAdapter {
     },
   };
 }
+
+export function createCourseExecutionTool(
+  id: string,
+  execute: (input: Json, context: RequestContext, signal: AbortSignal) => Promise<Json>,
+): ToolAdapter {
+  return {
+    manifest: base(
+      id,
+      'project',
+      { type: 'object', required: ['operation'], properties: { operation: { type: 'string' } } },
+      { type: 'object' },
+      {
+        capabilities: ['course.code-execute'],
+        riskLevel: 'HIGH',
+        approvalPolicy: 'on-risk',
+        resourceLimit: { processCount: 1 },
+      },
+    ),
+    execute: async (input, context, signal) => ({
+      ok: true,
+      value: await execute(input, context, signal),
+    }),
+  };
+}

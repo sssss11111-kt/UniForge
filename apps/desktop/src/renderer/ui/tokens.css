@@ -1,0 +1,59 @@
+:root {
+  color-scheme: light;
+  font-family: 'Segoe UI', 'Microsoft YaHei UI', 'Microsoft YaHei', system-ui, sans-serif;
+
+  --uf-canvas: #f4efe7;
+  --uf-surface: #fffdf9;
+  --uf-surface-muted: #eee8de;
+  --uf-text: #272522;
+  --uf-muted: #716b63;
+  --uf-border: #d8d0c4;
+  --uf-border-strong: #b9aea0;
+  --uf-accent: #d98a52;
+  --uf-accent-soft: #f2d2b8;
+  --uf-success: #487a59;
+  --uf-warning: #a46a2c;
+  --uf-danger: #a34d45;
+  --uf-focus: #246b9c;
+
+  --uf-space-1: 4px;
+  --uf-space-2: 8px;
+  --uf-space-3: 12px;
+  --uf-space-4: 16px;
+  --uf-space-6: 24px;
+  --uf-space-8: 32px;
+  --uf-space-12: 48px;
+
+  --uf-radius-control: 6px;
+  --uf-radius-panel: 8px;
+  --uf-radius-pill: 999px;
+
+  --uf-primary-width: 76px;
+  --uf-secondary-width: 216px;
+  --uf-inspector-width: 288px;
+  --uf-command-height: 64px;
+
+  --uf-shadow-panel: 0 1px 2px rgb(39 37 34 / 6%);
+  --uf-motion-fast: 120ms ease;
+  --uf-motion-standard: 180ms ease;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+:focus-visible {
+  outline: 2px solid var(--uf-focus);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}

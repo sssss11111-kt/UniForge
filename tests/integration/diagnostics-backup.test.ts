@@ -5,6 +5,7 @@ import { describe, expect, it } from 'vitest';
 import {
   StructuredLogger,
   createBackup,
+  createWorkspaceBackup,
   restoreBackup,
   validateBackup,
 } from '../../packages/infrastructure/index.js';
@@ -46,5 +47,19 @@ describe('diagnostics and backup foundation', () => {
     expect(await readFile(join(root, 'restored', 'course/a.md'), 'utf8')).toBe('hello');
     await writeFile(source, '{corrupt');
     expect((await validateBackup(source)).ok).toBe(false);
+  });
+
+  it('rejects backup destinations outside the authorized workspace', async () => {
+    const root = await mkdtemp(join(tmpdir(), 'uniforge-boundary-'));
+    const result = await createWorkspaceBackup(join(root, 'backup.json'), root, {
+      schemaVersion: 1,
+      domainData: {},
+    });
+    expect(result.ok).toBe(true);
+    const escaped = await createWorkspaceBackup(join(root, '..', 'outside.json'), root, {
+      schemaVersion: 1,
+      domainData: {},
+    });
+    expect(escaped).toMatchObject({ ok: false, error: { code: 'PROTECTED_PATH' } });
   });
 });

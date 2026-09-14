@@ -62,9 +62,11 @@ export class MemoryService {
       .get(receiptId);
     if (!receipt) return failure('NOT_FOUND', 'Receipt not found');
     const evidence = this.core.db
-      .prepare('SELECT evidence_id FROM evidence WHERE receipt_id=?')
-      .get(receiptId);
-    if (!evidence) return failure('DENIED', 'Memory requires evidence');
+      .prepare(
+        'SELECT evidence_id, source_type, source_ref, content_hash, captured_at FROM evidence WHERE receipt_id=? ORDER BY evidence_id',
+      )
+      .all(receiptId) as Record<string, unknown>[];
+    if (!evidence.length) return failure('DENIED', 'Memory requires evidence');
     if (confidence < 0 || confidence > 1)
       return failure('INVALID_INPUT', 'Confidence must be between 0 and 1');
     const conflict = this.core.db
@@ -73,7 +75,13 @@ export class MemoryService {
     const candidate: MemoryCandidate = {
       candidateId: id('candidate') as EntityId,
       claim,
-      evidence: [],
+      evidence: evidence.map((item) => ({
+        evidenceId: String(item.evidence_id) as EntityId,
+        sourceType: String(item.source_type) as 'conversation' | 'document' | 'user',
+        sourceRef: String(item.source_ref),
+        capturedAt: String(item.captured_at) as MemoryCandidate['createdAt'],
+        ...(item.content_hash ? { contentHash: String(item.content_hash) } : {}),
+      })),
       scope,
       createdAt: now() as MemoryCandidate['createdAt'],
       confidence,
@@ -93,7 +101,13 @@ export class MemoryService {
       );
     return asResult(candidate);
   }
-  accept(candidateId: string, authorization: MemoryAuthorization): Result<MemoryClaim> {
+  accept(
+    candidateId: string,
+    authorization: MemoryAuthorization,
+    permissions?: readonly string[],
+  ): Result<MemoryClaim> {
+    if (permissions && !permissions.includes('memory:write'))
+      return failure('DENIED', 'Missing permission: memory:write');
     if (authorization !== 'USER_CONFIRMED' && authorization !== 'RULE_CONFIRMED')
       return failure('DENIED', 'Explicit authorization is required');
     const c = this.core.db
@@ -128,6 +142,9 @@ export class MemoryService {
       this.core.db
         .prepare('INSERT INTO claim_evidence VALUES (?,?)')
         .run(claimId, String(e.evidence_id));
+    this.core.db
+      .prepare('INSERT INTO outcomes VALUES (?,?,?,?)')
+      .run(`outcome-${randomUUID()}`, claimId, 'ADMITTED', createdAt);
     return asResult<MemoryClaim>({
       claimId: claimId as EntityId,
       candidateId: candidateId as EntityId,
@@ -151,7 +168,11 @@ export class MemoryService {
       claimId: String(r.claim_id) as EntityId,
       candidateId: String(r.candidate_id) as EntityId,
       claim: String(r.claim),
-      evidenceIds: [],
+      evidenceIds: (
+        this.core.db
+          .prepare('SELECT evidence_id FROM claim_evidence WHERE claim_id=? ORDER BY evidence_id')
+          .all(String(r.claim_id)) as Record<string, unknown>[]
+      ).map((e) => String(e.evidence_id) as EntityId),
       outcome: 'ADMITTED',
       createdAt: String(r.created_at) as MemoryClaim['createdAt'],
       scope,
@@ -160,5 +181,23 @@ export class MemoryService {
       source: String(r.source),
       version: Number(r.version),
     }));
+  }
+  registerDerivedState(claimId: string, derivedId: string): Result<void> {
+    const claim = this.core.db
+      .prepare('SELECT claim_id FROM memory_claims WHERE claim_id=?')
+      .get(claimId);
+    if (!claim) return failure('NOT_FOUND', 'Claim not found');
+    this.core.db
+      .prepare(
+        'INSERT OR REPLACE INTO memory_derived_state (claim_id,derived_id,valid,invalidated_at) VALUES (?,?,1,NULL)',
+      )
+      .run(claimId, derivedId);
+    return { ok: true, value: undefined };
+  }
+  isDerivedStateValid(claimId: string, derivedId: string): boolean {
+    const row = this.core.db
+      .prepare('SELECT valid FROM memory_derived_state WHERE claim_id=? AND derived_id=?')
+      .get(claimId, derivedId) as { valid?: number } | undefined;
+    return row?.valid === 1;
   }
 }

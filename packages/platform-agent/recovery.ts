@@ -3,7 +3,7 @@ import type { AgentEvent, AgentRun, AgentRunStatus } from '@uniforge/contracts';
 const transitions: Record<AgentRunStatus, readonly AgentRunStatus[]> = {
   CREATED: ['RUNNING', 'CANCELLED'],
   RUNNING: ['WAITING_APPROVAL', 'PAUSED', 'COMPLETED', 'FAILED', 'CANCELLED'],
-  WAITING_APPROVAL: ['PAUSED', 'CANCELLED'],
+  WAITING_APPROVAL: ['PAUSED', 'FAILED', 'CANCELLED'],
   PAUSED: ['RUNNING', 'WAITING_APPROVAL', 'CANCELLED'],
   COMPLETED: [],
   FAILED: [],
@@ -62,6 +62,10 @@ export function reduceAgentEvents(
     if (status !== run.status) {
       if (!canTransition(run.status, status)) throw new Error('AGENT_INVALID_TRANSITION');
       run.status = status;
+    }
+    if (event.type === 'RunFailed') {
+      const reason = (event.payload as { reason?: unknown }).reason;
+      if (typeof reason === 'string') run.error = reason;
     }
     run.lastSeq = event.runSeq;
     run.version += 1;

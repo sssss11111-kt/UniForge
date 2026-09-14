@@ -1,4 +1,4 @@
-import { cp, mkdir, rm } from 'node:fs/promises';
+import { cp, rm } from 'node:fs/promises';
 import { spawnSync } from 'node:child_process';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -10,7 +10,7 @@ await rm(outputRoot, { recursive: true, force: true });
 const tscEntry = path.join(repositoryRoot, 'node_modules', 'typescript', 'bin', 'tsc');
 const result = spawnSync(
   process.execPath,
-  [tscEntry, '-p', path.join(desktopRoot, 'tsconfig.build.json')],
+  [tscEntry, '-b', path.join(desktopRoot, 'tsconfig.build.json')],
   {
     cwd: repositoryRoot,
     stdio: 'inherit',
@@ -31,8 +31,6 @@ if (preloadResult.error) {
   process.exit(1);
 }
 if (preloadResult.status !== 0) process.exit(preloadResult.status ?? 1);
-await mkdir(path.join(outputRoot, 'renderer'), { recursive: true });
-await cp(
-  path.join(desktopRoot, 'src', 'renderer', 'index.html'),
-  path.join(outputRoot, 'renderer', 'index.html'),
-);
+await cp(path.join(desktopRoot, 'src', 'renderer'), path.join(outputRoot, 'renderer'), {
+  recursive: true,
+});

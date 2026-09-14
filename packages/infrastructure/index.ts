@@ -8,9 +8,12 @@ export {
   type CredentialStore,
 } from './credentials/windows-credential-store.js';
 export { redactSecrets } from './logging/redact.js';
+export { createCourseMaterialCopy } from './files/course-material-copy.js';
+export { createSourceImportFileAdapter } from './files/source-import-adapter.js';
 export { StructuredLogger, type LogEntry, type LogLevel } from './logging/structured.js';
 export {
   createBackup,
+  createWorkspaceBackup,
   restoreBackup,
   validateBackup,
   type BackupInput,
@@ -18,4 +21,5 @@ export {
   type ManagedBackupFile,
 } from './backup/service.js';
 export { ProcessSupervisor } from './processes/supervisor.js';
+export { ControlledCourseRunner } from './runner/course-runner.js';
 export { checkNativeSqliteBinding, type NativeSqliteCheck } from './sqlite/native-binding.js';

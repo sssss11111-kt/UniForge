@@ -9,9 +9,19 @@
   "include": [
     "index.ts",
     "domain/**/*.ts",
+    "app-shell/**/*.ts",
     "ipc/**/*.ts",
     "model/**/*.ts",
     "tool/**/*.ts",
-    "agent/**/*.ts"
+    "agent/**/*.ts",
+    "settings/**/*.ts",
+    "dashboard/**/*.ts",
+    "course/**/*.ts",
+    "voice/**/*.ts",
+    "lifecycle/**/*.ts",
+    "english/**/*.ts",
+    "knowledge/**/*.ts",
+    "news/**/*.ts",
+    "project/**/*.ts"
   ]
 }

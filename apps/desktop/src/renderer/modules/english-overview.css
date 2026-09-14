@@ -1,0 +1,27 @@
+.english-overview {
+  display: grid;
+  gap: var(--uf-space-4);
+}
+.english-overview-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--uf-space-3);
+}
+.english-overview-panel {
+  padding: var(--uf-space-4);
+  border: 1px solid var(--uf-border);
+  background: var(--uf-surface);
+}
+.english-overview-panel h3 {
+  margin: 0 0 var(--uf-space-2);
+  font-size: 14px;
+}
+.english-overview-meta {
+  color: var(--uf-muted);
+  font-size: 12px;
+}
+@media (max-width: 900px) {
+  .english-overview-grid {
+    grid-template-columns: 1fr;
+  }
+}
