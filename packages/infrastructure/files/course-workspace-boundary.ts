@@ -17,12 +17,12 @@ export class CourseWorkspaceBoundary {
   assertEntry(workspaceRoot: string, entrypoint: string): WorkspaceBoundaryResult {
     const root = resolvePlatformPath(workspaceRoot);
     const target = resolvePlatformPath(root, entrypoint);
-    const inside = target === root || target.startsWith(`${root}${path.sep}`);
+    const inside = target === root || target.startsWith(root + '\\');
     const protectedRoot = this.protectedRoots.some(
       (candidate) =>
         root === candidate ||
-        root.startsWith(`${candidate}${path.sep}`) ||
-        candidate.startsWith(`${root}${path.sep}`),
+        root.startsWith(candidate + '\\') ||
+        candidate.startsWith(root + '\\'),
     );
     if (!inside || protectedRoot || isProtectedPath(root) || isProtectedPath(target))
       return { ok: false, error: 'PROTECTED_PATH' };
